@@ -1,0 +1,118 @@
+{
+  "original_file": "cprc_nyu_n0307_ULM3_WS_EDJ_GEO.ply",
+  "original_vertices": 145563,
+  "original_faces": 289960,
+  "wear_variants": [
+    {
+      "name": "wear_mild_c2_planar",
+      "wear_type": "planar",
+      "wear_depth_mm": 0.6577835151860516,
+      "cusps_affected": [
+        2
+      ],
+      "occlusal_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "random_seed": 642,
+      "vertices_removed": 41036,
+      "removal_fraction": 0.28191229914195226,
+      "output_vertices": 104526,
+      "output_faces": 207699
+    },
+    {
+      "name": "wear_mild_c0_height_clip",
+      "wear_type": "height_clip",
+      "wear_depth_mm": 0.5177620008113999,
+      "cusps_affected": [
+        0
+      ],
+      "occlusal_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "random_seed": 742,
+      "vertices_removed": 3857,
+      "removal_fraction": 0.026497118086326883,
+      "output_vertices": 141706,
+      "output_faces": 282202
+    },
+    {
+      "name": "wear_moderate_asymmetric_c2",
+      "wear_type": "asymmetric",
+      "wear_depth_mm": 1.144649139600284,
+      "cusps_affected": [
+        2
+      ],
+      "occlusal_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "random_seed": 842,
+      "vertices_removed": 25228,
+      "removal_fraction": 0.1733132732906027,
+      "output_vertices": 120335,
+      "output_faces": 239492
+    },
+    {
+      "name": "wear_moderate_erosive_c2_1_0",
+      "wear_type": "erosive",
+      "wear_depth_mm": 1.1291354966388858,
+      "cusps_affected": [
+        2,
+        1,
+        0
+      ],
+      "occlusal_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "random_seed": 942,
+      "vertices_removed": 111683,
+      "removal_fraction": 0.7672485453034081,
+      "output_vertices": 33880,
+      "output_faces": 66706
+    },
+    {
+      "name": "wear_damage_c1",
+      "wear_type": "damage",
+      "wear_depth_mm": 1.5294408665933825,
+      "cusps_affected": [
+        1
+      ],
+      "occlusal_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "random_seed": 1042,
+      "vertices_removed": 1895,
+      "removal_fraction": 0.013018418141972892,
+      "output_vertices": 143665,
+      "output_faces": 286023
+    },
+    {
+      "name": "wear_combined_c1_3",
+      "wear_type": "combined",
+      "wear_depth_mm": 1.0928129837448566,
+      "cusps_affected": [
+        1,
+        3
+      ],
+      "occlusal_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "random_seed": 1142,
+      "vertices_removed": 77183,
+      "removal_fraction": 0.5302377664653792,
+      "output_vertices": 68380,
+      "output_faces": 135834
+    }
+  ]
+}

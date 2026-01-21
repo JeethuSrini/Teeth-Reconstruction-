@@ -1,0 +1,29 @@
+{
+  "base_seed": 42,
+  "mild_depth_range": [
+    0.3,
+    0.8
+  ],
+  "moderate_depth_range": [
+    1.0,
+    1.5
+  ],
+  "mild_cusps": [
+    1,
+    2
+  ],
+  "moderate_cusps": [
+    2,
+    4
+  ],
+  "curvature_weight": 0.4,
+  "elevation_weight": 0.3,
+  "normal_variation_weight": 0.3,
+  "n_cusps_to_detect": 4,
+  "surface_noise_sigma": 0.02,
+  "max_mild_removal_fraction": 0.3,
+  "plane_tilt_range": [
+    5.0,
+    15.0
+  ]
+}

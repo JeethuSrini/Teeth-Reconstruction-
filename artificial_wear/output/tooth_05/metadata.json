@@ -1,0 +1,99 @@
+{
+  "original_file": "cprc_nyu_n0298_ULM3_WS_EDJ_GEO.ply",
+  "original_vertices": 104749,
+  "original_faces": 208517,
+  "wear_variants": [
+    {
+      "name": "wear_mild_c2_faceted",
+      "wear_type": "faceted",
+      "wear_depth_mm": 0.7883498833490711,
+      "cusps_affected": [
+        2
+      ],
+      "occlusal_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "random_seed": 442,
+      "vertices_removed": 23558,
+      "removal_fraction": 0.2248995217138111,
+      "output_vertices": 81191,
+      "output_faces": 161209
+    },
+    {
+      "name": "wear_moderate_asymmetric_c1_2",
+      "wear_type": "asymmetric",
+      "wear_depth_mm": 1.1373105639567496,
+      "cusps_affected": [
+        1,
+        2
+      ],
+      "occlusal_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "random_seed": 642,
+      "vertices_removed": 39745,
+      "removal_fraction": 0.37943082988859084,
+      "output_vertices": 65004,
+      "output_faces": 129085
+    },
+    {
+      "name": "wear_moderate_erosive_c3",
+      "wear_type": "erosive",
+      "wear_depth_mm": 1.4964064404900728,
+      "cusps_affected": [
+        3
+      ],
+      "occlusal_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "random_seed": 742,
+      "vertices_removed": 40182,
+      "removal_fraction": 0.38360270742441455,
+      "output_vertices": 64566,
+      "output_faces": 127904
+    },
+    {
+      "name": "wear_damage_c3",
+      "wear_type": "damage",
+      "wear_depth_mm": 1.5884366293381509,
+      "cusps_affected": [
+        3
+      ],
+      "occlusal_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "random_seed": 842,
+      "vertices_removed": 5534,
+      "removal_fraction": 0.05283105327974491,
+      "output_vertices": 99215,
+      "output_faces": 197318
+    },
+    {
+      "name": "wear_combined_c0_1",
+      "wear_type": "combined",
+      "wear_depth_mm": 0.7797250626671534,
+      "cusps_affected": [
+        0,
+        1
+      ],
+      "occlusal_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "random_seed": 942,
+      "vertices_removed": 8678,
+      "removal_fraction": 0.08284565962443556,
+      "output_vertices": 96071,
+      "output_faces": 190954
+    }
+  ]
+}
