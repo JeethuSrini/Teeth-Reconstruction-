@@ -1,0 +1,33 @@
+{
+  "config": {
+    "n_points": 5000,
+    "scale_method": "bbox_diagonal",
+    "icp_threshold": 0.02,
+    "icp_max_iterations": 100,
+    "icp_tolerance": 1e-06,
+    "cpd_alpha": 2.0,
+    "cpd_beta": 2.0,
+    "cpd_max_iterations": 150,
+    "cpd_tolerance": 1e-05,
+    "cpd_use_cuda": true,
+    "template_idx": 0,
+    "auto_select_template": false,
+    "seed": 42
+  },
+  "good_teeth_count": 8,
+  "artificial_originals_count": 8,
+  "artificial_worn_count": 79,
+  "good_teeth_files": [
+    "cprc_nyu_n0047_ULM3_EDJ_GEO.ply",
+    "cprc_nyu_n0269_ULM3_WS_EDJ_GEO.ply",
+    "cprc_nyu_n0292_ULM3_WS_EDJ_GEO.ply",
+    "cprc_nyu_n0293_ULM3_WS_EDJ.ply",
+    "cprc_nyu_n0298_ULM3_WS_EDJ_GEO.ply",
+    "cprc_nyu_n0300_ULM3_WS_EDJ_GEO.ply",
+    "cprc_nyu_n0307_ULM3_WS_EDJ_GEO.ply",
+    "cprc_nyu_n0350_ULM3_WS_EDJ_GEO.ply"
+  ],
+  "gpu_available": false,
+  "probreg_available": true,
+  "timestamp": "2026-02-01T12:33:36.996746"
+}

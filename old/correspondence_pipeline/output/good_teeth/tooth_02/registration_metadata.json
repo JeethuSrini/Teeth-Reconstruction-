@@ -1,0 +1,23 @@
+{
+  "source_file": "cprc_nyu_n0269_ULM3_WS_EDJ_GEO.ply",
+  "n_points": 20000,
+  "icp_rmse": 0.020838354799360952,
+  "icp_iterations": 15,
+  "cpd_sigma2": 0.0007435980236451736,
+  "processing_time_seconds": 8875.697750806808,
+  "config": {
+    "n_points": 20000,
+    "scale_method": "bbox_diagonal",
+    "icp_threshold": 0.02,
+    "icp_max_iterations": 100,
+    "icp_tolerance": 1e-06,
+    "cpd_alpha": 2.0,
+    "cpd_beta": 2.0,
+    "cpd_max_iterations": 150,
+    "cpd_tolerance": 1e-05,
+    "template_idx": 0,
+    "auto_select_template": false,
+    "seed": 42
+  },
+  "timestamp": "2026-01-27T04:35:50.946321"
+}

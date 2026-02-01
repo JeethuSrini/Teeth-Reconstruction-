@@ -1,6 +1,6 @@
 # Teeth Reconstruction
 
-A project for reconstructing worn/damaged EDJ (enamel-dentine junction) tooth surfaces from 3D mesh data.
+A project for reconstructing worn/damaged EDJ (enamel-dentine junction) tooth surfaces from 3D mesh data using Statistical Shape Models (SSM).
 
 ## Project Structure
 
@@ -8,13 +8,29 @@ A project for reconstructing worn/damaged EDJ (enamel-dentine junction) tooth su
 Teeth-Reconstruction/
 ├── Good teeth/              # Unworn EDJ crown surfaces (ground truth)
 │   └── *.ply               # 8 upper-left third molar meshes
-├── Worn teeth/              # Real worn/damaged examples for reference
+├── Worn teeth/              # Real worn/damaged examples (reference only)
 │   └── *.ply               # 9 worn tooth meshes
 ├── artificial_wear/         # Wear simulation pipeline
-│   ├── wear_simulation.py  # Main simulation script
-│   ├── requirements.txt    # Python dependencies
-│   └── output/             # Generated worn meshes
+│   ├── wear_simulation.py  # Generate artificial wear
+│   ├── requirements.txt
+│   └── output/             # Generated worn meshes + masks
+├── ssm_pipeline/            # Correspondence + SSM reconstruction
+│   ├── correspondence_pipeline.py  # Point correspondence (ICP + CPD)
+│   ├── reconstruction_pipeline.py  # SSM building + reconstruction
+│   ├── requirements.txt
+│   └── output/
+│       ├── correspondence/  # Aligned point clouds
+│       ├── ssm/             # Mean shape + eigenvectors
+│       └── reconstructions/ # Reconstructed teeth + evaluation
 └── README.md
+```
+
+## Full Pipeline Workflow
+
+```
+1. artificial_wear/     →  Generate worn teeth with known ground truth
+2. correspondence/      →  Establish point correspondence across all teeth
+3. reconstruction/      →  Build SSM, reconstruct worn teeth, evaluate accuracy
 ```
 
 ## Artificial Wear Simulation Pipeline
@@ -92,6 +108,85 @@ Each tooth folder contains metadata with full reproducibility information:
 }
 ```
 
+---
+
+## SSM Pipeline (Correspondence + Reconstruction)
+
+The SSM pipeline establishes point correspondence across all teeth and builds a PCA-based Statistical Shape Model for reconstruction.
+
+### Installation
+
+```bash
+cd ssm_pipeline
+pip install -r requirements.txt
+```
+
+**GPU acceleration** requires CuPy (adjust for your CUDA version):
+```bash
+pip install cupy-cuda12x  # For CUDA 12.x
+# or
+pip install cupy-cuda11x  # For CUDA 11.x
+```
+
+### Step 1: Correspondence Pipeline
+
+Establishes point-to-point correspondence using template-based registration:
+
+```bash
+python correspondence_pipeline.py \
+    --good-teeth "../Good teeth" \
+    --artificial-wear "../artificial_wear/output" \
+    --n-points 20000
+
+# Options:
+#   --auto-template     Auto-select most central tooth as template
+#   --no-gpu            Disable GPU acceleration
+```
+
+**What it does:**
+1. Sample uniform point clouds (N=20,000 points)
+2. Normalize (center, scale, PCA-align)
+3. ICP rigid alignment to template
+4. CPD non-rigid registration (GPU-accelerated)
+
+**Output:** `output/correspondence/` with corresponded point clouds where vertex i = same anatomical location across all teeth.
+
+### Step 2: Reconstruction Pipeline
+
+Builds SSM and reconstructs missing anatomy:
+
+```bash
+python reconstruction_pipeline.py \
+    --correspondence-dir "./output/correspondence" \
+    --artificial-wear "../artificial_wear/output" \
+    --n-components 5 \
+    --regularization 1.0
+
+# Options:
+#   --variance-threshold 0.95  # Auto-select components by variance
+#   --no-gpu                   # Disable GPU acceleration
+```
+
+**What it does:**
+1. Build SSM from good teeth (PCA: mean + eigenvectors)
+2. For each worn tooth:
+   - Load removal mask (from artificial_wear)
+   - Fit SSM to observed points (regularized least squares)
+   - Reconstruct full shape
+3. Evaluate against ground truth (RMSE, Hausdorff)
+
+**Output:** `output/ssm/` (model) + `output/reconstructions/` (results)
+
+### Evaluation Metrics
+
+For each reconstruction:
+- **RMSE (missing region)**: Error on reconstructed anatomy
+- **RMSE (observed region)**: Sanity check on fitting
+- **Hausdorff distance**: Worst-case error
+- **Missing fraction**: % of points that were removed
+
+---
+
 ## Data Format
 
 All meshes are in PLY format containing:
@@ -101,8 +196,11 @@ All meshes are in PLY format containing:
 
 ## Dependencies
 
+**Wear Simulation:**
 - Python 3.8+
-- trimesh
-- numpy
-- scipy
-- networkx
+- trimesh, numpy, scipy, networkx
+
+**SSM Pipeline:**
+- trimesh, open3d, numpy, scipy
+- probreg (GPU-accelerated CPD)
+- cupy (GPU linear algebra - optional but recommended)

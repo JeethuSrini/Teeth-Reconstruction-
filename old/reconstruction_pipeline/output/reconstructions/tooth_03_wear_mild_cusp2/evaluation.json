@@ -1,0 +1,37 @@
+{
+  "source_worn": "wear_mild_cusp2.ply",
+  "source_original": "original.ply",
+  "n_components_used": 3,
+  "coefficients": [
+    9.382211565696865,
+    -2.2874248776102344,
+    -1.8761368915837793
+  ],
+  "processing_time_seconds": 0,
+  "evaluation": {
+    "rmse_all": 0.02482224599477194,
+    "rmse_missing_region": 0.024405056911649185,
+    "rmse_observed_region": 0.024846751218946715,
+    "mean_error_missing": 0.022600530028648057,
+    "max_error_missing": 0.0671145994666376,
+    "hausdorff": 0.06689291729852626,
+    "chamfer": 0.010771399216283992,
+    "n_missing_vertices": 1119,
+    "n_observed_vertices": 18881,
+    "missing_fraction": 0.05595
+  },
+  "config": {
+    "n_components": 5,
+    "variance_threshold": 0.95,
+    "auto_select_components": true,
+    "regularization": 1.0,
+    "coefficient_limit": 3.0,
+    "smooth_output": true,
+    "smooth_iterations": 3,
+    "smooth_neighbors": 20,
+    "smooth_lambda": 0.5,
+    "use_bilateral": false,
+    "seed": 42
+  },
+  "timestamp": "2026-01-27T02:07:29.470460"
+}

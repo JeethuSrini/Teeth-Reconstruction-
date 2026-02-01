@@ -1,0 +1,725 @@
+#!/usr/bin/env python3
+"""
+SSM Reconstruction Pipeline for EDJ Tooth Meshes
+
+This script builds a PCA-based Statistical Shape Model (SSM) from good teeth
+and uses it to reconstruct missing anatomy in artificially worn teeth.
+
+Pipeline:
+1. Load corresponded point clouds from good teeth
+2. Build SSM: mean shape + principal deformation modes (PCA)
+3. For each worn tooth: fit SSM to observed points, reconstruct missing
+4. Evaluate reconstruction accuracy against ground truth
+
+GPU acceleration via CuPy/PyTorch for linear algebra operations.
+
+Author: Generated for Teeth-Reconstruction project
+"""
+
+import argparse
+import json
+import os
+from dataclasses import dataclass
+from datetime import datetime
+from glob import glob
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
+import numpy as np
+import open3d as o3d
+from scipy.spatial.distance import directed_hausdorff
+
+# Try to import GPU libraries
+try:
+    import cupy as cp
+    from cupyx.scipy.linalg import solve as cp_solve
+    CUPY_AVAILABLE = True
+except ImportError:
+    CUPY_AVAILABLE = False
+    print("CuPy not available, using CPU for linear algebra")
+
+try:
+    import torch
+    TORCH_AVAILABLE = torch.cuda.is_available()
+    if TORCH_AVAILABLE:
+        print(f"PyTorch CUDA available: {torch.cuda.get_device_name(0)}")
+except ImportError:
+    TORCH_AVAILABLE = False
+
+
+# =============================================================================
+# CONFIGURATION
+# =============================================================================
+
+@dataclass
+class ReconstructionConfig:
+    """Configuration for the reconstruction pipeline."""
+    # SSM parameters
+    n_components: int = None           # Number of PCA components (None = auto)
+    variance_threshold: float = 0.95   # Keep modes explaining this much variance
+    
+    # Fitting parameters
+    regularization: float = 1.0        # Tikhonov regularization strength
+    
+    # GPU settings
+    use_gpu: bool = True
+    
+    # Output settings
+    save_all_modes: bool = True        # Save individual mode visualizations
+
+
+# =============================================================================
+# I/O UTILITIES
+# =============================================================================
+
+def load_point_cloud(filepath: str) -> np.ndarray:
+    """Load point cloud from PLY file."""
+    pcd = o3d.io.read_point_cloud(filepath)
+    return np.asarray(pcd.points, dtype=np.float64)
+
+
+def save_point_cloud(points: np.ndarray, filepath: str) -> None:
+    """Save point cloud as PLY file."""
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(points)
+    o3d.io.write_point_cloud(filepath, pcd)
+
+
+# =============================================================================
+# SSM BUILDING
+# =============================================================================
+
+def build_ssm(corresponded_paths: List[str],
+              n_components: int = None,
+              variance_threshold: float = 0.95,
+              use_gpu: bool = True) -> Tuple[np.ndarray, np.ndarray, np.ndarray, float]:
+    """
+    Build PCA-based Statistical Shape Model from corresponded point clouds.
+    
+    The SSM represents shapes as: x(b) = μ + Σ bᵢφᵢ
+    where μ is the mean shape and φᵢ are the principal modes.
+    
+    Args:
+        corresponded_paths: List of paths to corresponded point cloud PLY files
+        n_components: Number of components to keep (None = auto by variance)
+        variance_threshold: Keep modes explaining this fraction of variance
+        use_gpu: Use GPU for SVD if available
+        
+    Returns:
+        Tuple of (mean_shape, eigenvectors, eigenvalues, variance_explained)
+        - mean_shape: (3N,) flattened mean
+        - eigenvectors: (K, 3N) principal modes
+        - eigenvalues: (K,) variances per mode
+        - variance_explained: fraction of variance captured
+    """
+    print("Building Statistical Shape Model...")
+    
+    # Load all corresponded point clouds
+    shapes = []
+    for path in corresponded_paths:
+        points = load_point_cloud(path)
+        shapes.append(points)
+    
+    shapes = np.array(shapes)  # (M, N, 3)
+    M, N, _ = shapes.shape
+    print(f"  Loaded {M} shapes with {N} points each")
+    
+    # Flatten to (M, 3N)
+    X = shapes.reshape(M, -1)
+    
+    # Compute mean shape
+    mu = X.mean(axis=0)
+    
+    # Center data
+    D = X - mu
+    
+    # SVD for PCA
+    if use_gpu and CUPY_AVAILABLE:
+        print("  Using GPU (CuPy) for SVD...")
+        D_gpu = cp.asarray(D)
+        U, S, Vt = cp.linalg.svd(D_gpu, full_matrices=False)
+        S = cp.asnumpy(S)
+        Vt = cp.asnumpy(Vt)
+    elif use_gpu and TORCH_AVAILABLE:
+        print("  Using GPU (PyTorch) for SVD...")
+        D_torch = torch.tensor(D, device='cuda', dtype=torch.float64)
+        U, S, Vt = torch.linalg.svd(D_torch, full_matrices=False)
+        S = S.cpu().numpy()
+        Vt = Vt.cpu().numpy()
+    else:
+        print("  Using CPU for SVD...")
+        U, S, Vt = np.linalg.svd(D, full_matrices=False)
+    
+    # Compute eigenvalues (variances)
+    eigenvalues = (S ** 2) / (M - 1)
+    
+    # Determine number of components
+    total_var = eigenvalues.sum()
+    cumulative_var = np.cumsum(eigenvalues) / total_var
+    
+    if n_components is None:
+        n_components = np.searchsorted(cumulative_var, variance_threshold) + 1
+        n_components = min(n_components, M - 1)  # Can't have more than M-1 components
+    
+    print(f"  Keeping {n_components} components ({cumulative_var[n_components-1]*100:.1f}% variance)")
+    
+    # Extract top components
+    eigenvectors = Vt[:n_components]  # (K, 3N)
+    eigenvalues = eigenvalues[:n_components]  # (K,)
+    variance_explained = cumulative_var[n_components - 1]
+    
+    return mu, eigenvectors, eigenvalues, variance_explained
+
+
+def visualize_modes(mu: np.ndarray,
+                   eigenvectors: np.ndarray,
+                   eigenvalues: np.ndarray,
+                   output_dir: str,
+                   n_std: float = 2.0) -> None:
+    """
+    Save visualizations of each deformation mode.
+    
+    For each mode, saves mean ± n_std * sqrt(eigenvalue) * eigenvector
+    """
+    os.makedirs(output_dir, exist_ok=True)
+    N = len(mu) // 3
+    
+    # Save mean shape
+    mean_shape = mu.reshape(-1, 3)
+    save_point_cloud(mean_shape, os.path.join(output_dir, "mean_shape.ply"))
+    
+    # Save each mode
+    for i, (phi, lam) in enumerate(zip(eigenvectors, eigenvalues)):
+        std = np.sqrt(lam)
+        
+        # Mean + mode
+        plus = (mu + n_std * std * phi).reshape(-1, 3)
+        save_point_cloud(plus, os.path.join(output_dir, f"mode_{i+1:02d}_plus.ply"))
+        
+        # Mean - mode
+        minus = (mu - n_std * std * phi).reshape(-1, 3)
+        save_point_cloud(minus, os.path.join(output_dir, f"mode_{i+1:02d}_minus.ply"))
+    
+    print(f"  Saved mode visualizations to {output_dir}")
+
+
+# =============================================================================
+# SSM FITTING
+# =============================================================================
+
+def fit_ssm_to_partial(mu: np.ndarray,
+                       eigenvectors: np.ndarray,
+                       eigenvalues: np.ndarray,
+                       worn_points: np.ndarray,
+                       observed_mask: np.ndarray,
+                       regularization: float = 1.0,
+                       use_gpu: bool = True) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Fit SSM to partial shape (worn tooth with missing vertices).
+    
+    Solves: min_b ||(μ + Φᵀb)_Ω - y_Ω||² + Σ bᵢ²/λᵢ
+    
+    where Ω is the set of observed (non-removed) vertices.
+    
+    Args:
+        mu: Mean shape (3N,)
+        eigenvectors: Principal modes (K, 3N)
+        eigenvalues: Variances per mode (K,)
+        worn_points: Worn tooth points (N, 3)
+        observed_mask: Boolean mask (N,) - True = observed (not removed)
+        regularization: Tikhonov regularization strength
+        use_gpu: Use GPU if available
+        
+    Returns:
+        Tuple of (reconstructed_points (N, 3), coefficients (K,))
+    """
+    K = len(eigenvalues)
+    N = len(observed_mask)
+    
+    # Expand mask to 3N (x, y, z for each point)
+    Omega = np.repeat(observed_mask, 3)
+    n_observed = Omega.sum()
+    
+    # Extract observed portions
+    mu_obs = mu[Omega]
+    phi_obs = eigenvectors[:, Omega].T  # (n_observed, K)
+    y_obs = worn_points.flatten()[Omega]
+    
+    # Build linear system: A @ b = y
+    A = phi_obs  # (n_observed, K)
+    y = y_obs - mu_obs  # (n_observed,)
+    
+    # Tikhonov regularization matrix
+    reg_diag = regularization / eigenvalues  # (K,)
+    
+    if use_gpu and CUPY_AVAILABLE:
+        # GPU solve
+        A_gpu = cp.asarray(A)
+        y_gpu = cp.asarray(y)
+        reg_gpu = cp.diag(cp.asarray(reg_diag))
+        
+        AtA = A_gpu.T @ A_gpu + reg_gpu
+        Aty = A_gpu.T @ y_gpu
+        
+        b = cp.asnumpy(cp.linalg.solve(AtA, Aty))
+        
+    elif use_gpu and TORCH_AVAILABLE:
+        # PyTorch GPU solve
+        A_torch = torch.tensor(A, device='cuda', dtype=torch.float64)
+        y_torch = torch.tensor(y, device='cuda', dtype=torch.float64)
+        reg_torch = torch.diag(torch.tensor(reg_diag, device='cuda', dtype=torch.float64))
+        
+        AtA = A_torch.T @ A_torch + reg_torch
+        Aty = A_torch.T @ y_torch
+        
+        b = torch.linalg.solve(AtA, Aty).cpu().numpy()
+        
+    else:
+        # CPU solve
+        AtA = A.T @ A + np.diag(reg_diag)
+        Aty = A.T @ y
+        b = np.linalg.solve(AtA, Aty)
+    
+    # Reconstruct full shape
+    reconstructed_flat = mu + eigenvectors.T @ b  # (3N,)
+    reconstructed = reconstructed_flat.reshape(-1, 3)
+    
+    return reconstructed, b
+
+
+# =============================================================================
+# EVALUATION
+# =============================================================================
+
+def evaluate_reconstruction(reconstructed: np.ndarray,
+                           ground_truth: np.ndarray,
+                           removed_mask: np.ndarray) -> Dict:
+    """
+    Compute reconstruction accuracy metrics.
+    
+    Args:
+        reconstructed: Reconstructed points (N, 3)
+        ground_truth: Ground truth points (N, 3)
+        removed_mask: Boolean mask (N,) - True = was removed (missing)
+        
+    Returns:
+        Dictionary of metrics
+    """
+    # Point-wise differences
+    diff = reconstructed - ground_truth
+    diff_norms = np.linalg.norm(diff, axis=1)
+    
+    # Split by observed vs missing
+    missing_idx = np.where(removed_mask)[0]
+    observed_idx = np.where(~removed_mask)[0]
+    
+    # RMSE calculations
+    rmse_all = np.sqrt(np.mean(diff_norms ** 2))
+    rmse_missing = np.sqrt(np.mean(diff_norms[missing_idx] ** 2)) if len(missing_idx) > 0 else 0.0
+    rmse_observed = np.sqrt(np.mean(diff_norms[observed_idx] ** 2)) if len(observed_idx) > 0 else 0.0
+    
+    # Maximum error
+    max_error_all = np.max(diff_norms)
+    max_error_missing = np.max(diff_norms[missing_idx]) if len(missing_idx) > 0 else 0.0
+    
+    # Hausdorff distance
+    hausdorff_fwd = directed_hausdorff(reconstructed, ground_truth)[0]
+    hausdorff_bwd = directed_hausdorff(ground_truth, reconstructed)[0]
+    hausdorff = max(hausdorff_fwd, hausdorff_bwd)
+    
+    # Mean absolute error on missing region
+    mae_missing = np.mean(diff_norms[missing_idx]) if len(missing_idx) > 0 else 0.0
+    
+    return {
+        "rmse_all": float(rmse_all),
+        "rmse_missing_region": float(rmse_missing),
+        "rmse_observed_region": float(rmse_observed),
+        "max_error_all": float(max_error_all),
+        "max_error_missing": float(max_error_missing),
+        "mae_missing": float(mae_missing),
+        "hausdorff": float(hausdorff),
+        "n_total_points": len(removed_mask),
+        "n_missing_points": int(len(missing_idx)),
+        "n_observed_points": int(len(observed_idx)),
+        "missing_fraction": float(len(missing_idx) / len(removed_mask))
+    }
+
+
+# =============================================================================
+# PIPELINE
+# =============================================================================
+
+def find_mask_for_worn(worn_dir: str, wear_name: str, artificial_wear_dir: str) -> Optional[str]:
+    """
+    Find the removal mask file for a worn tooth variant.
+    
+    Args:
+        worn_dir: Directory name like "tooth_01_wear_mild_c0_spherical"
+        wear_name: Wear variant name extracted from dir
+        artificial_wear_dir: Base artificial wear directory
+        
+    Returns:
+        Path to mask file or None if not found
+    """
+    # Parse tooth number and wear type from directory name
+    # Format: tooth_XX_wear_YYY -> tooth_XX, wear_YYY
+    parts = worn_dir.split("_")
+    
+    # Find tooth number
+    tooth_idx = None
+    wear_type = None
+    for i, part in enumerate(parts):
+        if part == "tooth" and i + 1 < len(parts):
+            tooth_idx = parts[i + 1]
+        if part == "wear" and i + 1 < len(parts):
+            # Everything after "wear_" is the wear type
+            wear_type = "_".join(parts[i:])
+            break
+    
+    if tooth_idx is None or wear_type is None:
+        return None
+    
+    # Construct mask filename
+    # Mask files are named: removed_mask_mild_c0_spherical.npy (without "wear_" prefix)
+    mask_name = wear_type.replace("wear_", "removed_mask_") + ".npy"
+    
+    tooth_dir = f"tooth_{tooth_idx}"
+    mask_path = os.path.join(artificial_wear_dir, tooth_dir, mask_name)
+    
+    if os.path.exists(mask_path):
+        return mask_path
+    
+    # Try alternative naming patterns
+    # Sometimes mask might have slightly different name
+    possible_masks = glob(os.path.join(artificial_wear_dir, tooth_dir, "removed_mask_*.npy"))
+    
+    # Try to match by wear type substring
+    for mask in possible_masks:
+        mask_basename = os.path.basename(mask)
+        # Extract the part after "removed_mask_"
+        mask_type = mask_basename.replace("removed_mask_", "").replace(".npy", "")
+        if mask_type in wear_type or wear_type.replace("wear_", "") == mask_type:
+            return mask
+    
+    return None
+
+
+def run_reconstruction_pipeline(correspondence_dir: str,
+                                artificial_wear_dir: str,
+                                output_dir: str,
+                                config: ReconstructionConfig) -> None:
+    """
+    Run the full reconstruction pipeline.
+    
+    Args:
+        correspondence_dir: Directory containing correspondence outputs
+        artificial_wear_dir: Directory containing artificial wear outputs (for masks)
+        output_dir: Output directory
+        config: Pipeline configuration
+    """
+    print("=" * 60)
+    print("SSM Reconstruction Pipeline")
+    print("=" * 60)
+    print(f"Correspondence directory: {correspondence_dir}")
+    print(f"Artificial wear directory: {artificial_wear_dir}")
+    print(f"Output directory: {output_dir}")
+    print(f"GPU acceleration: {CUPY_AVAILABLE or TORCH_AVAILABLE}")
+    print()
+    
+    # Create output directories
+    os.makedirs(output_dir, exist_ok=True)
+    ssm_dir = os.path.join(output_dir, "ssm")
+    recon_dir = os.path.join(output_dir, "reconstructions")
+    os.makedirs(ssm_dir, exist_ok=True)
+    os.makedirs(recon_dir, exist_ok=True)
+    
+    # Step 1: Find good teeth correspondences
+    good_teeth_dir = os.path.join(correspondence_dir, "good_teeth")
+    good_corresponded = sorted(glob(os.path.join(good_teeth_dir, "tooth_*", "corresponded.ply")))
+    
+    if len(good_corresponded) == 0:
+        print("ERROR: No corresponded good teeth found!")
+        print(f"  Expected at: {good_teeth_dir}/tooth_*/corresponded.ply")
+        return
+    
+    print(f"Found {len(good_corresponded)} good teeth correspondences")
+    
+    # Step 2: Build SSM
+    mu, phi, lambdas, var_explained = build_ssm(
+        good_corresponded,
+        n_components=config.n_components,
+        variance_threshold=config.variance_threshold,
+        use_gpu=config.use_gpu
+    )
+    
+    # Save SSM
+    np.save(os.path.join(ssm_dir, "mean_shape.npy"), mu)
+    np.save(os.path.join(ssm_dir, "eigenvectors.npy"), phi)
+    np.save(os.path.join(ssm_dir, "eigenvalues.npy"), lambdas)
+    save_point_cloud(mu.reshape(-1, 3), os.path.join(ssm_dir, "mean_shape.ply"))
+    
+    ssm_meta = {
+        "n_training_samples": len(good_corresponded),
+        "n_points_per_sample": len(mu) // 3,
+        "n_components": len(lambdas),
+        "variance_explained": float(var_explained),
+        "eigenvalues": lambdas.tolist(),
+        "cumulative_variance": (np.cumsum(lambdas) / lambdas.sum()).tolist()
+    }
+    with open(os.path.join(ssm_dir, "ssm_metadata.json"), 'w') as f:
+        json.dump(ssm_meta, f, indent=2)
+    
+    # Save mode visualizations
+    if config.save_all_modes:
+        modes_dir = os.path.join(ssm_dir, "modes")
+        visualize_modes(mu, phi, lambdas, modes_dir)
+    
+    print(f"\nSSM saved to {ssm_dir}")
+    print(f"  Components: {len(lambdas)}")
+    print(f"  Variance explained: {var_explained*100:.1f}%")
+    
+    # Step 3: Find worn teeth to reconstruct
+    worn_teeth_dir = os.path.join(correspondence_dir, "artificial_worn")
+    
+    # Get all worn variants (not originals)
+    all_worn_dirs = [d for d in os.listdir(worn_teeth_dir) 
+                     if os.path.isdir(os.path.join(worn_teeth_dir, d)) 
+                     and "_wear_" in d]
+    
+    # Get originals (ground truth)
+    original_dirs = [d for d in os.listdir(worn_teeth_dir)
+                    if os.path.isdir(os.path.join(worn_teeth_dir, d))
+                    and d.endswith("_original")]
+    
+    print(f"\nFound {len(all_worn_dirs)} worn variants to reconstruct")
+    print(f"Found {len(original_dirs)} originals (ground truth)")
+    
+    # Build mapping from tooth number to original
+    original_map = {}
+    for orig_dir in original_dirs:
+        # Extract tooth number: tooth_01_original -> 01
+        parts = orig_dir.split("_")
+        if len(parts) >= 2:
+            tooth_num = parts[1]  # "01"
+            orig_path = os.path.join(worn_teeth_dir, orig_dir, "corresponded.ply")
+            if os.path.exists(orig_path):
+                original_map[tooth_num] = orig_path
+    
+    # Step 4: Reconstruct each worn tooth
+    print("\nReconstructing worn teeth...")
+    results = []
+    
+    for worn_dir in sorted(all_worn_dirs):
+        worn_path = os.path.join(worn_teeth_dir, worn_dir, "corresponded.ply")
+        
+        if not os.path.exists(worn_path):
+            print(f"  [SKIP] {worn_dir} - no corresponded.ply")
+            continue
+        
+        # Extract tooth number
+        parts = worn_dir.split("_")
+        if len(parts) < 2:
+            continue
+        tooth_num = parts[1]
+        
+        # Find ground truth
+        if tooth_num not in original_map:
+            print(f"  [SKIP] {worn_dir} - no ground truth for tooth {tooth_num}")
+            continue
+        
+        ground_truth_path = original_map[tooth_num]
+        
+        # Find removal mask
+        mask_path = find_mask_for_worn(worn_dir, worn_dir, artificial_wear_dir)
+        
+        if mask_path is None:
+            print(f"  [SKIP] {worn_dir} - no mask found")
+            continue
+        
+        print(f"  Processing {worn_dir}...")
+        
+        try:
+            # Load data
+            worn_points = load_point_cloud(worn_path)
+            ground_truth = load_point_cloud(ground_truth_path)
+            removed_mask = np.load(mask_path)
+            
+            # Check dimensions match
+            n_worn = len(worn_points)
+            n_gt = len(ground_truth)
+            n_mask = len(removed_mask)
+            n_ssm = len(mu) // 3
+            
+            if not (n_worn == n_gt == n_mask == n_ssm):
+                print(f"    [WARN] Dimension mismatch: worn={n_worn}, gt={n_gt}, mask={n_mask}, ssm={n_ssm}")
+                # Try to proceed if worn and SSM match
+                if n_worn != n_ssm:
+                    print(f"    [SKIP] Cannot proceed with mismatched dimensions")
+                    continue
+            
+            # Fit SSM
+            observed_mask = ~removed_mask
+            reconstructed, coefficients = fit_ssm_to_partial(
+                mu, phi, lambdas,
+                worn_points, observed_mask,
+                regularization=config.regularization,
+                use_gpu=config.use_gpu
+            )
+            
+            # Evaluate
+            metrics = evaluate_reconstruction(reconstructed, ground_truth, removed_mask)
+            
+            # Save outputs
+            result_dir = os.path.join(recon_dir, worn_dir)
+            os.makedirs(result_dir, exist_ok=True)
+            
+            save_point_cloud(worn_points, os.path.join(result_dir, "worn_input.ply"))
+            save_point_cloud(reconstructed, os.path.join(result_dir, "reconstructed.ply"))
+            save_point_cloud(ground_truth, os.path.join(result_dir, "ground_truth.ply"))
+            np.save(os.path.join(result_dir, "coefficients.npy"), coefficients)
+            
+            eval_data = {
+                "source_worn": worn_dir,
+                "source_original": f"tooth_{tooth_num}_original",
+                "mask_file": os.path.basename(mask_path),
+                "n_components_used": len(lambdas),
+                "coefficients": coefficients.tolist(),
+                "regularization": config.regularization,
+                "evaluation": metrics
+            }
+            with open(os.path.join(result_dir, "evaluation.json"), 'w') as f:
+                json.dump(eval_data, f, indent=2)
+            
+            results.append({
+                "name": worn_dir,
+                "rmse_missing": metrics["rmse_missing_region"],
+                "missing_fraction": metrics["missing_fraction"]
+            })
+            
+            print(f"    RMSE (missing): {metrics['rmse_missing_region']:.4f}, "
+                  f"Missing: {metrics['missing_fraction']*100:.1f}%")
+            
+        except Exception as e:
+            print(f"    [ERROR] {e}")
+            import traceback
+            traceback.print_exc()
+    
+    # Step 5: Generate summary report
+    print("\n" + "=" * 60)
+    print("Reconstruction Summary")
+    print("=" * 60)
+    
+    if len(results) > 0:
+        rmse_values = [r["rmse_missing"] for r in results]
+        
+        print(f"Reconstructed {len(results)} worn teeth")
+        print(f"RMSE on missing regions:")
+        print(f"  Mean: {np.mean(rmse_values):.4f}")
+        print(f"  Std:  {np.std(rmse_values):.4f}")
+        print(f"  Min:  {np.min(rmse_values):.4f}")
+        print(f"  Max:  {np.max(rmse_values):.4f}")
+        
+        # Save summary
+        summary = {
+            "n_reconstructed": len(results),
+            "ssm_components": len(lambdas),
+            "ssm_variance_explained": float(var_explained),
+            "regularization": config.regularization,
+            "rmse_missing_mean": float(np.mean(rmse_values)),
+            "rmse_missing_std": float(np.std(rmse_values)),
+            "rmse_missing_min": float(np.min(rmse_values)),
+            "rmse_missing_max": float(np.max(rmse_values)),
+            "results": results,
+            "timestamp": datetime.now().isoformat()
+        }
+        with open(os.path.join(output_dir, "reconstruction_summary.json"), 'w') as f:
+            json.dump(summary, f, indent=2)
+        
+        # Rank by accuracy
+        print("\nTop 5 best reconstructions:")
+        sorted_results = sorted(results, key=lambda x: x["rmse_missing"])
+        for i, r in enumerate(sorted_results[:5]):
+            print(f"  {i+1}. {r['name']}: RMSE={r['rmse_missing']:.4f}")
+        
+        print("\nTop 5 worst reconstructions:")
+        for i, r in enumerate(sorted_results[-5:]):
+            print(f"  {i+1}. {r['name']}: RMSE={r['rmse_missing']:.4f}")
+    else:
+        print("No reconstructions completed!")
+    
+    print(f"\nOutput saved to: {output_dir}")
+
+
+# =============================================================================
+# MAIN
+# =============================================================================
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Build SSM and reconstruct worn teeth"
+    )
+    parser.add_argument(
+        "--correspondence-dir", "-c",
+        type=str,
+        default=None,
+        help="Directory containing correspondence outputs"
+    )
+    parser.add_argument(
+        "--artificial-wear", "-a",
+        type=str,
+        default=None,
+        help="Directory containing artificial wear outputs (for masks)"
+    )
+    parser.add_argument(
+        "--output", "-o",
+        type=str,
+        default=None,
+        help="Output directory"
+    )
+    parser.add_argument(
+        "--n-components", "-n",
+        type=int,
+        default=None,
+        help="Number of PCA components (default: auto by variance)"
+    )
+    parser.add_argument(
+        "--variance-threshold",
+        type=float,
+        default=0.95,
+        help="Variance threshold for auto component selection (default: 0.95)"
+    )
+    parser.add_argument(
+        "--regularization", "-r",
+        type=float,
+        default=1.0,
+        help="Tikhonov regularization strength (default: 1.0)"
+    )
+    parser.add_argument(
+        "--no-gpu",
+        action="store_true",
+        help="Disable GPU acceleration"
+    )
+    
+    args = parser.parse_args()
+    
+    # Default paths
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_dir = os.path.dirname(script_dir)
+    
+    correspondence_dir = args.correspondence_dir or os.path.join(script_dir, "output", "correspondence")
+    artificial_wear_dir = args.artificial_wear or os.path.join(project_dir, "artificial_wear", "output")
+    output_dir = args.output or os.path.join(script_dir, "output")
+    
+    # Create config
+    config = ReconstructionConfig(
+        n_components=args.n_components,
+        variance_threshold=args.variance_threshold,
+        regularization=args.regularization,
+        use_gpu=not args.no_gpu
+    )
+    
+    run_reconstruction_pipeline(correspondence_dir, artificial_wear_dir, output_dir, config)
+
+
+if __name__ == "__main__":
+    main()

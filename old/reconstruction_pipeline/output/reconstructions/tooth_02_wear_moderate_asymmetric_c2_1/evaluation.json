@@ -1,0 +1,37 @@
+{
+  "source_worn": "wear_moderate_asymmetric_c2_1.ply",
+  "source_original": "original.ply",
+  "n_components_used": 3,
+  "coefficients": [
+    -16.862048138430687,
+    0.2669293279057115,
+    -1.6642525437207838
+  ],
+  "processing_time_seconds": 0,
+  "evaluation": {
+    "rmse_all": 0.017777339996712983,
+    "rmse_missing_region": 0.017658343464245253,
+    "rmse_observed_region": 0.017867680205965766,
+    "mean_error_missing": 0.01565428990934178,
+    "max_error_missing": 0.04778534540754347,
+    "hausdorff": 0.03979388468733598,
+    "chamfer": 0.008727901522663763,
+    "n_missing_vertices": 8660,
+    "n_observed_vertices": 11340,
+    "missing_fraction": 0.433
+  },
+  "config": {
+    "n_components": 5,
+    "variance_threshold": 0.95,
+    "auto_select_components": true,
+    "regularization": 1.0,
+    "coefficient_limit": 3.0,
+    "smooth_output": true,
+    "smooth_iterations": 3,
+    "smooth_neighbors": 20,
+    "smooth_lambda": 0.5,
+    "use_bilateral": false,
+    "seed": 42
+  },
+  "timestamp": "2026-01-27T02:07:19.681724"
+}

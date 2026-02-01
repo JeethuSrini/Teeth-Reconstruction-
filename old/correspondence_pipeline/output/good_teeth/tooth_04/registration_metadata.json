@@ -1,0 +1,23 @@
+{
+  "source_file": "cprc_nyu_n0293_ULM3_WS_EDJ.ply",
+  "n_points": 20000,
+  "icp_rmse": 0.019862834390329924,
+  "icp_iterations": 48,
+  "cpd_sigma2": 0.0002605491227304541,
+  "processing_time_seconds": 6034.058729171753,
+  "config": {
+    "n_points": 20000,
+    "scale_method": "bbox_diagonal",
+    "icp_threshold": 0.02,
+    "icp_max_iterations": 100,
+    "icp_tolerance": 1e-06,
+    "cpd_alpha": 2.0,
+    "cpd_beta": 2.0,
+    "cpd_max_iterations": 150,
+    "cpd_tolerance": 1e-05,
+    "template_idx": 0,
+    "auto_select_template": false,
+    "seed": 42
+  },
+  "timestamp": "2026-01-27T08:02:32.290041"
+}
