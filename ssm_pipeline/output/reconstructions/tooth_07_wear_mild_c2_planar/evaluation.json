@@ -1,0 +1,27 @@
+{
+  "source_worn": "tooth_07_wear_mild_c2_planar",
+  "source_original": "tooth_07_original",
+  "mask_computed": true,
+  "n_points_removed": 1389,
+  "n_components_used": 4,
+  "coefficients": [
+    -1.4962300596903753,
+    -0.05988335440209714,
+    -2.1248819879072616,
+    -3.507369398365895
+  ],
+  "regularization": 1.0,
+  "evaluation": {
+    "rmse_all": 0.1479115257668665,
+    "rmse_missing_region": 0.19427345769999046,
+    "rmse_observed_region": 0.14472229593805622,
+    "max_error_all": 0.506951371223672,
+    "max_error_missing": 0.3977236899848785,
+    "mae_missing": 0.18030694791257523,
+    "hausdorff": 0.4920907277141498,
+    "n_total_points": 25000,
+    "n_missing_points": 1389,
+    "n_observed_points": 23611,
+    "missing_fraction": 0.05556
+  }
+}

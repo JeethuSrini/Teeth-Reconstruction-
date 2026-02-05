@@ -1,0 +1,11 @@
+{
+  "tooth_num": "06",
+  "wear_type": "damage_c2",
+  "worn_mesh_vertices": 74508,
+  "original_mesh_vertices": 78211,
+  "ssm_vertices": 25000,
+  "worn_vertices_replaced": 3703,
+  "worn_percentage": 4.734628121364002,
+  "avg_displacement": 4.542899002533815,
+  "method": "hybrid_icp_interpolate"
+}

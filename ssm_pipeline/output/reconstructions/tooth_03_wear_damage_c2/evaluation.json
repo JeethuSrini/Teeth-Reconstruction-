@@ -1,0 +1,27 @@
+{
+  "source_worn": "tooth_03_wear_damage_c2",
+  "source_original": "tooth_03_original",
+  "mask_computed": true,
+  "n_points_removed": 2,
+  "n_components_used": 4,
+  "coefficients": [
+    0.10920942139226525,
+    -1.5812324615457949,
+    -1.9186810177880258,
+    -3.717575439943599
+  ],
+  "regularization": 1.0,
+  "evaluation": {
+    "rmse_all": 0.034826119316313284,
+    "rmse_missing_region": 0.0615733343415909,
+    "rmse_observed_region": 0.0348231574785756,
+    "max_error_all": 0.10710212409299978,
+    "max_error_missing": 0.07209392351130314,
+    "mae_missing": 0.06046528068135286,
+    "hausdorff": 0.058287409371452374,
+    "n_total_points": 25000,
+    "n_missing_points": 2,
+    "n_observed_points": 24998,
+    "missing_fraction": 8e-05
+  }
+}

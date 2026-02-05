@@ -1,0 +1,11 @@
+{
+  "tooth_num": "03",
+  "wear_type": "mild_c3_planar",
+  "worn_mesh_vertices": 67615,
+  "original_mesh_vertices": 81495,
+  "ssm_vertices": 25000,
+  "worn_vertices_replaced": 13880,
+  "worn_percentage": 17.0317197374072,
+  "avg_displacement": 0.5889287570012884,
+  "method": "hybrid_icp_interpolate"
+}

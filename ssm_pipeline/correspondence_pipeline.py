@@ -16,8 +16,10 @@ Author: Generated for Teeth-Reconstruction project
 
 import argparse
 import json
+import multiprocessing
 import os
 import time
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import datetime
 from glob import glob
@@ -25,27 +27,47 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
-import open3d as o3d
+# import open3d as o3d  # Disabled - causes segfaults on this system
 import trimesh
 
-# Try to import GPU-accelerated libraries
-try:
-    import cupy as cp
-    CUPY_AVAILABLE = True
-except ImportError:
-    CUPY_AVAILABLE = False
-    print("CuPy not available, using CPU for linear algebra")
+# GPU library availability flags (set lazily to support multiprocessing)
+# Do NOT import cupy at module level - it must be imported AFTER CUDA_VISIBLE_DEVICES is set
+CUPY_AVAILABLE = None  # Will be set on first use
+cp = None  # Will be set on first use
 
-try:
-    from probreg import cpd
-    PROBREG_AVAILABLE = True
-except ImportError:
-    PROBREG_AVAILABLE = False
-    print("probreg not available, falling back to pycpd")
-    try:
-        from pycpd import DeformableRegistration
-    except ImportError:
-        raise ImportError("Neither probreg nor pycpd available. Install one: pip install probreg or pip install pycpd")
+
+def _get_cupy():
+    """Lazily import and return cupy, respecting CUDA_VISIBLE_DEVICES."""
+    global CUPY_AVAILABLE, cp
+    if CUPY_AVAILABLE is None:
+        try:
+            import cupy as _cp
+            _cp.cuda.Device(0).use()
+            _ = _cp.zeros(1)  # Force initialization
+            cp = _cp
+            CUPY_AVAILABLE = True
+        except Exception:
+            CUPY_AVAILABLE = False
+            cp = None
+    return cp, CUPY_AVAILABLE
+
+# probreg availability (also lazy to avoid early cupy init)
+PROBREG_AVAILABLE = None
+_cpd_module = None
+
+
+def _get_probreg():
+    """Lazily import probreg to avoid early CUDA initialization."""
+    global PROBREG_AVAILABLE, _cpd_module
+    if PROBREG_AVAILABLE is None:
+        try:
+            from probreg import cpd
+            _cpd_module = cpd
+            PROBREG_AVAILABLE = True
+        except ImportError:
+            PROBREG_AVAILABLE = False
+            _cpd_module = None
+    return _cpd_module, PROBREG_AVAILABLE
 
 
 # =============================================================================
@@ -134,10 +156,11 @@ def normalize_point_cloud(points: np.ndarray,
     scaled = centered / scale
     
     # PCA alignment - align principal axes to XYZ
-    if use_gpu and CUPY_AVAILABLE:
-        scaled_gpu = cp.asarray(scaled)
-        _, _, Vt = cp.linalg.svd(scaled_gpu, full_matrices=False)
-        Vt = cp.asnumpy(Vt)
+    cp_module, cupy_avail = _get_cupy()
+    if use_gpu and cupy_avail and cp_module is not None:
+        scaled_gpu = cp_module.asarray(scaled)
+        _, _, Vt = cp_module.linalg.svd(scaled_gpu, full_matrices=False)
+        Vt = cp_module.asnumpy(Vt)
     else:
         _, _, Vt = np.linalg.svd(scaled, full_matrices=False)
     
@@ -157,16 +180,32 @@ def normalize_point_cloud(points: np.ndarray,
 
 
 def save_point_cloud(points: np.ndarray, filepath: str) -> None:
-    """Save point cloud as PLY file."""
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(points)
-    o3d.io.write_point_cloud(filepath, pcd)
+    """Save point cloud as PLY file using numpy (avoids Open3D crash)."""
+    points = np.asarray(points, dtype=np.float32)
+    n_points = len(points)
+    
+    header = f"""ply
+format binary_little_endian 1.0
+element vertex {n_points}
+property float x
+property float y
+property float z
+end_header
+"""
+    with open(filepath, 'wb') as f:
+        f.write(header.encode('ascii'))
+        points.tofile(f)
 
 
 def load_point_cloud(filepath: str) -> np.ndarray:
-    """Load point cloud from PLY file."""
-    pcd = o3d.io.read_point_cloud(filepath)
-    return np.asarray(pcd.points)
+    """Load point cloud from PLY file using trimesh (avoids Open3D crash)."""
+    import trimesh
+    pcd = trimesh.load(filepath)
+    if hasattr(pcd, 'vertices'):
+        return np.asarray(pcd.vertices)
+    else:
+        # It's a PointCloud object
+        return np.asarray(pcd.vertices if hasattr(pcd, 'vertices') else pcd)
 
 
 # =============================================================================
@@ -179,7 +218,7 @@ def icp_align(source: np.ndarray,
               max_iterations: int = 100,
               tolerance: float = 1e-6) -> Tuple[np.ndarray, np.ndarray, Dict]:
     """
-    Rigid ICP alignment using Open3D.
+    Rigid ICP alignment using pure numpy/sklearn (no Open3D registration).
     
     Args:
         source: Source point cloud (N, 3)
@@ -191,42 +230,89 @@ def icp_align(source: np.ndarray,
     Returns:
         Tuple of (aligned source, 4x4 transform matrix, metadata dict)
     """
-    # Create Open3D point clouds
-    src_pcd = o3d.geometry.PointCloud()
-    src_pcd.points = o3d.utility.Vector3dVector(source)
+    from sklearn.neighbors import NearestNeighbors
     
-    tgt_pcd = o3d.geometry.PointCloud()
-    tgt_pcd.points = o3d.utility.Vector3dVector(target)
+    src = source.astype(np.float64).copy()
+    tgt = target.astype(np.float64)
     
-    # Estimate normals for better ICP
-    src_pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
-    tgt_pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
+    # Build KD-tree for target
+    nbrs = NearestNeighbors(n_neighbors=1, algorithm='kd_tree').fit(tgt)
     
-    # Run ICP
-    criteria = o3d.pipelines.registration.ICPConvergenceCriteria(
-        max_iteration=max_iterations,
-        relative_fitness=tolerance,
-        relative_rmse=tolerance
-    )
+    total_transform = np.eye(4)
+    prev_error = np.inf
+    actual_iterations = 0
     
-    result = o3d.pipelines.registration.registration_icp(
-        src_pcd, tgt_pcd, threshold,
-        np.eye(4),
-        o3d.pipelines.registration.TransformationEstimationPointToPlane(),
-        criteria
-    )
+    for i in range(max_iterations):
+        actual_iterations = i + 1
+        
+        # Find correspondences
+        distances, indices = nbrs.kneighbors(src)
+        distances = distances.ravel()
+        indices = indices.ravel()
+        
+        # Use all points or filter by threshold
+        if threshold > 0:
+            mask = distances < threshold
+            if np.sum(mask) < 10:
+                # If too few inliers, use 80% closest points
+                thresh = np.percentile(distances, 80)
+                mask = distances < thresh
+        else:
+            mask = np.ones(len(distances), dtype=bool)
+        
+        src_pts = src[mask]
+        tgt_pts = tgt[indices[mask]]
+        
+        # Compute centroids
+        src_mean = np.mean(src_pts, axis=0)
+        tgt_mean = np.mean(tgt_pts, axis=0)
+        
+        # Center point clouds
+        src_centered = src_pts - src_mean
+        tgt_centered = tgt_pts - tgt_mean
+        
+        # Compute optimal rotation via SVD
+        H = src_centered.T @ tgt_centered
+        U, S, Vt = np.linalg.svd(H)
+        R = Vt.T @ U.T
+        
+        # Handle reflection case
+        if np.linalg.det(R) < 0:
+            Vt[-1, :] *= -1
+            R = Vt.T @ U.T
+        
+        # Compute translation
+        t = tgt_mean - R @ src_mean
+        
+        # Apply transformation to source
+        src = (R @ src.T).T + t
+        
+        # Accumulate transformation
+        T_step = np.eye(4)
+        T_step[:3, :3] = R
+        T_step[:3, 3] = t
+        total_transform = T_step @ total_transform
+        
+        # Check convergence
+        mean_error = np.mean(distances[mask])
+        if np.abs(prev_error - mean_error) < tolerance:
+            break
+        prev_error = mean_error
     
-    # Apply transform
-    transform = result.transformation
-    aligned = (transform[:3, :3] @ source.T).T + transform[:3, 3]
+    # Final error metrics
+    final_dist, _ = nbrs.kneighbors(src)
+    final_dist = final_dist.ravel()
+    inlier_mask = final_dist < threshold if threshold > 0 else np.ones(len(final_dist), dtype=bool)
+    fitness = np.sum(inlier_mask) / len(src)
+    rmse = np.sqrt(np.mean(final_dist[inlier_mask]**2)) if np.sum(inlier_mask) > 0 else np.inf
     
     metadata = {
-        "fitness": result.fitness,
-        "inlier_rmse": result.inlier_rmse,
-        "iterations": max_iterations  # Open3D doesn't expose actual iteration count
+        "fitness": float(fitness),
+        "inlier_rmse": float(rmse),
+        "iterations": actual_iterations
     }
     
-    return aligned, transform, metadata
+    return src, total_transform, metadata
 
 
 def cpd_register(template: np.ndarray,
@@ -255,40 +341,42 @@ def cpd_register(template: np.ndarray,
     """
     start_time = time.time()
     
-    if PROBREG_AVAILABLE:
+    cpd_module, probreg_avail = _get_probreg()
+    
+    if probreg_avail and cpd_module is not None:
         # Use probreg with optional GPU acceleration
-        use_gpu = use_cuda and CUPY_AVAILABLE
+        _, cupy_avail = _get_cupy()
+        use_gpu = use_cuda and cupy_avail
         
+        # Ensure inputs are numpy arrays
+        template_np = np.asarray(template, dtype=np.float64)
+        target_np = np.asarray(target, dtype=np.float64)
+        
+        # Let probreg handle GPU internally via use_cuda parameter
+        tf_param, _, _ = cpd_module.registration_cpd(
+            target_np, template_np,
+            tf_type_name='nonrigid',
+            w=0.0,
+            maxiter=max_iterations,
+            tol=tolerance,
+            use_cuda=use_gpu
+        )
+        
+        # Transform needs the same array type as used internally
         if use_gpu:
-            # Convert to CuPy arrays for GPU processing
-            template_arr = cp.asarray(template)
-            target_arr = cp.asarray(target)
-            
-            # probreg CPD with CuPy backend
-            tf_param, _, _ = cpd.registration_cpd(
-                target_arr, template_arr,
-                tf_type_name='nonrigid',
-                w=0.0,
-                maxiter=max_iterations,
-                tol=tolerance
-            )
-            
-            # Get deformed points
-            deformed = cp.asnumpy(tf_param.transform(template_arr))
+            # probreg used CuPy internally, so transform needs CuPy input
+            cp_module, _ = _get_cupy()
+            template_for_transform = cp_module.asarray(template_np)
+            deformed = tf_param.transform(template_for_transform)
+            deformed = cp_module.asnumpy(deformed)  # Convert back to numpy
         else:
-            # CPU version
-            tf_param, _, _ = cpd.registration_cpd(
-                target, template,
-                tf_type_name='nonrigid',
-                w=0.0,
-                maxiter=max_iterations,
-                tol=tolerance
-            )
-            deformed = tf_param.transform(template)
+            deformed = tf_param.transform(template_np)
+            deformed = np.asarray(deformed)
         
         method = "probreg_gpu" if use_gpu else "probreg_cpu"
     else:
         # Fallback to pycpd (CPU only)
+        from pycpd import DeformableRegistration
         reg = DeformableRegistration(
             X=target, Y=template,
             alpha=alpha, beta=beta,
@@ -349,11 +437,70 @@ def select_template_auto(point_clouds: List[np.ndarray]) -> int:
 # PIPELINE
 # =============================================================================
 
+# Global variable for worker GPU assignment (set by initializer)
+_worker_gpu_id = None
+
+
+def _worker_initializer(gpu_queue):
+    """
+    Initializer that runs in each worker process.
+    Sets CUDA_VISIBLE_DEVICES BEFORE cupy is ever imported.
+    """
+    global _worker_gpu_id, CUPY_AVAILABLE, cp, PROBREG_AVAILABLE, _cpd_module
+    _worker_gpu_id = gpu_queue.get()
+    
+    # Set environment variable - this MUST happen before cupy import
+    os.environ['CUDA_VISIBLE_DEVICES'] = str(_worker_gpu_id)
+    
+    # Reset ALL lazy import flags so libraries will be imported fresh with correct GPU
+    CUPY_AVAILABLE = None
+    cp = None
+    PROBREG_AVAILABLE = None
+    _cpd_module = None
+    
+    # Now trigger the lazy imports to initialize on the correct GPU
+    _get_cupy()
+    _get_probreg()
+    
+    print(f"  [Worker] Initialized on GPU {_worker_gpu_id}")
+
+
+def _worker_process_tooth(args):
+    """
+    Worker function for parallel processing.
+    GPU is already set by initializer before this is called.
+    
+    Args:
+        args: Tuple of (mesh_path, template_points, output_dir, config_dict, tooth_name)
+    """
+    mesh_path, template_points, output_dir, config_dict, tooth_name = args
+    
+    global _worker_gpu_id
+    gpu_id = _worker_gpu_id
+    
+    # Get library status (already initialized by initializer)
+    _, cupy_available = _get_cupy()
+    _, probreg_available = _get_probreg()
+    
+    print(f"  [{tooth_name}] Processing on GPU {gpu_id}")
+    
+    # Reconstruct config
+    config = CorrespondenceConfig(**config_dict)
+    
+    # Process the tooth
+    return process_single_tooth(
+        mesh_path, template_points, output_dir, config, tooth_name,
+        _cupy_available=cupy_available, _probreg_available=probreg_available
+    )
+
+
 def process_single_tooth(mesh_path: str,
                         template_points: np.ndarray,
                         output_dir: str,
                         config: CorrespondenceConfig,
-                        tooth_name: str) -> bool:
+                        tooth_name: str,
+                        _cupy_available: bool = None,
+                        _probreg_available: bool = None) -> bool:
     """
     Process a single tooth through the correspondence pipeline.
     
@@ -363,10 +510,23 @@ def process_single_tooth(mesh_path: str,
         output_dir: Output directory for this tooth
         config: Pipeline configuration
         tooth_name: Name for logging
+        _cupy_available: Override for CUPY_AVAILABLE (for parallel workers)
+        _probreg_available: Override for PROBREG_AVAILABLE (for parallel workers)
         
     Returns:
         True if successful
     """
+    # Use passed availability or check lazily
+    if _cupy_available is not None:
+        cupy_avail = _cupy_available
+    else:
+        _, cupy_avail = _get_cupy()
+    
+    if _probreg_available is not None:
+        probreg_avail = _probreg_available
+    else:
+        _, probreg_avail = _get_probreg()
+    
     os.makedirs(output_dir, exist_ok=True)
     
     print(f"  Processing {tooth_name}...")
@@ -382,7 +542,7 @@ def process_single_tooth(mesh_path: str,
         normalized, norm_params = normalize_point_cloud(
             sampled, 
             config.scale_method,
-            use_gpu=config.cpd_use_cuda and CUPY_AVAILABLE
+            use_gpu=config.cpd_use_cuda and cupy_avail
         )
         save_point_cloud(normalized, os.path.join(output_dir, "normalized.ply"))
         
@@ -433,10 +593,69 @@ def process_single_tooth(mesh_path: str,
         return False
 
 
+def process_teeth_parallel(tasks: List[Tuple], template_points: np.ndarray, 
+                          config: CorrespondenceConfig, n_gpus: int = 4) -> int:
+    """
+    Process multiple teeth in parallel across GPUs.
+    
+    Args:
+        tasks: List of (mesh_path, output_dir, tooth_name) tuples
+        template_points: Template point cloud
+        config: Pipeline configuration
+        n_gpus: Number of GPUs to use
+        
+    Returns:
+        Number of successful processes
+    """
+    if not tasks:
+        return 0
+    
+    # Convert config to dict for pickling
+    config_dict = {
+        'n_points': config.n_points,
+        'scale_method': config.scale_method,
+        'icp_threshold': config.icp_threshold,
+        'icp_max_iterations': config.icp_max_iterations,
+        'icp_tolerance': config.icp_tolerance,
+        'cpd_alpha': config.cpd_alpha,
+        'cpd_beta': config.cpd_beta,
+        'cpd_max_iterations': config.cpd_max_iterations,
+        'cpd_tolerance': config.cpd_tolerance,
+        'cpd_use_cuda': config.cpd_use_cuda,
+        'template_idx': config.template_idx,
+        'auto_select_template': config.auto_select_template,
+        'seed': config.seed
+    }
+    
+    # Prepare worker arguments (no GPU id - assigned by initializer)
+    worker_args = []
+    for mesh_path, output_dir, tooth_name in tasks:
+        worker_args.append((mesh_path, template_points, output_dir, config_dict, tooth_name))
+    
+    # Use spawn context for CUDA compatibility
+    ctx = multiprocessing.get_context('spawn')
+    
+    # Create a queue with GPU IDs for workers to pick from
+    # Each worker will get one GPU ID from this queue at init time
+    gpu_queue = ctx.Manager().Queue()
+    for i in range(n_gpus):
+        gpu_queue.put(i)
+    
+    success_count = 0
+    
+    # Use Pool with initializer to set GPU before any imports
+    with ctx.Pool(processes=n_gpus, initializer=_worker_initializer, initargs=(gpu_queue,)) as pool:
+        results = pool.map(_worker_process_tooth, worker_args)
+        success_count = sum(1 for r in results if r)
+    
+    return success_count
+
+
 def run_correspondence_pipeline(good_teeth_dir: str,
                                 artificial_wear_dir: str,
                                 output_dir: str,
-                                config: CorrespondenceConfig) -> None:
+                                config: CorrespondenceConfig,
+                                n_gpus: int = 1) -> None:
     """
     Run the full correspondence pipeline on all teeth.
     
@@ -445,6 +664,7 @@ def run_correspondence_pipeline(good_teeth_dir: str,
         artificial_wear_dir: Directory containing artificial wear output
         output_dir: Output directory
         config: Pipeline configuration
+        n_gpus: Number of GPUs for parallel processing (default: 1 = sequential)
     """
     print("=" * 60)
     print("Correspondence Pipeline")
@@ -452,7 +672,9 @@ def run_correspondence_pipeline(good_teeth_dir: str,
     print(f"Good teeth directory: {good_teeth_dir}")
     print(f"Artificial wear directory: {artificial_wear_dir}")
     print(f"Output directory: {output_dir}")
-    print(f"GPU acceleration: {CUPY_AVAILABLE and config.cpd_use_cuda}")
+    _, cupy_avail = _get_cupy()
+    print(f"GPU acceleration: {cupy_avail and config.cpd_use_cuda}")
+    print(f"Parallel GPUs: {n_gpus}")
     print()
     
     # Find all good teeth
@@ -514,6 +736,8 @@ def run_correspondence_pipeline(good_teeth_dir: str,
     # Step 3: Process all good teeth
     print("\nStep 3: Processing good teeth...")
     good_success = 0
+    
+    # Handle template tooth first
     for i, filepath in enumerate(good_teeth_files):
         tooth_dir = os.path.join(good_output_dir, f"tooth_{i+1:02d}")
         
@@ -543,34 +767,60 @@ def run_correspondence_pipeline(good_teeth_dir: str,
             
             print(f"  [TEMPLATE] tooth_{i+1:02d}")
             good_success += 1
-        else:
-            if process_single_tooth(filepath, template_points, tooth_dir, config, f"tooth_{i+1:02d}"):
+    
+    # Process other good teeth
+    good_tasks = []
+    for i, filepath in enumerate(good_teeth_files):
+        if i != template_idx:
+            tooth_dir = os.path.join(good_output_dir, f"tooth_{i+1:02d}")
+            good_tasks.append((filepath, tooth_dir, f"tooth_{i+1:02d}"))
+    
+    if n_gpus > 1 and good_tasks:
+        print(f"  Processing {len(good_tasks)} teeth in parallel on {n_gpus} GPUs...")
+        good_success += process_teeth_parallel(good_tasks, template_points, config, n_gpus)
+    else:
+        for filepath, tooth_dir, tooth_name in good_tasks:
+            if process_single_tooth(filepath, template_points, tooth_dir, config, tooth_name):
                 good_success += 1
     
     print(f"\n  Good teeth: {good_success}/{len(good_teeth_files)} successful")
     
     # Step 4: Process artificial wear originals (ground truth for reconstruction)
     print("\nStep 4: Processing artificial wear originals...")
-    original_success = 0
+    original_tasks = []
     for filepath in artificial_original_files:
         tooth_name = os.path.basename(os.path.dirname(filepath))
         tooth_dir = os.path.join(worn_output_dir, f"{tooth_name}_original")
-        
-        if process_single_tooth(filepath, template_points, tooth_dir, config, f"{tooth_name}_original"):
-            original_success += 1
+        original_tasks.append((filepath, tooth_dir, f"{tooth_name}_original"))
+    
+    if n_gpus > 1 and original_tasks:
+        print(f"  Processing {len(original_tasks)} originals in parallel on {n_gpus} GPUs...")
+        original_success = process_teeth_parallel(original_tasks, template_points, config, n_gpus)
+    else:
+        original_success = 0
+        for filepath, tooth_dir, tooth_name in original_tasks:
+            if process_single_tooth(filepath, template_points, tooth_dir, config, tooth_name):
+                original_success += 1
     
     print(f"\n  Originals: {original_success}/{len(artificial_original_files)} successful")
     
     # Step 5: Process all worn variants
     print("\nStep 5: Processing worn variants...")
-    worn_success = 0
+    worn_tasks = []
     for filepath in artificial_worn_files:
         parent_dir = os.path.basename(os.path.dirname(filepath))
         wear_name = os.path.splitext(os.path.basename(filepath))[0]
         tooth_dir = os.path.join(worn_output_dir, f"{parent_dir}_{wear_name}")
-        
-        if process_single_tooth(filepath, template_points, tooth_dir, config, f"{parent_dir}_{wear_name}"):
-            worn_success += 1
+        worn_tasks.append((filepath, tooth_dir, f"{parent_dir}_{wear_name}"))
+    
+    if n_gpus > 1 and worn_tasks:
+        print(f"  Processing {len(worn_tasks)} worn variants in parallel on {n_gpus} GPUs...")
+        worn_success = process_teeth_parallel(worn_tasks, template_points, config, n_gpus)
+    else:
+        worn_success = 0
+        for filepath, tooth_dir, tooth_name in worn_tasks:
+            if process_single_tooth(filepath, template_points, tooth_dir, config, tooth_name):
+                worn_success += 1
     
     print(f"\n  Worn variants: {worn_success}/{len(artificial_worn_files)} successful")
     
@@ -595,8 +845,8 @@ def run_correspondence_pipeline(good_teeth_dir: str,
         "artificial_originals_count": len(artificial_original_files),
         "artificial_worn_count": len(artificial_worn_files),
         "good_teeth_files": [os.path.basename(f) for f in good_teeth_files],
-        "gpu_available": CUPY_AVAILABLE,
-        "probreg_available": PROBREG_AVAILABLE,
+        "gpu_available": cupy_avail,
+        "probreg_available": _get_probreg()[1],
         "timestamp": datetime.now().isoformat()
     }
     with open(os.path.join(output_dir, "pipeline_config.json"), 'w') as f:
@@ -663,6 +913,12 @@ def main():
         help="Disable GPU acceleration"
     )
     parser.add_argument(
+        "--n-gpus",
+        type=int,
+        default=1,
+        help="Number of GPUs for parallel processing (default: 1 = sequential)"
+    )
+    parser.add_argument(
         "--seed",
         type=int,
         default=42,
@@ -688,7 +944,7 @@ def main():
         seed=args.seed
     )
     
-    run_correspondence_pipeline(good_teeth_dir, artificial_wear_dir, output_dir, config)
+    run_correspondence_pipeline(good_teeth_dir, artificial_wear_dir, output_dir, config, n_gpus=args.n_gpus)
 
 
 if __name__ == "__main__":

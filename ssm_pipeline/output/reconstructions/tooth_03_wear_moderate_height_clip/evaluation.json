@@ -1,0 +1,27 @@
+{
+  "source_worn": "tooth_03_wear_moderate_height_clip",
+  "source_original": "tooth_03_original",
+  "mask_computed": true,
+  "n_points_removed": 0,
+  "n_components_used": 4,
+  "coefficients": [
+    -2.074390640701206,
+    0.6563365299375005,
+    -1.6546158417993937,
+    -6.746790020749624
+  ],
+  "regularization": 1.0,
+  "evaluation": {
+    "rmse_all": 0.02918353583766269,
+    "rmse_missing_region": 0.0,
+    "rmse_observed_region": 0.02918353583766269,
+    "max_error_all": 0.08273072691077901,
+    "max_error_missing": 0.0,
+    "mae_missing": 0.0,
+    "hausdorff": 0.04906755768940255,
+    "n_total_points": 25000,
+    "n_missing_points": 0,
+    "n_observed_points": 25000,
+    "missing_fraction": 0.0
+  }
+}

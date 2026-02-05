@@ -1,0 +1,27 @@
+{
+  "source_worn": "tooth_05_wear_moderate_asymmetric_c1_2",
+  "source_original": "tooth_05_original",
+  "mask_computed": true,
+  "n_points_removed": 8003,
+  "n_components_used": 4,
+  "coefficients": [
+    1.0101804816293267,
+    1.0567891350454357,
+    -4.433377312541003,
+    -0.6499637832245586
+  ],
+  "regularization": 1.0,
+  "evaluation": {
+    "rmse_all": 0.04738631581063495,
+    "rmse_missing_region": 0.04600246754510612,
+    "rmse_observed_region": 0.04802409153365856,
+    "max_error_all": 0.14843275436077616,
+    "max_error_missing": 0.14843275436077616,
+    "mae_missing": 0.04169501807231749,
+    "hausdorff": 0.08315995426408282,
+    "n_total_points": 25000,
+    "n_missing_points": 8003,
+    "n_observed_points": 16997,
+    "missing_fraction": 0.32012
+  }
+}

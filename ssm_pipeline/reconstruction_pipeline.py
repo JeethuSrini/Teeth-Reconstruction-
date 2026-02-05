@@ -85,6 +85,52 @@ def save_point_cloud(points: np.ndarray, filepath: str) -> None:
     o3d.io.write_point_cloud(filepath, pcd)
 
 
+def point_cloud_to_mesh(points: np.ndarray, method: str = "poisson"):
+    """
+    Convert point cloud to smooth mesh using pyvista surface reconstruction.
+    
+    Args:
+        points: (N, 3) numpy array of points
+        method: "poisson" for Poisson reconstruction, "delaunay" for Delaunay 3D
+        
+    Returns:
+        pyvista mesh object
+    """
+    import pyvista as pv
+    
+    # Create pyvista point cloud
+    cloud = pv.PolyData(points)
+    
+    # Estimate normals (required for Poisson reconstruction)
+    cloud.compute_normals(point_normals=True, cell_normals=False, 
+                          auto_orient_normals=True, inplace=True)
+    
+    if method == "poisson":
+        # Poisson surface reconstruction
+        mesh = cloud.reconstruct_surface(nbr_sz=20, sample_spacing=None)
+    else:
+        # Delaunay 3D triangulation
+        mesh = cloud.delaunay_3d(alpha=0.0).extract_surface()
+    
+    # Smooth the mesh
+    mesh = mesh.smooth_taubin(n_iter=20, pass_band=0.1)
+    
+    # Clean up
+    mesh = mesh.clean()
+    
+    return mesh
+
+
+def save_mesh(mesh, filepath: str) -> None:
+    """Save mesh to PLY file."""
+    import pyvista as pv
+    if hasattr(mesh, 'save'):
+        mesh.save(filepath)
+    else:
+        # trimesh fallback
+        mesh.export(filepath)
+
+
 # =============================================================================
 # SSM BUILDING
 # =============================================================================
@@ -529,33 +575,77 @@ def run_reconstruction_pipeline(correspondence_dir: str,
         
         ground_truth_path = original_map[tooth_num]
         
-        # Find removal mask
-        mask_path = find_mask_for_worn(worn_dir, worn_dir, artificial_wear_dir)
-        
-        if mask_path is None:
-            print(f"  [SKIP] {worn_dir} - no mask found")
-            continue
-        
         print(f"  Processing {worn_dir}...")
         
         try:
             # Load data
             worn_points = load_point_cloud(worn_path)
             ground_truth = load_point_cloud(ground_truth_path)
-            removed_mask = np.load(mask_path)
             
             # Check dimensions match
             n_worn = len(worn_points)
             n_gt = len(ground_truth)
-            n_mask = len(removed_mask)
             n_ssm = len(mu) // 3
             
-            if not (n_worn == n_gt == n_mask == n_ssm):
-                print(f"    [WARN] Dimension mismatch: worn={n_worn}, gt={n_gt}, mask={n_mask}, ssm={n_ssm}")
-                # Try to proceed if worn and SSM match
+            if not (n_worn == n_gt == n_ssm):
+                print(f"    [WARN] Dimension mismatch: worn={n_worn}, gt={n_gt}, ssm={n_ssm}")
                 if n_worn != n_ssm:
                     print(f"    [SKIP] Cannot proceed with mismatched dimensions")
                     continue
+            
+            # Load original mask from wear simulation and map to corresponded points
+            # Extract wear type from directory name
+            worn_name_parts = worn_dir.split("_wear_")
+            if len(worn_name_parts) == 2:
+                wear_type = worn_name_parts[1]
+            else:
+                wear_type = "_".join(worn_dir.split("_")[2:])
+            
+            original_mesh_path = os.path.join(
+                artificial_wear_dir, f"tooth_{tooth_num}", "original.ply"
+            )
+            original_mask_path = os.path.join(
+                artificial_wear_dir, f"tooth_{tooth_num}", f"removed_mask_{wear_type}.npy"
+            )
+            
+            removed_mask = None
+            if os.path.exists(original_mask_path) and os.path.exists(original_mesh_path):
+                original_mask = np.load(original_mask_path).astype(bool)
+                original_mesh_vertices = load_point_cloud(original_mesh_path)
+                
+                # Normalize both point clouds to unit sphere for coordinate-system-invariant mapping
+                def normalize_to_unit_sphere(pts):
+                    centroid = pts.mean(axis=0)
+                    centered = pts - centroid
+                    scale = np.max(np.linalg.norm(centered, axis=1))
+                    return centered / scale if scale > 0 else centered
+                
+                orig_normalized = normalize_to_unit_sphere(original_mesh_vertices)
+                gt_normalized = normalize_to_unit_sphere(ground_truth)
+                
+                # Map from corresponded ground truth to original mesh using normalized coordinates
+                from sklearn.neighbors import NearestNeighbors
+                nn = NearestNeighbors(n_neighbors=1, algorithm='kd_tree').fit(orig_normalized)
+                distances, indices = nn.kneighbors(gt_normalized)
+                indices = indices.flatten()
+                
+                # Transfer mask values
+                removed_mask = original_mask[indices]
+                
+                orig_pct = 100 * original_mask.sum() / len(original_mask)
+                mapped_pct = 100 * removed_mask.sum() / len(removed_mask)
+                print(f"    Original mask: {orig_pct:.1f}% -> Mapped: {mapped_pct:.1f}%")
+            
+            if removed_mask is None:
+                # Fallback: compute mask by comparing corresponded points
+                print(f"    [WARN] Original mask not found, computing from point distances")
+                point_distances = np.linalg.norm(worn_points - ground_truth, axis=1)
+                scale = np.max(np.linalg.norm(ground_truth - ground_truth.mean(axis=0), axis=1))
+                threshold = 0.01 * scale
+                removed_mask = point_distances > threshold
+            
+            n_removed = removed_mask.sum()
+            print(f"    Computed mask: {n_removed}/{n_worn} points removed ({100*n_removed/n_worn:.1f}%)")
             
             # Fit SSM
             observed_mask = ~removed_mask
@@ -577,11 +667,21 @@ def run_reconstruction_pipeline(correspondence_dir: str,
             save_point_cloud(reconstructed, os.path.join(result_dir, "reconstructed.ply"))
             save_point_cloud(ground_truth, os.path.join(result_dir, "ground_truth.ply"))
             np.save(os.path.join(result_dir, "coefficients.npy"), coefficients)
+            np.save(os.path.join(result_dir, "removed_mask.npy"), removed_mask)
+            
+            # Generate smooth mesh from reconstructed point cloud
+            try:
+                print("    Generating smooth mesh...")
+                reconstructed_mesh = point_cloud_to_mesh(reconstructed, method="poisson")
+                save_mesh(reconstructed_mesh, os.path.join(result_dir, "reconstructed_mesh.ply"))
+            except Exception as e:
+                print(f"    [WARN] Mesh generation failed: {e}")
             
             eval_data = {
                 "source_worn": worn_dir,
                 "source_original": f"tooth_{tooth_num}_original",
-                "mask_file": os.path.basename(mask_path),
+                "mask_computed": True,
+                "n_points_removed": int(removed_mask.sum()),
                 "n_components_used": len(lambdas),
                 "coefficients": coefficients.tolist(),
                 "regularization": config.regularization,

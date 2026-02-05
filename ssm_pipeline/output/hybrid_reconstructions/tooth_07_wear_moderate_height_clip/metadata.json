@@ -1,0 +1,11 @@
+{
+  "tooth_num": "07",
+  "wear_type": "moderate_height_clip",
+  "worn_mesh_vertices": 130818,
+  "original_mesh_vertices": 145563,
+  "ssm_vertices": 25000,
+  "worn_vertices_replaced": 14745,
+  "worn_percentage": 10.129634591207932,
+  "avg_displacement": 3.0331399084266866,
+  "method": "hybrid_icp_interpolate"
+}

@@ -1,0 +1,11 @@
+{
+  "tooth_num": "05",
+  "wear_type": "mild_cusp2",
+  "worn_mesh_vertices": 99647,
+  "original_mesh_vertices": 104749,
+  "ssm_vertices": 25000,
+  "worn_vertices_replaced": 5102,
+  "worn_percentage": 4.870690889650498,
+  "avg_displacement": 0.4015720658408727,
+  "method": "hybrid_icp_interpolate"
+}

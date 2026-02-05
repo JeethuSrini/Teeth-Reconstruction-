@@ -1,6 +1,6 @@
 {
   "config": {
-    "n_points": 5000,
+    "n_points": 25000,
     "scale_method": "bbox_diagonal",
     "icp_threshold": 0.02,
     "icp_max_iterations": 100,
@@ -27,7 +27,7 @@
     "cprc_nyu_n0307_ULM3_WS_EDJ_GEO.ply",
     "cprc_nyu_n0350_ULM3_WS_EDJ_GEO.ply"
   ],
-  "gpu_available": false,
+  "gpu_available": true,
   "probreg_available": true,
-  "timestamp": "2026-02-01T12:33:36.996746"
+  "timestamp": "2026-02-01T20:09:46.302635"
 }
