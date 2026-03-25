@@ -6,7 +6,7 @@ Reconstruct worn/damaged EDJ (enamel-dentine junction) tooth surfaces from 3D me
 
 | Original Worn Tooth | Reconstructed Smooth Mesh |
 |:---:|:---:|
-| ![Worn input](original_with_wear.png) | ![Reconstruction](reconstruction_final.png) |
+| ![Worn input](worn.png) | ![Reconstruction](reconstruction.png) |
 
 ### Reconstruction Metrics (9 Real Worn Teeth)
 
