@@ -28,6 +28,7 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 # import open3d as o3d  # Disabled - causes segfaults on this system
+from sklearn.neighbors import NearestNeighbors
 import trimesh
 
 # GPU library availability flags (set lazily to support multiprocessing)
@@ -84,7 +85,7 @@ class CorrespondenceConfig:
     scale_method: str = "bbox_diagonal"  # "bbox_diagonal" or "unit_sphere"
     
     # ICP parameters
-    icp_threshold: float = 0.02
+    icp_threshold: float = 0.1
     icp_max_iterations: int = 100
     icp_tolerance: float = 1e-6
     
@@ -94,6 +95,9 @@ class CorrespondenceConfig:
     cpd_max_iterations: int = 150
     cpd_tolerance: float = 1e-5
     cpd_use_cuda: bool = True    # Use GPU if available
+    registration_mode: str = "direct"  # "direct" or "coarse2fine"
+    cpd_points: int = 25000      # CPD points used in coarse2fine mode
+    displacement_knn: int = 3    # KNN used to upsample coarse deformation
     
     # Template selection
     template_idx: int = 0        # Index of template tooth (0 = first)
@@ -127,7 +131,8 @@ def sample_point_cloud(mesh_path: str, n_points: int, seed: int = 42) -> np.ndar
 
 def normalize_point_cloud(points: np.ndarray, 
                          scale_method: str = "bbox_diagonal",
-                         use_gpu: bool = False) -> Tuple[np.ndarray, Dict]:
+                         use_gpu: bool = False,
+                         reference_Vt: np.ndarray = None) -> Tuple[np.ndarray, Dict]:
     """
     Normalize point cloud: center, scale, and PCA-align.
     
@@ -135,27 +140,29 @@ def normalize_point_cloud(points: np.ndarray,
         points: Input point cloud (N, 3)
         scale_method: "bbox_diagonal" or "unit_sphere"
         use_gpu: Use CuPy for SVD if available
+        reference_Vt: (3,3) PCA rotation from the template tooth.
+                      When provided, each eigenvector's sign is flipped
+                      to agree with the corresponding template axis,
+                      eliminating the SVD sign ambiguity that causes
+                      ICP to start ~180 deg misaligned.
         
     Returns:
         Tuple of (normalized points, normalization parameters dict)
     """
-    # Center to origin
     centroid = points.mean(axis=0)
     centered = points - centroid
     
-    # Scale normalization
     if scale_method == "bbox_diagonal":
         bbox_min = centered.min(axis=0)
         bbox_max = centered.max(axis=0)
         scale = np.linalg.norm(bbox_max - bbox_min)
-    else:  # unit_sphere
+    else:
         scale = np.max(np.linalg.norm(centered, axis=1))
     
     if scale < 1e-10:
         scale = 1.0
     scaled = centered / scale
     
-    # PCA alignment - align principal axes to XYZ
     cp_module, cupy_avail = _get_cupy()
     if use_gpu and cupy_avail and cp_module is not None:
         scaled_gpu = cp_module.asarray(scaled)
@@ -164,7 +171,11 @@ def normalize_point_cloud(points: np.ndarray,
     else:
         _, _, Vt = np.linalg.svd(scaled, full_matrices=False)
     
-    # Ensure right-handed coordinate system
+    if reference_Vt is not None:
+        for i in range(3):
+            if np.dot(Vt[i], reference_Vt[i]) < 0:
+                Vt[i] *= -1
+    
     if np.linalg.det(Vt) < 0:
         Vt[2, :] *= -1
     
@@ -214,7 +225,7 @@ def load_point_cloud(filepath: str) -> np.ndarray:
 
 def icp_align(source: np.ndarray, 
               target: np.ndarray,
-              threshold: float = 0.02,
+              threshold: float = 0.1,
               max_iterations: int = 100,
               tolerance: float = 1e-6) -> Tuple[np.ndarray, np.ndarray, Dict]:
     """
@@ -352,9 +363,10 @@ def cpd_register(template: np.ndarray,
         template_np = np.asarray(template, dtype=np.float64)
         target_np = np.asarray(target, dtype=np.float64)
         
-        # Let probreg handle GPU internally via use_cuda parameter
+        # probreg.registration_cpd(source, target) deforms source toward target.
+        # We want to deform the template toward the target (ICP-aligned tooth).
         tf_param, _, _ = cpd_module.registration_cpd(
-            target_np, template_np,
+            template_np, target_np,
             tf_type_name='nonrigid',
             w=0.0,
             maxiter=max_iterations,
@@ -398,6 +410,37 @@ def cpd_register(template: np.ndarray,
     }
     
     return deformed, metadata
+
+
+def _subsample_indices(n_points: int, n_samples: int, seed: int) -> np.ndarray:
+    """Deterministically subsample point indices without replacement."""
+    n_samples = min(n_samples, n_points)
+    if n_samples >= n_points:
+        return np.arange(n_points, dtype=np.int64)
+    rng = np.random.default_rng(seed)
+    return np.sort(rng.choice(n_points, size=n_samples, replace=False))
+
+
+def _upsample_displacement(template_full: np.ndarray,
+                           template_coarse: np.ndarray,
+                           deformed_coarse: np.ndarray,
+                           k_neighbors: int = 3) -> np.ndarray:
+    """
+    Interpolate coarse CPD deformation back to the full template.
+    """
+    k = max(1, min(k_neighbors, len(template_coarse)))
+    coarse_displacement = deformed_coarse - template_coarse
+    
+    nn = NearestNeighbors(n_neighbors=k, algorithm='kd_tree').fit(template_coarse)
+    distances, indices = nn.kneighbors(template_full)
+    
+    # Inverse distance weights (handle exact-match rows robustly)
+    weights = 1.0 / (distances + 1e-12)
+    weights_sum = weights.sum(axis=1, keepdims=True)
+    weights = weights / np.maximum(weights_sum, 1e-12)
+    
+    disp_full = np.einsum("ij,ijk->ik", weights, coarse_displacement[indices])
+    return template_full + disp_full
 
 
 # =============================================================================
@@ -471,26 +514,25 @@ def _worker_process_tooth(args):
     GPU is already set by initializer before this is called.
     
     Args:
-        args: Tuple of (mesh_path, template_points, output_dir, config_dict, tooth_name)
+        args: Tuple of (mesh_path, template_points, output_dir, config_dict,
+              tooth_name, template_Vt)
     """
-    mesh_path, template_points, output_dir, config_dict, tooth_name = args
+    mesh_path, template_points, output_dir, config_dict, tooth_name, tmpl_Vt = args
     
     global _worker_gpu_id
     gpu_id = _worker_gpu_id
     
-    # Get library status (already initialized by initializer)
     _, cupy_available = _get_cupy()
     _, probreg_available = _get_probreg()
     
     print(f"  [{tooth_name}] Processing on GPU {gpu_id}")
     
-    # Reconstruct config
     config = CorrespondenceConfig(**config_dict)
     
-    # Process the tooth
     return process_single_tooth(
         mesh_path, template_points, output_dir, config, tooth_name,
-        _cupy_available=cupy_available, _probreg_available=probreg_available
+        _cupy_available=cupy_available, _probreg_available=probreg_available,
+        template_Vt=tmpl_Vt
     )
 
 
@@ -500,7 +542,8 @@ def process_single_tooth(mesh_path: str,
                         config: CorrespondenceConfig,
                         tooth_name: str,
                         _cupy_available: bool = None,
-                        _probreg_available: bool = None) -> bool:
+                        _probreg_available: bool = None,
+                        template_Vt: np.ndarray = None) -> bool:
     """
     Process a single tooth through the correspondence pipeline.
     
@@ -512,11 +555,12 @@ def process_single_tooth(mesh_path: str,
         tooth_name: Name for logging
         _cupy_available: Override for CUPY_AVAILABLE (for parallel workers)
         _probreg_available: Override for PROBREG_AVAILABLE (for parallel workers)
+        template_Vt: (3,3) PCA rotation of the template tooth, used to
+                     resolve SVD sign ambiguity during normalization.
         
     Returns:
         True if successful
     """
-    # Use passed availability or check lazily
     if _cupy_available is not None:
         cupy_avail = _cupy_available
     else:
@@ -532,24 +576,62 @@ def process_single_tooth(mesh_path: str,
     print(f"  Processing {tooth_name}...")
     
     try:
-        # Step 1: Sample point cloud
         print(f"    Sampling {config.n_points} points...")
         sampled = sample_point_cloud(mesh_path, config.n_points, config.seed)
         save_point_cloud(sampled, os.path.join(output_dir, "sampled_raw.ply"))
         
-        # Step 2: Normalize
         print("    Normalizing...")
         normalized, norm_params = normalize_point_cloud(
             sampled, 
             config.scale_method,
-            use_gpu=config.cpd_use_cuda and cupy_avail
+            use_gpu=config.cpd_use_cuda and cupy_avail,
+            reference_Vt=template_Vt
         )
+        
+        # Multi-start sign search: try all 4 right-handed axis-flip
+        # combinations and keep whichever gives the best ICP fitness.
+        # Flipping axes of the PCA-aligned cloud is equivalent to trying
+        # different eigenvector sign assignments without re-running SVD.
+        _RIGHT_HANDED_SIGNS = [
+            np.array([ 1,  1,  1]),
+            np.array([ 1, -1, -1]),
+            np.array([-1,  1, -1]),
+            np.array([-1, -1,  1]),
+        ]
+        best_fitness = -1.0
+        best_signs = _RIGHT_HANDED_SIGNS[0]
+        print("    Multi-start ICP orientation search (4 candidates)...")
+        for signs in _RIGHT_HANDED_SIGNS:
+            trial = normalized * signs[np.newaxis, :]
+            _, _, trial_meta = icp_align(
+                trial, template_points,
+                threshold=config.icp_threshold,
+                max_iterations=30,
+                tolerance=1e-5
+            )
+            f = trial_meta["fitness"]
+            if f > best_fitness:
+                best_fitness = f
+                best_signs = signs
+        
+        # Apply the winning sign combination
+        if not np.array_equal(best_signs, np.array([1, 1, 1])):
+            print(f"    Sign correction applied: {best_signs.tolist()}  "
+                  f"(fitness {best_fitness:.4f})")
+            normalized = normalized * best_signs[np.newaxis, :]
+            Vt = np.array(norm_params["pca_rotation"])
+            for i in range(3):
+                Vt[i] *= best_signs[i]
+            norm_params["pca_rotation"] = Vt.tolist()
+        else:
+            print(f"    Default orientation is best (fitness {best_fitness:.4f})")
+        
         save_point_cloud(normalized, os.path.join(output_dir, "normalized.ply"))
         
         with open(os.path.join(output_dir, "normalization.json"), 'w') as f:
             json.dump(norm_params, f, indent=2)
         
-        # Step 3: ICP alignment to template
+        # Step 3: Full ICP alignment with the best orientation
         print("    ICP alignment...")
         icp_aligned, icp_transform, icp_meta = icp_align(
             normalized, template_points,
@@ -557,19 +639,51 @@ def process_single_tooth(mesh_path: str,
             max_iterations=config.icp_max_iterations,
             tolerance=config.icp_tolerance
         )
+        print(f"    ICP fitness: {icp_meta['fitness']:.4f}  "
+              f"({icp_meta['iterations']} iterations)")
         save_point_cloud(icp_aligned, os.path.join(output_dir, "icp_aligned.ply"))
         np.save(os.path.join(output_dir, "icp_transform.npy"), icp_transform)
         
         # Step 4: CPD non-rigid registration (template -> target)
         print("    CPD registration (template -> target)...")
-        corresponded, cpd_meta = cpd_register(
-            template_points, icp_aligned,  # Deform template onto this target
-            alpha=config.cpd_alpha,
-            beta=config.cpd_beta,
-            max_iterations=config.cpd_max_iterations,
-            tolerance=config.cpd_tolerance,
-            use_cuda=config.cpd_use_cuda
-        )
+        if config.registration_mode == "coarse2fine" and config.n_points > config.cpd_points:
+            # High-point mode: run CPD on coarse subsets, then upsample deformation.
+            tooth_seed_offset = sum(bytearray(tooth_name.encode("utf-8"))) % 100000
+            template_idx = _subsample_indices(len(template_points), config.cpd_points, config.seed)
+            target_idx = _subsample_indices(len(icp_aligned), config.cpd_points, config.seed + tooth_seed_offset)
+            
+            template_coarse = template_points[template_idx]
+            target_coarse = icp_aligned[target_idx]
+            print(f"    Coarse2fine mode: CPD on {len(template_coarse)} points, "
+                  f"upsampling to {len(template_points)}")
+            
+            deformed_coarse, cpd_meta = cpd_register(
+                template_coarse, target_coarse,
+                alpha=config.cpd_alpha,
+                beta=config.cpd_beta,
+                max_iterations=config.cpd_max_iterations,
+                tolerance=config.cpd_tolerance,
+                use_cuda=config.cpd_use_cuda
+            )
+            corresponded = _upsample_displacement(
+                template_full=template_points,
+                template_coarse=template_coarse,
+                deformed_coarse=deformed_coarse,
+                k_neighbors=config.displacement_knn
+            )
+            cpd_meta["mode"] = "coarse2fine"
+            cpd_meta["cpd_points"] = int(len(template_coarse))
+            cpd_meta["displacement_knn"] = int(config.displacement_knn)
+        else:
+            corresponded, cpd_meta = cpd_register(
+                template_points, icp_aligned,  # Deform template onto this target
+                alpha=config.cpd_alpha,
+                beta=config.cpd_beta,
+                max_iterations=config.cpd_max_iterations,
+                tolerance=config.cpd_tolerance,
+                use_cuda=config.cpd_use_cuda
+            )
+            cpd_meta["mode"] = "direct"
         save_point_cloud(corresponded, os.path.join(output_dir, "corresponded.ply"))
         
         # Save metadata
@@ -594,7 +708,8 @@ def process_single_tooth(mesh_path: str,
 
 
 def process_teeth_parallel(tasks: List[Tuple], template_points: np.ndarray, 
-                          config: CorrespondenceConfig, n_gpus: int = 4) -> int:
+                          config: CorrespondenceConfig, n_gpus: int = 4,
+                          template_Vt: np.ndarray = None) -> int:
     """
     Process multiple teeth in parallel across GPUs.
     
@@ -603,6 +718,7 @@ def process_teeth_parallel(tasks: List[Tuple], template_points: np.ndarray,
         template_points: Template point cloud
         config: Pipeline configuration
         n_gpus: Number of GPUs to use
+        template_Vt: (3,3) PCA rotation of the template tooth
         
     Returns:
         Number of successful processes
@@ -610,7 +726,6 @@ def process_teeth_parallel(tasks: List[Tuple], template_points: np.ndarray,
     if not tasks:
         return 0
     
-    # Convert config to dict for pickling
     config_dict = {
         'n_points': config.n_points,
         'scale_method': config.scale_method,
@@ -622,15 +737,17 @@ def process_teeth_parallel(tasks: List[Tuple], template_points: np.ndarray,
         'cpd_max_iterations': config.cpd_max_iterations,
         'cpd_tolerance': config.cpd_tolerance,
         'cpd_use_cuda': config.cpd_use_cuda,
+        'registration_mode': config.registration_mode,
+        'cpd_points': config.cpd_points,
+        'displacement_knn': config.displacement_knn,
         'template_idx': config.template_idx,
         'auto_select_template': config.auto_select_template,
         'seed': config.seed
     }
     
-    # Prepare worker arguments (no GPU id - assigned by initializer)
     worker_args = []
     for mesh_path, output_dir, tooth_name in tasks:
-        worker_args.append((mesh_path, template_points, output_dir, config_dict, tooth_name))
+        worker_args.append((mesh_path, template_points, output_dir, config_dict, tooth_name, template_Vt))
     
     # Use spawn context for CUDA compatibility
     ctx = multiprocessing.get_context('spawn')
@@ -736,23 +853,25 @@ def run_correspondence_pipeline(good_teeth_dir: str,
     # Step 3: Process all good teeth
     print("\nStep 3: Processing good teeth...")
     good_success = 0
+    template_Vt = None  # Will be set from the template tooth's PCA
     
-    # Handle template tooth first
     for i, filepath in enumerate(good_teeth_files):
         tooth_dir = os.path.join(good_output_dir, f"tooth_{i+1:02d}")
         
         if i == template_idx:
-            # Template tooth - just copy normalized as corresponded
             os.makedirs(tooth_dir, exist_ok=True)
             sampled = sample_point_cloud(filepath, config.n_points, config.seed + i)
             save_point_cloud(sampled, os.path.join(tooth_dir, "sampled_raw.ply"))
             
             normalized, norm_params = normalize_point_cloud(sampled, config.scale_method)
+            template_Vt = np.array(norm_params["pca_rotation"])
+            
             save_point_cloud(normalized, os.path.join(tooth_dir, "normalized.ply"))
             save_point_cloud(normalized, os.path.join(tooth_dir, "icp_aligned.ply"))
             save_point_cloud(normalized, os.path.join(tooth_dir, "corresponded.ply"))
             
             np.save(os.path.join(tooth_dir, "icp_transform.npy"), np.eye(4))
+            np.save(os.path.join(template_dir, "template_Vt.npy"), template_Vt)
             
             with open(os.path.join(tooth_dir, "normalization.json"), 'w') as f:
                 json.dump(norm_params, f, indent=2)
@@ -765,10 +884,11 @@ def run_correspondence_pipeline(good_teeth_dir: str,
             with open(os.path.join(tooth_dir, "registration_metadata.json"), 'w') as f:
                 json.dump(metadata, f, indent=2)
             
-            print(f"  [TEMPLATE] tooth_{i+1:02d}")
+            print(f"  [TEMPLATE] tooth_{i+1:02d}  (Vt saved as reference for sign alignment)")
             good_success += 1
     
-    # Process other good teeth
+    assert template_Vt is not None, "Template tooth was not processed — check template_idx"
+    
     good_tasks = []
     for i, filepath in enumerate(good_teeth_files):
         if i != template_idx:
@@ -777,10 +897,10 @@ def run_correspondence_pipeline(good_teeth_dir: str,
     
     if n_gpus > 1 and good_tasks:
         print(f"  Processing {len(good_tasks)} teeth in parallel on {n_gpus} GPUs...")
-        good_success += process_teeth_parallel(good_tasks, template_points, config, n_gpus)
+        good_success += process_teeth_parallel(good_tasks, template_points, config, n_gpus, template_Vt=template_Vt)
     else:
         for filepath, tooth_dir, tooth_name in good_tasks:
-            if process_single_tooth(filepath, template_points, tooth_dir, config, tooth_name):
+            if process_single_tooth(filepath, template_points, tooth_dir, config, tooth_name, template_Vt=template_Vt):
                 good_success += 1
     
     print(f"\n  Good teeth: {good_success}/{len(good_teeth_files)} successful")
@@ -795,11 +915,11 @@ def run_correspondence_pipeline(good_teeth_dir: str,
     
     if n_gpus > 1 and original_tasks:
         print(f"  Processing {len(original_tasks)} originals in parallel on {n_gpus} GPUs...")
-        original_success = process_teeth_parallel(original_tasks, template_points, config, n_gpus)
+        original_success = process_teeth_parallel(original_tasks, template_points, config, n_gpus, template_Vt=template_Vt)
     else:
         original_success = 0
         for filepath, tooth_dir, tooth_name in original_tasks:
-            if process_single_tooth(filepath, template_points, tooth_dir, config, tooth_name):
+            if process_single_tooth(filepath, template_points, tooth_dir, config, tooth_name, template_Vt=template_Vt):
                 original_success += 1
     
     print(f"\n  Originals: {original_success}/{len(artificial_original_files)} successful")
@@ -815,11 +935,11 @@ def run_correspondence_pipeline(good_teeth_dir: str,
     
     if n_gpus > 1 and worn_tasks:
         print(f"  Processing {len(worn_tasks)} worn variants in parallel on {n_gpus} GPUs...")
-        worn_success = process_teeth_parallel(worn_tasks, template_points, config, n_gpus)
+        worn_success = process_teeth_parallel(worn_tasks, template_points, config, n_gpus, template_Vt=template_Vt)
     else:
         worn_success = 0
         for filepath, tooth_dir, tooth_name in worn_tasks:
-            if process_single_tooth(filepath, template_points, tooth_dir, config, tooth_name):
+            if process_single_tooth(filepath, template_points, tooth_dir, config, tooth_name, template_Vt=template_Vt):
                 worn_success += 1
     
     print(f"\n  Worn variants: {worn_success}/{len(artificial_worn_files)} successful")
@@ -919,6 +1039,25 @@ def main():
         help="Number of GPUs for parallel processing (default: 1 = sequential)"
     )
     parser.add_argument(
+        "--registration-mode",
+        type=str,
+        choices=["direct", "coarse2fine"],
+        default="direct",
+        help="Registration mode: direct CPD on full points or coarse2fine for high point counts"
+    )
+    parser.add_argument(
+        "--cpd-points",
+        type=int,
+        default=25000,
+        help="CPD points used in coarse2fine mode (default: 25000)"
+    )
+    parser.add_argument(
+        "--displacement-knn",
+        type=int,
+        default=3,
+        help="KNN for coarse deformation upsampling in coarse2fine mode (default: 3)"
+    )
+    parser.add_argument(
         "--seed",
         type=int,
         default=42,
@@ -941,6 +1080,9 @@ def main():
         template_idx=args.template_idx,
         auto_select_template=args.auto_template,
         cpd_use_cuda=not args.no_gpu,
+        registration_mode=args.registration_mode,
+        cpd_points=args.cpd_points,
+        displacement_knn=args.displacement_knn,
         seed=args.seed
     )
     

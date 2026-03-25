@@ -1,0 +1,45 @@
+{
+  "source_worn": "tooth_03_wear_real",
+  "source_original": null,
+  "mask_computed": true,
+  "skip_evaluation": true,
+  "n_points_removed": 25000,
+  "n_components_used": 6,
+  "coefficients": [
+    14.892132057621021,
+    4.750665235028994,
+    1.0024465179027378,
+    -0.2887751075513215,
+    0.44187153721631595,
+    1.6164720861390167
+  ],
+  "regularization": 1.0,
+  "evaluation": null,
+  "refinement": {
+    "ssm_obs_rmse": 0.022858192785097247,
+    "ssm_obs_mae": 0.02044996862503377,
+    "ssm_obs_max_error": 0.05457945265800777,
+    "missing_avg_displacement": 0.028392998191826547,
+    "missing_max_displacement": 0.04845379443405009,
+    "final_obs_rmse": 0.0,
+    "final_all_rmse": 0.013300073235077292,
+    "n_observed": 75000,
+    "n_missing": 25000
+  },
+  "geometric_comparison": {
+    "chamfer_mm": 0.15768925112469406,
+    "hausdorff_mm": 0.8799575724145933,
+    "rmse_worn_to_recon_mm": 0.2132299176123245,
+    "mae_worn_to_recon_mm": 0.16305539295549712,
+    "rmse_recon_to_worn_mm": 0.19890190276997818,
+    "mae_recon_to_worn_mm": 0.15232310929389098,
+    "r_squared": 0.9958313727304465,
+    "variance_explained_pct": 99.58313727304466,
+    "median_spacing_mm": 0.01951332877804201,
+    "coverage_1x_spacing": 0.039537193136417174,
+    "coverage_2x_spacing": 0.1401815200572735,
+    "coverage_5x_spacing": 0.4156370522620725,
+    "n_worn_pts": 86602,
+    "n_recon_pts": 100000
+  }
+}

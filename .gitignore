@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# OS
+.DS_Store
+
+# IDE / Editor
+.cursor/
+
+# Logs
+ssm_pipeline/logs/
+
+# Archived old outputs and scripts
+ssm_pipeline/output/archive/
+ssm_pipeline/archive/
+
+# Large binary outputs (tracked selectively via git lfs for .ply)
+*.npy
