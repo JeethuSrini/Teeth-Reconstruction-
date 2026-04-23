@@ -1,0 +1,69 @@
+{
+  "source_worn": "tooth_TEST1_wear_level6",
+  "method": "neighborhood",
+  "neighbor_info": {
+    "worn_tooth": "tooth_TEST1_wear_level6",
+    "method": "neighborhood",
+    "n_neighbors": 5,
+    "neighbor_ids": [
+      "01",
+      "12",
+      "07",
+      "06",
+      "03"
+    ],
+    "neighbor_indices": [
+      0,
+      11,
+      6,
+      5,
+      2
+    ],
+    "neighbor_distances": [
+      4.839747870980537,
+      5.056441004157149,
+      5.155186710091025,
+      5.614153400834147,
+      6.3071879194103095
+    ],
+    "fallback_reason": null,
+    "threshold": 13.71707950703656
+  },
+  "ssm_components": 4,
+  "ssm_variance_explained": 1.0,
+  "n_points_removed": 15000,
+  "coefficients": [
+    -0.33099007976991696,
+    0.9338418800642126,
+    -0.53464740412719,
+    0.3098793972700924
+  ],
+  "regularization": 1.0,
+  "refinement": {
+    "ssm_obs_rmse": 0.021175964521783996,
+    "ssm_obs_mae": 0.016520430323925726,
+    "ssm_obs_max_error": 0.11226276297492228,
+    "missing_avg_displacement": 0.012548578657396392,
+    "missing_max_displacement": 0.02823566421812803,
+    "final_obs_rmse": 0.0,
+    "final_all_rmse": 0.0019368862328630184,
+    "n_observed": 85000,
+    "n_missing": 15000
+  },
+  "geometric_comparison": {
+    "chamfer_mm": 0.0845441534262448,
+    "hausdorff_mm": 1.286169331166609,
+    "rmse_worn_to_recon_mm": 0.19034280224322206,
+    "mae_worn_to_recon_mm": 0.1044549078185062,
+    "rmse_recon_to_worn_mm": 0.08992407863045732,
+    "mae_recon_to_worn_mm": 0.0646333990339834,
+    "r_squared": 0.9967713168254355,
+    "variance_explained_pct": 99.67713168254355,
+    "median_spacing_mm": 0.019807208717244874,
+    "coverage_1x_spacing": 0.13158085306684048,
+    "coverage_2x_spacing": 0.40345668283969394,
+    "coverage_5x_spacing": 0.7479180244767905,
+    "n_worn_pts": 82854,
+    "n_recon_pts": 100000
+  }
+}

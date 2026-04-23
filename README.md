@@ -1,6 +1,6 @@
 # Tooth Wear Reconstruction using Statistical Shape Models
 
-Reconstruct worn/damaged EDJ (enamel-dentine junction) tooth surfaces from 3D mesh data using PCA-based **Statistical Shape Models (SSM)** with non-rigid refinement.
+Reconstruct worn/damaged EDJ (enamel-dentine junction) tooth surfaces from 3D mesh data using PCA-based **Statistical Shape Models (SSM)** with per-tooth **neighborhood-adaptive priors** and non-rigid refinement.
 
 ## Results
 
@@ -8,21 +8,77 @@ Reconstruct worn/damaged EDJ (enamel-dentine junction) tooth surfaces from 3D me
 |:---:|:---:|
 | ![Worn input](worn.png) | ![Reconstruction](reconstruction.png) |
 
-### Reconstruction Metrics (9 Real Worn Teeth)
+### Global SSM vs Neighborhood SSM (25 worn teeth)
 
-| Tooth | Specimen | R² | Chamfer (mm) | Hausdorff (mm) | RMSE (mm) | Coverage 2x |
-|-------|----------|----|-------------|----------------|-----------|-------------|
-| tooth_01 | n0225 EDJ damage | 99.94% | 0.062 | 0.614 | 0.086 | 32.5% |
-| tooth_02 | n0265 WEAR & Damage | 99.94% | 0.065 | 0.836 | 0.091 | 35.9% |
-| tooth_03 | n0274 EDJ damage | 99.58% | 0.158 | 0.880 | 0.213 | 14.0% |
-| tooth_04 | n0294 WEAR | 99.96% | 0.052 | 0.304 | 0.066 | 44.4% |
-| tooth_05 | n0295 Dentine & damage | 96.20% | 0.470 | 2.209 | 0.739 | 2.9% |
-| tooth_06 | n0296 dentine & damage | 99.66% | 0.151 | 0.959 | 0.207 | 18.5% |
-| tooth_07 | n0299 EDJ damage | 99.43% | 0.198 | 1.189 | 0.271 | 13.2% |
-| tooth_08 | n0311 WORN | 99.77% | 0.116 | 0.856 | 0.161 | 22.6% |
-| tooth_09 | n0312 WORN | 99.96% | 0.049 | 0.771 | 0.068 | 43.7% |
+The neighborhood approach builds a **per-tooth local SSM** from the nearest anatomically-similar good teeth, instead of one global SSM built from all 15. Averaged across all 25 worn teeth:
 
-SSM trained on 8 unworn ULM3 teeth (6 PCA components, 99.3% variance explained). Proxy missing fraction: 25%.
+| Metric | Global avg | Neighborhood avg | Δ | Verdict |
+|---|---:|---:|---:|:---|
+| R² (%) | 99.739 | 99.728 | -0.01% | tie |
+| **Chamfer (mm)** | 0.0882 | 0.0866 | **-1.9%** | **Neighborhood better** |
+| Hausdorff (mm) | 0.665 | 0.674 | +1.3% | Global better |
+| RMSE worn→recon (mm) | 0.1256 | 0.1274 | +1.5% | Global better |
+| **RMSE recon→worn (mm)** | 0.1017 | 0.0987 | **-3.0%** | **Neighborhood better** |
+| MAE worn→recon (mm) | 0.0968 | 0.0964 | -0.4% | Neighborhood better |
+| **MAE recon→worn (mm)** | 0.0797 | 0.0768 | **-3.6%** | **Neighborhood better** |
+| Coverage @1x spacing | 0.135 | 0.136 | +0.6% | Neighborhood better |
+| **Coverage @2x spacing** | 0.411 | 0.422 | **+2.7%** | **Neighborhood better** |
+| **Coverage @5x spacing** | 0.774 | 0.789 | **+1.9%** | **Neighborhood better** |
+| SSM fit RMSE | 0.0161 | 0.0183 | +13.3% | Global (expected — fewer modes) |
+
+**Neighborhood wins on 7 of 11 metrics**, with the strongest gains on surface-coverage metrics:
+
+| Metric | Neighborhood wins (out of 25) |
+|---|:---:|
+| Coverage @5x | **22 / 25** |
+| RMSE recon→worn | 21 / 25 |
+| R² | 20 / 25 |
+| RMSE worn→recon | 20 / 25 |
+| Chamfer | 18 / 25 |
+| MAE recon→worn | 18 / 25 |
+| Coverage @2x | 18 / 25 |
+| Hausdorff | 16 / 25 |
+| MAE worn→recon | 16 / 25 |
+| Coverage @1x | 16 / 25 |
+| SSM fit RMSE | 7 / 25 |
+
+SSM trained on 15 unworn ULM3 teeth. Evaluation set: 9 real worn teeth + 8 artificially-worn levels of TEST1 + 8 artificially-worn levels of TEST2 = 25 teeth total.
+
+---
+
+## Data Analysis — Shape Space Visualizations
+
+These figures are produced by `data_analysis/all_teeth_analysis.py` after Stage 2, and give a geometric view of how the 15 good teeth, 25 worn teeth, and their reconstructions distribute in shape space.
+
+### PCA Scree Plot — How Much Variance Each Mode Captures
+
+![PCA Scree](data_analysis/plots/all_teeth_scree.png)
+
+The first two PCA modes alone capture **~75 %** of total variance across the 15 good teeth, and ~95 % is reached by mode 8. This is why a 2D PCA plot is a faithful summary of tooth shape — and why local SSMs (K ≤ 5 neighbors) only need 1–4 modes.
+
+### PCA 2D — Good Teeth, Worn Teeth, and Reconstructions
+
+![PCA 2D all teeth](data_analysis/plots/all_teeth_pca_2d.png)
+
+Each tooth is one point in the PCA shape space of the 15 good teeth. Blue circles = good teeth, orange = originals, red triangles = real worn inputs, green diamonds = TEST1 wear levels, purple squares = TEST2 wear levels. Stars and X-markers overlay the corresponding **reconstructions**.
+
+Two things jump out:
+- **TEST1** and **TEST2** form tight per-tooth clusters — progressive wear barely moves a tooth in PCA space, which is why reconstructions stay close to the input.
+- **Real worn teeth 03, 06, 07** sit in the upper-left corner far from the main cluster — this is exactly why the neighborhood algorithm selects only **tooth_14** (K=1) for these: they are outliers and averaging across all 15 good teeth would pull the reconstruction back toward a centroid they don't belong to.
+
+### t-SNE (Raw 300,000-D features) — Non-linear Shape Embedding
+
+![t-SNE raw](data_analysis/plots/all_teeth_tsne_raw.png)
+
+t-SNE on the full 300,000-D point-cloud features (before PCA) shows the same neighborhood structure that PCA exposes, but non-linearly. TEST2 forms a very tight cluster in the lower-right — every wear level of TEST2 shares nearly identical overall shape. TEST1 fans out along a roughly linear "wear trajectory" on the left side. Real worn teeth are scattered among the good teeth, confirming each one has its own anatomically-similar subset — the core motivation for the neighborhood approach.
+
+### Worn-to-Reconstruction Distance in PCA Space
+
+![Paired distance PCA 2D](data_analysis/plots/paired_dist_pca_2d.png)
+
+Euclidean distance in PC1–PC2 space between each worn tooth and its reconstruction. Small bars mean the reconstruction lands near its input — which is what we want. **T07, T06, T03** show the largest displacements: these are exactly the teeth the neighborhood algorithm flagged as outliers (K=1 with tooth_14 as sole neighbor), because the SSM has to pull a heavily-worn tooth toward a complete-anatomy prior. The TEST1 and TEST2 reconstructions cluster near zero, confirming the pipeline is stable on clean inputs.
+
+A full gallery of paired-distance plots (t-SNE, UMAP, local variants) is in [`data_analysis/plots/`](data_analysis/plots/).
 
 ---
 
@@ -30,57 +86,81 @@ SSM trained on 8 unworn ULM3 teeth (6 PCA components, 99.3% variance explained).
 
 Teeth wear down over time through mastication, bruxism, dietary abrasion, and chemical erosion. This wear removes original cusp geometry from the enamel-dentine junction (EDJ), making morphological analysis difficult in dental anthropology and paleontology.
 
-This pipeline learns the statistical shape variation of **unworn upper-left third molars (ULM3)** from 8 complete specimens, then uses that learned model to reconstruct the missing anatomy on 9 real worn/damaged teeth, producing both point clouds and smooth triangle meshes of the reconstructed surfaces.
+This pipeline learns the statistical shape variation of **unworn upper-left third molars (ULM3)** from 15 complete specimens, then reconstructs missing anatomy on worn teeth in two stages:
+
+1. **Global SSM reconstruction** — one PCA model built from all 15 good teeth, used as baseline.
+2. **Neighborhood SSM reconstruction** — for each worn tooth, the pipeline automatically selects its anatomically-nearest good teeth and builds a *local* SSM tailored to that tooth's shape family. This gives a tighter shape prior and measurably better surface coverage.
+
+Output per worn tooth: a 100k-point reconstructed point cloud, a smooth watertight triangle mesh, the reconstruction in the original millimeter input space, and a full evaluation JSON.
 
 ---
 
 ## Pipeline Overview
 
 ```
-                         TOOTH RECONSTRUCTION PIPELINE
+                    TOOTH RECONSTRUCTION PIPELINE (3 STAGES)
 
-  ┌───────────────────┐       ┌───────────────────┐
-  │  Good Teeth (8)   │       │  Worn Teeth (9)   │
-  │  Unworn ULM3 PLY  │       │  Real worn PLY    │
-  └────────┬──────────┘       └────────┬──────────┘
-           │                           │
-           ▼                           ▼
-  ┌─────────────────────────────────────────────────────┐
-  │          STEP 1: CORRESPONDENCE PIPELINE             │
-  │          correspondence_pipeline.py                  │
-  │                                                     │
-  │  1. Sample 100,000 uniform points per tooth          │
-  │  2. Normalize (center, scale, PCA-align)             │
-  │  3. ICP rigid alignment to auto-selected template    │
-  │  4. Coarse-to-fine CPD non-rigid registration        │
-  │     (CPD on 43k subset → KNN upsample to 100k)      │
-  │                                                     │
-  │  Output: corresponded.ply per tooth                  │
-  │          (100k points in shared anatomical space)     │
-  └──────────────────────┬──────────────────────────────┘
-                         │
-                         ▼
-  ┌─────────────────────────────────────────────────────┐
-  │          STEP 2: SSM RECONSTRUCTION                  │
-  │          reconstruction_pipeline.py                  │
-  │                                                     │
-  │  1. PCA on 8 good teeth → mean shape + 6 modes      │
-  │  2. Proxy missing mask via mean-shape z-loss         │
-  │  3. Fit SSM coefficients to observed points          │
-  │     (Tikhonov-regularized least squares)             │
-  │  4. Non-rigid refinement:                            │
-  │     - Snap observed points exactly to worn surface   │
-  │     - Interpolate missing regions via KNN            │
-  │  5. Inverse transform → original input space         │
-  │  6. Geometric comparison metrics                     │
-  │  7. Screened Poisson + Taubin → smooth mesh          │
-  │                                                     │
-  │  Output per tooth:                                   │
-  │    reconstructed_in_input_space.ply  (100k pts)      │
-  │    reconstructed_smooth.ply         (triangle mesh)  │
-  │    evaluation.json                  (all metrics)    │
-  └─────────────────────────────────────────────────────┘
+  ┌────────────────────┐        ┌────────────────────┐
+  │  Good Teeth (15)   │        │  Worn Teeth (25)   │
+  │  Unworn ULM3 PLY   │        │  Real + Test PLY   │
+  └─────────┬──────────┘        └─────────┬──────────┘
+            │                             │
+            ▼                             ▼
+  ┌─────────────────────────────────────────────────────────┐
+  │   STAGE 1: CORRESPONDENCE                                │
+  │   correspondence_pipeline.py                             │
+  │                                                         │
+  │   1. Sample 100,000 uniform points per tooth             │
+  │   2. Normalize (center, scale to bbox-diagonal, PCA-align)│
+  │   3. ICP rigid alignment to auto-selected template        │
+  │   4. Coarse-to-fine CPD non-rigid registration            │
+  │      (CPD on 43k subset → KNN upsample to 100k)          │
+  │                                                         │
+  │   Output: corresponded.ply per tooth                     │
+  │           (100k points in shared anatomical frame)        │
+  └────────────────────────┬────────────────────────────────┘
+                           │
+              ┌────────────┴────────────┐
+              ▼                         ▼
+  ┌────────────────────────┐  ┌────────────────────────────┐
+  │ STAGE 2a: GLOBAL SSM   │  │ STAGE 2b: NEIGHBORHOOD SSM │
+  │ reconstruction_        │  │ neighborhood_              │
+  │   pipeline.py          │  │   reconstruction.py         │
+  │                        │  │                             │
+  │ - PCA on all 15 teeth  │  │ For EACH worn tooth:        │
+  │ - Fit SSM coefficients │  │  1. Project into PCA shape  │
+  │ - Non-rigid refinement │  │     space                   │
+  │ - Poisson mesh         │  │  2. Pick good teeth within  │
+  │                        │  │     threshold (≤5)          │
+  │                        │  │  3. Build LOCAL SSM         │
+  │                        │  │  4. Fit + refine + mesh     │
+  └────────────┬───────────┘  └──────────────┬──────────────┘
+               │                             │
+               ▼                             ▼
+  ┌─────────────────────────────────────────────────────────┐
+  │   STAGE 3: COMPARISON & ANALYSIS                         │
+  │   data_analysis/all_teeth_analysis.py                    │
+  │                                                         │
+  │   PCA scores, pairwise distances, % improvement plots    │
+  └─────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## How Neighborhood Selection Works (4 Steps)
+
+For every worn tooth, the pipeline decides *which* good teeth to build the local SSM from:
+
+1. **PCA on good teeth.** All 15 good teeth are flattened and projected into a low-dimensional PCA shape space (up to 10 components, 95% variance). Each tooth becomes one point in that space.
+2. **Adaptive distance threshold.** All pairwise distances between the 15 good teeth are computed in PCA space. The threshold is set at `median + 2 × IQR` of those pairwise distances (≈ 13.72 for this dataset). Anything farther is considered anatomically "too different."
+3. **Nearest-neighbors within threshold.** The worn tooth is projected into the same PCA space. Distances to all 15 good teeth are computed, and every tooth closer than the threshold is selected — capped at 5.
+4. **No minimum required.** Even a single neighbor is used (that tooth's shape becomes the local mean, 0 PCA modes). Only if *zero* good teeth are within the threshold does the method fall back to the global SSM. In practice this fallback triggered on only **1 of 25** worn teeth (tooth_05, whose nearest good tooth sat at distance 30 — well past the 13.72 threshold).
+
+**Example neighbor assignments from this dataset:**
+- `tooth_01` → neighbors `[08, 10, 04, 15, 11]` (K=5)
+- `tooth_03`, `tooth_06`, `tooth_07` → neighbor `[14]` only (K=1, local mean = tooth_14)
+- `tooth_05` → global fallback (no neighbor within threshold)
+- `tooth_TEST2_level7` → neighbors `[09, 03, 05, 12, 06]` (K=5)
 
 ---
 
@@ -88,31 +168,51 @@ This pipeline learns the statistical shape variation of **unworn upper-left thir
 
 ```
 Teeth-Reconstruction-/
-├── Good teeth/                    # 8 unworn ULM3 EDJ meshes (training set)
+├── all_good_teeth/                 # 15 unworn ULM3 EDJ meshes (SSM training set)
 │   └── cprc_nyu_*.ply
-├── Worn teeth/                    # 9 real worn/damaged EDJ meshes
-│   └── cprc_nyu_*.ply
-├── real_wear_input/               # Symlinks organizing worn teeth for pipeline
-│   ├── tooth_01/wear_real.ply → Worn teeth/cprc_nyu_n0225_...
-│   ├── tooth_02/wear_real.ply → Worn teeth/cprc_nyu_n0265_...
-│   └── ...                       # tooth_03 through tooth_09
+├── all_worn_input/                 # 25 worn tooth inputs (9 real + TEST1 + TEST2)
+│   ├── tooth_01/wear_real.ply      # Real worn teeth
+│   │   ...
+│   ├── tooth_09/wear_real.ply
+│   ├── tooth_TEST1/
+│   │   ├── wear_level0.ply         # Artificially-worn (8 levels each)
+│   │   │   ...
+│   │   └── wear_level7.ply
+│   └── tooth_TEST2/
+│       └── wear_level0..7.ply
+│
 ├── ssm_pipeline/
-│   ├── correspondence_pipeline.py # Step 1: point correspondence
-│   ├── reconstruction_pipeline.py # Step 2: SSM + reconstruction
-│   ├── run_correspondence_a100_short.slurm  # HPC job script
-│   ├── requirements.txt
+│   ├── correspondence_pipeline.py       # STAGE 1: point correspondence
+│   ├── reconstruction_pipeline.py       # STAGE 2a: global SSM reconstruction
+│   ├── neighborhood_reconstruction.py   # STAGE 2b: neighborhood-adaptive SSM
+│   ├── local_mean_reconstruction.py     # (legacy) single-tooth local mean
+│   ├── correspond_originals.py          # utility: correspond original-space outputs
+│   ├── run_correspondence_a100_short.slurm
+│   ├── run_full_pipeline.slurm          # correspondence + global recon
+│   ├── run_neighborhood_recon.slurm     # neighborhood reconstruction only
 │   └── output/
-│       ├── correspondence_real_100k_v2/     # Correspondence outputs
-│       │   ├── good_teeth/tooth_01..08/     # Corresponded good teeth
-│       │   └── artificial_worn/tooth_01..09_wear_real/  # Corresponded worn teeth
-│       └── real_worn_recon_v8/              # Reconstruction outputs
-│           ├── ssm/                         # Mean shape, eigenvectors, modes
-│           └── reconstructions/tooth_XX_wear_real/
-│               ├── reconstructed_smooth.ply
+│       ├── correspondence_all_100k/     # Stage 1 output (15 good + 25 worn corresponded)
+│       ├── recon_all/                   # Stage 2a global reconstructions
+│       └── recon_neighborhood/          # Stage 2b neighborhood reconstructions
+│           ├── ssm/
+│           ├── neighbor_selection.json  # which neighbors each worn tooth used
+│           ├── comparison.json          # global vs neighborhood per tooth
+│           └── reconstructions/tooth_XX/
+│               ├── worn_input.ply
+│               ├── reconstructed.ply
 │               ├── reconstructed_in_input_space.ply
+│               ├── reconstructed_smooth.ply
+│               ├── coefficients.npy, removed_mask.npy
 │               └── evaluation.json
-├── original_with_wear.png         # Example visualization (input)
-├── reconstruction_final.png       # Example visualization (output)
+│
+├── data_analysis/
+│   ├── all_teeth_analysis.py       # PCA + distance + comparison plots across all recon outputs
+│   ├── good_teeth_pca.py           # PCA on just the good-tooth training set
+│   ├── worn_teeth_projection.py    # project worn teeth into good-teeth PCA space
+│   └── plots/                      # generated figures
+│
+├── requirements.txt                # pip freeze of `teeth` conda env
+├── worn.png / reconstruction.png   # example visualization (input vs output)
 └── README.md
 ```
 
@@ -120,43 +220,49 @@ Teeth-Reconstruction-/
 
 ## Installation
 
-Requires **Python 3.9--3.12** (Open3D does not yet support 3.13+).
+Requires **Python 3.9–3.12** (Open3D does not yet support 3.13+).
+
+### Option A — Clone + pip install (matches the cluster environment exactly)
 
 ```bash
 git clone https://github.com/yourusername/Teeth-Reconstruction.git
 cd Teeth-Reconstruction
-
-pip install -r ssm_pipeline/requirements.txt
-pip install trimesh scikit-learn
+pip install -r requirements.txt
 ```
 
-For GPU-accelerated CPD registration (recommended):
+### Option B — HPC cluster with conda (NYU-Langone setup)
 
 ```bash
-pip install cupy-cuda12x   # For CUDA 12.x
-# or
-pip install cupy-cuda11x   # For CUDA 11.x
+source /gpfs/data/davolilab/software/conda-envs/miniconda3/etc/profile.d/conda.sh
+conda activate teeth
 ```
+
+All SLURM scripts in `ssm_pipeline/` assume this `teeth` environment.
+
+### GPU support
+
+CPD non-rigid registration and SSM SVD can be GPU-accelerated via CuPy. The pinned `requirements.txt` installs `cupy-cuda12x`. For a CUDA 11 system, replace with `cupy-cuda11x`.
 
 ---
 
 ## Quick Start
 
-All commands assume you are in the `ssm_pipeline/` directory:
+All reconstruction commands assume you are in `ssm_pipeline/` with the environment active.
 
 ```bash
 cd ssm_pipeline
+conda activate teeth    # or: source venv/bin/activate
 ```
 
-### Step 1: Correspondence Pipeline
+### Stage 1 — Correspondence (GPU, ~1–4 hours for 40 teeth)
 
-Establishes point-to-point anatomical correspondence across all 17 teeth (8 good + 9 worn) by sampling, normalizing, and non-rigidly registering each tooth to a common template.
+Establishes point-to-point anatomical correspondence across all 15 good + 25 worn teeth.
 
 ```bash
 python correspondence_pipeline.py \
-  --good-teeth "../Good teeth" \
-  --artificial-wear "../real_wear_input" \
-  --output "output/correspondence_real_100k_v2" \
+  --good-teeth "../all_good_teeth" \
+  --artificial-wear "../all_worn_input" \
+  --output "output/correspondence_all_100k" \
   --n-points 100000 \
   --registration-mode coarse2fine \
   --cpd-points 43000 \
@@ -164,27 +270,69 @@ python correspondence_pipeline.py \
   --auto-template
 ```
 
-This step is GPU-intensive and takes 1--4 hours depending on hardware. On an HPC cluster with SLURM and A100 GPUs:
+On the HPC cluster:
 
 ```bash
 sbatch run_correspondence_a100_short.slurm
 ```
 
-### Step 2: SSM Reconstruction
+### Stage 2a — Global SSM Reconstruction (CPU, ~10 min for 25 teeth)
 
-Builds the Statistical Shape Model from the 8 good teeth, then reconstructs each worn tooth using SSM fitting, non-rigid refinement, and smooth mesh generation.
+Baseline: one SSM built from all 15 good teeth, applied to every worn tooth.
 
 ```bash
 python reconstruction_pipeline.py \
-  --correspondence-dir "output/correspondence_real_100k_v2" \
-  --artificial-wear "../real_wear_input" \
-  --output "output/real_worn_recon_v8" \
+  --correspondence-dir "output/correspondence_all_100k" \
+  --artificial-wear "../all_worn_input" \
+  --output "output/recon_all" \
   --skip-eval \
   --proxy-missing-fraction 0.25 \
   --variance-threshold 0.99
 ```
 
-This runs on CPU in ~5--10 minutes for all 9 teeth.
+Or combined with Stage 1 via SLURM:
+
+```bash
+sbatch run_full_pipeline.slurm
+```
+
+### Stage 2b — Neighborhood SSM Reconstruction (GPU recommended, ~20 min)
+
+Per-worn-tooth local SSM from adaptively-selected nearest good-tooth neighbors.
+
+```bash
+python neighborhood_reconstruction.py \
+  --correspondence-dir "output/correspondence_all_100k" \
+  --global-recon-dir "output/recon_all" \
+  --output "output/recon_neighborhood" \
+  --artificial-wear "../all_worn_input" \
+  --max-neighbors 5 \
+  --threshold-iqr-mult 2.0 \
+  --proxy-missing-fraction 0.15 \
+  --ssm-variance 0.95 \
+  --regularization 1.0
+```
+
+On the HPC cluster:
+
+```bash
+sbatch run_neighborhood_recon.slurm
+```
+
+Outputs land in `output/recon_neighborhood/`. Two JSONs summarize the run:
+- `neighbor_selection.json` — which good teeth each worn tooth used, distances, and fallback reasons
+- `comparison.json` — side-by-side metrics vs the global reconstruction
+
+### Stage 3 — Cross-method Analysis
+
+```bash
+cd ../data_analysis
+python all_teeth_analysis.py \
+  --correspondence-dir ../ssm_pipeline/output/correspondence_all_100k \
+  --extra-recon-dir ../ssm_pipeline/output/recon_neighborhood/reconstructions
+```
+
+Produces PCA plots, pairwise-distance matrices, and comparison figures in `data_analysis/plots/`.
 
 ---
 
@@ -194,74 +342,96 @@ This runs on CPU in ~5--10 minutes for all 9 teeth.
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--good-teeth`, `-g` | `../Good teeth` | Directory containing unworn tooth PLY files |
-| `--artificial-wear`, `-a` | `../artificial_wear/output` | Directory containing worn tooth subdirectories (each with a `wear_*.ply`) |
-| `--output`, `-o` | `output/correspondence` | Output directory for corresponded point clouds |
+| `--good-teeth`, `-g` | `../all_good_teeth` | Directory of unworn tooth PLY files |
+| `--artificial-wear`, `-a` | `../all_worn_input` | Directory of worn-tooth subdirectories (each with a `wear_*.ply`) |
+| `--output`, `-o` | `output/correspondence` | Output directory |
 | `--n-points`, `-n` | 20000 | Points sampled per tooth. Use **100000** for high-fidelity reconstruction |
-| `--registration-mode` | `direct` | `direct`: CPD on all points (fast, low point counts). `coarse2fine`: CPD on subset then KNN upsample (required for 100k points) |
-| `--cpd-points` | 25000 | Number of points used for CPD in `coarse2fine` mode. 43000 recommended for 100k total |
-| `--displacement-knn` | 3 | KNN neighbors for upsampling coarse CPD deformation to full resolution |
+| `--registration-mode` | `direct` | `direct`: CPD on all points. `coarse2fine`: CPD on subset then KNN upsample (required for 100k) |
+| `--cpd-points` | 25000 | Points used for CPD in `coarse2fine` mode. 43000 recommended for 100k total |
+| `--displacement-knn` | 3 | KNN neighbors for upsampling coarse CPD deformation |
 | `--auto-template` | off | Auto-select the most central tooth as template (recommended) |
-| `--template-idx` | 0 | Manual template index (ignored if `--auto-template` is set) |
-| `--n-gpus` | 1 | Number of GPUs for parallel processing. Set to 4 on multi-GPU nodes |
+| `--template-idx` | 0 | Manual template index (ignored if `--auto-template`) |
+| `--n-gpus` | 1 | Number of GPUs for parallel processing |
 | `--no-gpu` | off | Force CPU-only registration |
-| `--seed` | 42 | Random seed for reproducibility |
+| `--seed` | 42 | Random seed |
 
-### reconstruction_pipeline.py
+### reconstruction_pipeline.py (Global SSM)
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--correspondence-dir`, `-c` | `output/correspondence` | Directory with correspondence outputs from Step 1 |
-| `--artificial-wear`, `-a` | `../artificial_wear/output` | Directory containing worn tooth inputs (for loading raw meshes) |
-| `--output`, `-o` | `output/` | Output directory for reconstructions |
-| `--variance-threshold` | 0.99 | Keep PCA modes explaining this fraction of total variance. 0.99 retains fine detail |
-| `--n-components`, `-n` | auto | Override number of PCA components (omit to auto-select by variance threshold) |
-| `--regularization`, `-r` | 1.0 | Tikhonov regularization strength for SSM fitting. Higher = more constrained to mean shape |
-| `--skip-eval` | off | Skip ground-truth evaluation. **Required for real worn teeth** (no unworn original available) |
-| `--proxy-missing-fraction` | 0.15 | Fraction of points treated as "missing" when `--skip-eval` is active. Controls how much anatomy the SSM is allowed to reconstruct. Range: 0.10--0.30 |
-| `--test-tooth` | none | Hold out a tooth by ID (e.g., `01`) from SSM training for leave-one-out evaluation |
+| `--correspondence-dir`, `-c` | `output/correspondence` | Directory with correspondence outputs from Stage 1 |
+| `--artificial-wear`, `-a` | `../all_worn_input` | Directory of worn-tooth inputs |
+| `--output`, `-o` | `output/` | Output directory |
+| `--variance-threshold` | 0.99 | PCA variance threshold |
+| `--n-components`, `-n` | auto | Override number of PCA components |
+| `--regularization`, `-r` | 1.0 | Tikhonov regularization strength |
+| `--skip-eval` | off | Skip ground-truth evaluation (required for real worn teeth) |
+| `--proxy-missing-fraction` | 0.15 | Fraction of points treated as "missing" when `--skip-eval` is on. Range 0.10–0.30 |
+| `--test-tooth` | none | Hold out a tooth by ID for leave-one-out evaluation |
+| `--no-gpu` | off | Force CPU-only SVD |
+
+### neighborhood_reconstruction.py (Neighborhood SSM)
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--correspondence-dir` | `output/correspondence_all_100k` | Stage 1 outputs |
+| `--global-recon-dir` | `output/recon_all` | Stage 2a outputs (used for global fallback + side-by-side comparison) |
+| `--output` | `output/recon_neighborhood` | Output directory |
+| `--artificial-wear` | `../all_worn_input` | Worn-tooth input directory |
+| `--worn-teeth` | all found | Restrict to specific worn tooth IDs |
+| `--max-neighbors` | 5 | Cap on neighbors per worn tooth |
+| `--threshold-iqr-mult` | 2.0 | Threshold = median + this × IQR of pairwise good-tooth distances |
+| `--pca-variance` | 0.95 | PCA variance threshold for the neighbor-finding PCA |
+| `--ssm-variance` | 0.95 | PCA variance threshold for the local SSM |
+| `--proxy-missing-fraction` | 0.15 | Same as global pipeline |
+| `--regularization` | 1.0 | Tikhonov regularization |
 | `--no-gpu` | off | Force CPU-only SVD |
 
 ---
 
 ## Output Files
 
-Each tooth's reconstruction is saved to `output/<run>/reconstructions/tooth_XX_wear_real/`:
+Each worn-tooth directory (`output/<run>/reconstructions/tooth_XX/`) contains:
 
 | File | Description |
 |------|-------------|
-| `worn_input.ply` | The worn tooth sampled to 100k points in normalized SSM space |
+| `worn_input.ply` | Worn tooth sampled to 100k points in normalized SSM space |
 | `reconstructed.ply` | SSM reconstruction in normalized space (100k points) |
-| `reconstructed_in_input_space.ply` | Reconstruction mapped back to original millimeter coordinates via inverse transform |
-| `reconstructed_smooth.ply` | Final watertight triangle mesh (Screened Poisson + Taubin smoothing, ~160k--220k vertices) |
-| `removed_mask.npy` | Boolean array (100k): `True` = point treated as missing by the proxy mask |
-| `coefficients.npy` | Fitted PCA coefficients for this tooth |
-| `evaluation.json` | All metrics: refinement stats, geometric comparison, SSM coefficients |
+| `reconstructed_in_input_space.ply` | Reconstruction mapped back to original millimeter coordinates |
+| `reconstructed_smooth.ply` | Watertight triangle mesh (Screened Poisson + Taubin smoothing) |
+| `removed_mask.npy` | Boolean (100k): `True` = point treated as missing |
+| `coefficients.npy` | Fitted PCA coefficients |
+| `evaluation.json` | All metrics: refinement, geometric comparison, SSM info, neighbor info (neighborhood run only) |
 
-The SSM model itself is saved to `output/<run>/ssm/`:
+The SSM itself is saved to `output/<run>/ssm/`:
 
 | File | Description |
 |------|-------------|
-| `mean_shape.ply` / `mean_shape.npy` | Mean tooth shape (100k x 3) |
-| `eigenvectors.npy` | PCA eigenvectors (principal modes of variation) |
-| `eigenvalues.npy` | PCA eigenvalues |
-| `ssm_metadata.json` | Training info: number of components, variance explained, training teeth |
-| `modes/` | Visualizations of each PCA mode (+/- 2 sigma deformations) |
+| `mean_shape.ply` / `mean_shape.npy` | Mean tooth shape (100k × 3) |
+| `eigenvectors.npy`, `eigenvalues.npy` | PCA modes |
+| `ssm_metadata.json` | Training info |
+| `modes/` | Visualizations of each PCA mode (±2σ) |
+
+Neighborhood run also produces two top-level JSONs:
+- `neighbor_selection.json` — per-tooth neighbor assignments, distances, threshold info
+- `comparison.json` — per-tooth global vs neighborhood metric comparison
 
 ---
 
 ## Evaluation Metrics
 
-All metrics compare the reconstruction (in original input space) against the raw worn tooth. They are printed to the terminal during the run and saved in `evaluation.json`.
+All metrics compare the reconstruction (in original input space) against the raw worn tooth.
 
 | Metric | What it measures |
 |--------|-----------------|
-| **R² (variance explained)** | Fraction of the worn tooth's total spatial variance captured by the reconstruction. 99.9% means the shapes are nearly identical overall. Computed as 1 - SS_res / SS_tot |
-| **Chamfer distance (mm)** | Symmetric average nearest-neighbor distance between the two point clouds. The best single "overall accuracy" number. Lower is better |
-| **Hausdorff distance (mm)** | Worst-case nearest-neighbor distance (the single farthest point). Sensitive to outliers. Tells you: "no region is off by more than X mm" |
-| **RMSE worn-to-recon (mm)** | Root mean square of nearest-neighbor distances from each worn point to the reconstruction. Penalizes large local deviations more than MAE |
-| **MAE worn-to-recon (mm)** | Mean absolute nearest-neighbor distance. When close to RMSE, errors are uniform; when RMSE >> MAE, there are localized hot spots |
-| **Coverage at 2x spacing** | Fraction of worn points that have a reconstruction point within 2x the median point spacing of the worn cloud. Measures how well the reconstruction covers the surface at the worn tooth's own resolution |
+| **R² (variance explained)** | Fraction of the worn tooth's spatial variance captured by the reconstruction. 99.9% = nearly identical overall |
+| **Chamfer distance (mm)** | Symmetric average nearest-neighbor distance. Best single "overall accuracy" number. Lower is better |
+| **Hausdorff distance (mm)** | Worst-case nearest-neighbor distance. Sensitive to outliers |
+| **RMSE worn→recon (mm)** | RMS of nearest-neighbor distances from worn points to the reconstruction |
+| **RMSE recon→worn (mm)** | RMS in the opposite direction — catches over-extrapolated reconstruction points |
+| **MAE worn→recon / recon→worn** | Mean absolute variant of the above. When close to RMSE, errors are uniform |
+| **Coverage @1x / 2x / 5x spacing** | Fraction of worn points with a reconstruction point within 1×, 2×, or 5× the median worn-point spacing. Measures how tightly the reconstruction follows the worn surface |
+| **SSM fit RMSE** | Residual after fitting the SSM to observed points only. Lower is better, but neighborhood SSMs inherently have fewer modes |
 
 ---
 
@@ -269,38 +439,43 @@ All metrics compare the reconstruction (in original input space) against the raw
 
 ### Statistical Shape Model (SSM)
 
-PCA learns the principal modes of shape variation from the 8 unworn teeth:
+PCA learns the principal modes of shape variation:
 
 ```
-Shape(b) = mean + V * b
+Shape(b) = μ + V · b
 ```
 
-Where `mean` is the mean shape (100k x 3 flattened to 300k), `V` is the matrix of eigenvectors (principal modes), and `b` is the vector of shape coefficients. For reconstruction, coefficients are fitted to the observed (non-missing) points via Tikhonov-regularized least squares, then the full model predicts the complete tooth shape including missing regions. Coefficients are clipped to +/- 4 sigma to prevent extreme extrapolation.
+`μ` is the mean shape (100k × 3 flattened to 300k), `V` the eigenvectors, `b` the fitted coefficients. Coefficients are fitted to observed (non-missing) points via Tikhonov-regularized least squares:
+
+```
+b = (VᵀV + λΛ⁻¹)⁻¹ Vᵀ (x_obs - μ_obs)
+```
+
+Coefficients are clipped to ±4σ to prevent extreme extrapolation.
+
+### Neighborhood SSM
+
+The same PCA math, but `μ` and `V` are rebuilt per worn tooth from only its K selected neighbors (`K ≤ 5`). For `K = 1`, `μ` is that single neighbor's shape and `V` is empty (pure mean-shape fit). Built local SSMs are cached by `frozenset(neighbor_indices)` so teeth with identical neighbor sets don't recompute the SVD.
 
 ### Non-Rigid Refinement
 
-After SSM fitting, the reconstruction may not perfectly match the observed worn surface (typical RMSE ~0.01--0.03 in normalized space). The non-rigid refinement step:
-
-1. **Observed points**: Replaced exactly with the worn input coordinates (driving observation error to 0)
-2. **Missing points**: Displaced by KNN-interpolated corrections from nearby observed points, producing smooth transitions into reconstructed regions
-
-This ensures the reconstruction matches the worn tooth exactly where data exists and transitions smoothly where it does not.
+After SSM fitting:
+1. **Observed points** are replaced exactly with the worn input coordinates (observation error → 0).
+2. **Missing points** are displaced by KNN-interpolated corrections from nearby observed points, producing smooth transitions.
 
 ### Screened Poisson Surface Reconstruction
 
-The final smooth mesh is generated from the 100k-point reconstruction:
-
-1. Estimate surface normals and orient them outward (away from centroid)
-2. Run Open3D's Screened Poisson reconstruction (octree depth 9) to produce a watertight triangle mesh
-3. Trim low-density vertices (bottom 1% by Poisson density) to remove extrapolated fringe
-4. Apply 30 iterations of Taubin smoothing (lambda=0.5, mu=-0.53) for noise removal without volume shrinkage
-5. Fix normals and triangle winding via trimesh for correct rendering
+1. Estimate + orient surface normals (outward from centroid)
+2. Open3D Screened Poisson (octree depth 9) → watertight triangle mesh
+3. Trim bottom 1% of Poisson density (removes extrapolated fringe)
+4. 30 iterations Taubin smoothing (λ=0.5, μ=-0.53)
+5. Fix normals and triangle winding via trimesh
 
 ---
 
 ## Tooth-to-Specimen Mapping
 
-The `real_wear_input/` directory maps pipeline tooth IDs to original specimen filenames via symlinks:
+Real worn teeth (`all_worn_input/tooth_01..09/wear_real.ply`):
 
 | Pipeline ID | Original Specimen |
 |-------------|-------------------|
@@ -314,45 +489,35 @@ The `real_wear_input/` directory maps pipeline tooth IDs to original specimen fi
 | tooth_08 | cprc_nyu_n0311_ULM3_WS_EDJ_WORN.ply |
 | tooth_09 | cprc_nyu_n0312_ULM3_WS_EDJ_WORN.ply |
 
-Good teeth (SSM training set):
+Artificially-worn test teeth: `tooth_TEST1/wear_level0..7.ply` and `tooth_TEST2/wear_level0..7.ply` — 8 progressively-worn versions of two source teeth, used to test reconstruction robustness at increasing wear levels.
 
-| ID | Original Specimen |
-|----|-------------------|
-| tooth_01 | cprc_nyu_n0047_ULM3_EDJ_GEO.ply |
-| tooth_02 | cprc_nyu_n0269_ULM3_WS_EDJ_GEO.ply |
-| tooth_03 | cprc_nyu_n0292_ULM3_WS_EDJ_GEO.ply |
-| tooth_04 | cprc_nyu_n0293_ULM3_WS_EDJ.ply |
-| tooth_05 | cprc_nyu_n0298_ULM3_WS_EDJ_GEO.ply |
-| tooth_06 | cprc_nyu_n0300_ULM3_WS_EDJ_GEO.ply |
-| tooth_07 | cprc_nyu_n0307_ULM3_WS_EDJ_GEO.ply |
-| tooth_08 | cprc_nyu_n0350_ULM3_WS_EDJ_GEO.ply |
+Good teeth (SSM training set, `all_good_teeth/`): 15 unworn ULM3 EDJ meshes including `n0043, n0047, n0049, n0256, n0258, n0264, n0266, n0269, n0291, n0292, n0293, n0298, n0300, n0307, n0350`.
 
 ---
 
 ## Dependencies
 
-- Python 3.9--3.12
+Full pinned list: [`requirements.txt`](requirements.txt). Headlines:
+
+- Python 3.9–3.12
 - trimesh >= 4.0.0
 - open3d >= 0.18.0
-- numpy >= 1.24.0
-- scipy >= 1.10.0
-- scikit-learn
+- numpy, scipy, scikit-learn
 - probreg >= 0.3.0 (GPU-accelerated CPD)
-- pycpd >= 2.0.0 (CPU fallback CPD)
-- cupy-cuda12x (optional, for GPU linear algebra)
+- pycpd >= 2.0.0 (CPU fallback)
+- cupy-cuda12x (optional, GPU linear algebra)
 
 ---
 
 ## Citation
 
-If you use this code in your research, please cite:
-
 ```bibtex
 @software{tooth_reconstruction_ssm,
-  title = {Tooth Wear Reconstruction using Statistical Shape Models},
+  title  = {Tooth Wear Reconstruction using Statistical Shape Models
+            with Neighborhood-Adaptive Priors},
   author = {Jeevan Ananth},
-  year = {2026},
-  url = {https://github.com/yourusername/Teeth-Reconstruction}
+  year   = {2026},
+  url    = {https://github.com/yourusername/Teeth-Reconstruction}
 }
 ```
 
@@ -360,4 +525,4 @@ If you use this code in your research, please cite:
 
 ## License
 
-MIT License -- see [LICENSE](LICENSE) for details.
+MIT License — see [LICENSE](LICENSE) for details.

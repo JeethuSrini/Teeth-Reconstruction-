@@ -1,0 +1,73 @@
+{
+  "local_mean_tooth": "tooth_14",
+  "worn_teeth": [
+    "tooth_03_wear_real",
+    "tooth_06_wear_real",
+    "tooth_07_wear_real"
+  ],
+  "rows": [
+    {
+      "tooth": "tooth_03_wear_real",
+      "global": {
+        "r2_pct": 99.60264635008858,
+        "ssm_obs_rmse": 0.020523456350496794,
+        "chamfer_mm": 0.1550568267645854,
+        "hausdorff_mm": 0.8392951590084362,
+        "coverage_2x": 0.14768712038982934
+      },
+      "local": {
+        "r2_pct": 99.60705110028562,
+        "ssm_obs_rmse": 0.026171817132281144,
+        "chamfer_mm": 0.14862353353207242,
+        "hausdorff_mm": 0.8861453646595857,
+        "coverage_2x": 0.1652848664003141
+      },
+      "delta_r2_pct": 0.004404750197039675,
+      "delta_ssm_rmse": 0.005648360781784351,
+      "delta_chamfer_mm": -0.006433293232512988,
+      "delta_hausdorff_mm": 0.0468502056511495
+    },
+    {
+      "tooth": "tooth_06_wear_real",
+      "global": {
+        "r2_pct": 99.67034289551016,
+        "ssm_obs_rmse": 0.02072403643029616,
+        "chamfer_mm": 0.1514303133323922,
+        "hausdorff_mm": 1.0040438200295518,
+        "coverage_2x": 0.17462902642055736
+      },
+      "local": {
+        "r2_pct": 99.62893728214415,
+        "ssm_obs_rmse": 0.023946521436174137,
+        "chamfer_mm": 0.148279453475045,
+        "hausdorff_mm": 1.1027335147398059,
+        "coverage_2x": 0.18469055374592833
+      },
+      "delta_r2_pct": -0.041405613366009675,
+      "delta_ssm_rmse": 0.003222485005877976,
+      "delta_chamfer_mm": -0.003150859857347199,
+      "delta_hausdorff_mm": 0.09868969471025402
+    },
+    {
+      "tooth": "tooth_07_wear_real",
+      "global": {
+        "r2_pct": 99.48289138590548,
+        "ssm_obs_rmse": 0.02683185573015057,
+        "chamfer_mm": 0.1948717130454723,
+        "hausdorff_mm": 1.0347057572376464,
+        "coverage_2x": 0.1299038906177746
+      },
+      "local": {
+        "r2_pct": 99.41952064246537,
+        "ssm_obs_rmse": 0.032503534436998834,
+        "chamfer_mm": 0.19145261185268034,
+        "hausdorff_mm": 1.0964018031606053,
+        "coverage_2x": 0.16672290752752678
+      },
+      "delta_r2_pct": -0.06337074344010318,
+      "delta_ssm_rmse": 0.005671678706848263,
+      "delta_chamfer_mm": -0.003419101192791957,
+      "delta_hausdorff_mm": 0.061696045922958964
+    }
+  ]
+}
