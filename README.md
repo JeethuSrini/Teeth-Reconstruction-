@@ -98,51 +98,54 @@ Output per worn tooth: a 100k-point reconstructed point cloud, a smooth watertig
 ## Pipeline Overview
 
 ```
-                    TOOTH RECONSTRUCTION PIPELINE (3 STAGES)
+                TOOTH RECONSTRUCTION PIPELINE (3 STAGES)
 
-  ┌────────────────────┐        ┌────────────────────┐
-  │  Good Teeth (15)   │        │  Worn Teeth (25)   │
-  │  Unworn ULM3 PLY   │        │  Real + Test PLY   │
-  └─────────┬──────────┘        └─────────┬──────────┘
-            │                             │
-            ▼                             ▼
-  ┌─────────────────────────────────────────────────────────┐
-  │   STAGE 1: CORRESPONDENCE                                │
-  │   correspondence_pipeline.py                             │
-  │                                                         │
-  │   1. Sample 100,000 uniform points per tooth             │
-  │   2. Normalize (center, scale to bbox-diagonal, PCA-align)│
-  │   3. ICP rigid alignment to auto-selected template        │
-  │   4. Coarse-to-fine CPD non-rigid registration            │
-  │      (CPD on 43k subset → KNN upsample to 100k)          │
-  │                                                         │
-  │   Output: corresponded.ply per tooth                     │
-  │           (100k points in shared anatomical frame)        │
-  └────────────────────────┬────────────────────────────────┘
-                           │
-              ┌────────────┴────────────┐
-              ▼                         ▼
-  ┌────────────────────────┐  ┌────────────────────────────┐
-  │ STAGE 2a: GLOBAL SSM   │  │ STAGE 2b: NEIGHBORHOOD SSM │
-  │ reconstruction_        │  │ neighborhood_              │
-  │   pipeline.py          │  │   reconstruction.py         │
-  │                        │  │                             │
-  │ - PCA on all 15 teeth  │  │ For EACH worn tooth:        │
-  │ - Fit SSM coefficients │  │  1. Project into PCA shape  │
-  │ - Non-rigid refinement │  │     space                   │
-  │ - Poisson mesh         │  │  2. Pick good teeth within  │
-  │                        │  │     threshold (≤5)          │
-  │                        │  │  3. Build LOCAL SSM         │
-  │                        │  │  4. Fit + refine + mesh     │
-  └────────────┬───────────┘  └──────────────┬──────────────┘
-               │                             │
-               ▼                             ▼
-  ┌─────────────────────────────────────────────────────────┐
-  │   STAGE 3: COMPARISON & ANALYSIS                         │
-  │   data_analysis/all_teeth_analysis.py                    │
-  │                                                         │
-  │   PCA scores, pairwise distances, % improvement plots    │
-  └─────────────────────────────────────────────────────────┘
+  +-------------------+        +-------------------+
+  |  Good Teeth (15)  |        |  Worn Teeth (25)  |
+  |  Unworn ULM3 PLY  |        |  Real + Test PLY  |
+  +---------+---------+        +---------+---------+
+            |                            |
+            v                            v
+  +----------------------------------------------------------+
+  |  STAGE 1: CORRESPONDENCE                                 |
+  |  correspondence_pipeline.py                              |
+  |                                                          |
+  |   1. Sample 100,000 uniform points per tooth             |
+  |   2. Normalize (center, scale to bbox diag, PCA-align)   |
+  |   3. ICP rigid alignment to auto-selected template       |
+  |   4. Coarse-to-fine CPD non-rigid registration           |
+  |      (CPD on 43k subset -> KNN upsample to 100k)         |
+  |                                                          |
+  |  Output: corresponded.ply per tooth                      |
+  |          (100k points in shared anatomical frame)        |
+  +-------------------------+--------------------------------+
+                            |
+              +-------------+-------------+
+              |                           |
+              v                           v
+  +---------------------------+  +---------------------------+
+  |  STAGE 2a: GLOBAL SSM     |  |  STAGE 2b: NEIGHBORHOOD   |
+  |  reconstruction_          |  |  neighborhood_            |
+  |      pipeline.py          |  |      reconstruction.py    |
+  |                           |  |                           |
+  |  - PCA on all 15 teeth    |  |  For EACH worn tooth:     |
+  |  - Fit SSM coefficients   |  |   1. Project into PCA     |
+  |  - Non-rigid refinement   |  |      shape space          |
+  |  - Poisson mesh           |  |   2. Pick good teeth      |
+  |                           |  |      within threshold (<=5)|
+  |                           |  |   3. Build LOCAL SSM      |
+  |                           |  |   4. Fit + refine + mesh  |
+  +-------------+-------------+  +-------------+-------------+
+                |                              |
+                +--------------+---------------+
+                               |
+                               v
+  +----------------------------------------------------------+
+  |  STAGE 3: COMPARISON & ANALYSIS                          |
+  |  data_analysis/all_teeth_analysis.py                     |
+  |                                                          |
+  |  PCA scores, pairwise distances, % improvement plots     |
+  +----------------------------------------------------------+
 ```
 
 ---
