@@ -66,6 +66,12 @@ Two things jump out:
 - **TEST1** and **TEST2** form tight per-tooth clusters — progressive wear barely moves a tooth in PCA space, which is why reconstructions stay close to the input.
 - **Real worn teeth 03, 06, 07** sit in the upper-left corner far from the main cluster — this is exactly why the neighborhood algorithm selects only **tooth_14** (K=1) for these: they are outliers and averaging across all 15 good teeth would pull the reconstruction back toward a centroid they don't belong to.
 
+### PCA 2D — Zoomed View (outlier cluster removed)
+
+![PCA 2D zoomed](data_analysis/plots_v2/pca_2d_zoomed.png)
+
+Same PCA space, but with the bottom-right outlier cluster (T03, T05, T06, T07 worn and T14 good) excluded so the main population is easier to read. This view shows both reconstruction families on the same axes — **Recon (Global)** in purple X markers (built from the global SSM over all 18 good teeth) and **Recon (Nbr)** in pink stars (built from each worn tooth's local SSM of up to 5 nearest neighbors). The two reconstructions land in clearly different places for the same input, which is the visual signature of how much the neighborhood prior pulls each tooth toward its local subgroup instead of the global centroid.
+
 ### t-SNE (Raw 300,000-D features) — Non-linear Shape Embedding
 
 ![t-SNE raw](data_analysis/plots_v2/all_teeth_tsne_raw.png)
