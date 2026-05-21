@@ -1,0 +1,86 @@
+{
+  "TEST1": {
+    "level0": {
+      "cd_recon_vs_original": 0.001912047110550479,
+      "cd_worn_vs_original": 0.001868371218179933,
+      "recon_improves_over_worn": false
+    },
+    "level1": {
+      "cd_recon_vs_original": 0.0035425239745835078,
+      "cd_worn_vs_original": 0.003569600190890269,
+      "recon_improves_over_worn": true
+    },
+    "level2": {
+      "cd_recon_vs_original": 0.0050765395916009546,
+      "cd_worn_vs_original": 0.004922914929508763,
+      "recon_improves_over_worn": false
+    },
+    "level3": {
+      "cd_recon_vs_original": 0.005284542434051208,
+      "cd_worn_vs_original": 0.004992372355349283,
+      "recon_improves_over_worn": false
+    },
+    "level4": {
+      "cd_recon_vs_original": 0.006986048009811507,
+      "cd_worn_vs_original": 0.006649318926732185,
+      "recon_improves_over_worn": false
+    },
+    "level5": {
+      "cd_recon_vs_original": 0.0072175678650615045,
+      "cd_worn_vs_original": 0.006905933124599312,
+      "recon_improves_over_worn": false
+    },
+    "level6": {
+      "cd_recon_vs_original": 0.009460594662021177,
+      "cd_worn_vs_original": 0.00927466829204175,
+      "recon_improves_over_worn": false
+    },
+    "level7": {
+      "cd_recon_vs_original": 0.007821365954722067,
+      "cd_worn_vs_original": 0.007555957501274689,
+      "recon_improves_over_worn": false
+    }
+  },
+  "TEST2": {
+    "level0": {
+      "cd_recon_vs_original": 0.0015837532721678863,
+      "cd_worn_vs_original": 0.0011283109551122,
+      "recon_improves_over_worn": false
+    },
+    "level1": {
+      "cd_recon_vs_original": 0.001645200836326924,
+      "cd_worn_vs_original": 0.0011990975928775447,
+      "recon_improves_over_worn": false
+    },
+    "level2": {
+      "cd_recon_vs_original": 0.002137352830433756,
+      "cd_worn_vs_original": 0.001707615842332538,
+      "recon_improves_over_worn": false
+    },
+    "level3": {
+      "cd_recon_vs_original": 0.00362563764294731,
+      "cd_worn_vs_original": 0.0033350470423837335,
+      "recon_improves_over_worn": false
+    },
+    "level4": {
+      "cd_recon_vs_original": 0.004237075108919516,
+      "cd_worn_vs_original": 0.0039750796205273485,
+      "recon_improves_over_worn": false
+    },
+    "level5": {
+      "cd_recon_vs_original": 0.005921779999740742,
+      "cd_worn_vs_original": 0.005725955380975515,
+      "recon_improves_over_worn": false
+    },
+    "level6": {
+      "cd_recon_vs_original": 0.007605419053792637,
+      "cd_worn_vs_original": 0.0073755952938129605,
+      "recon_improves_over_worn": false
+    },
+    "level7": {
+      "cd_recon_vs_original": 0.008709927760636706,
+      "cd_worn_vs_original": 0.008399473087512849,
+      "recon_improves_over_worn": false
+    }
+  }
+}

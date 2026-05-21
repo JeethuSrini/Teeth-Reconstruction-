@@ -423,70 +423,107 @@ def refine_reconstruction_nonrigid(reconstructed: np.ndarray,
 
 def compute_geometric_comparison(recon_raw: np.ndarray,
                                  worn_raw: np.ndarray,
-                                 scale: float) -> Dict:
+                                 scale: float,
+                                 emd_n_pts: int = 2048,
+                                 fscore_thresholds_mm: tuple = (0.5, 1.0)) -> Dict:
     """
     Geometric comparison between reconstruction (in raw input space)
     and the original raw worn tooth mesh.
-    
-    All distance metrics are returned in mm (multiplied by scale if needed,
-    but here both inputs are already in mm).
 
     Metrics:
       - Chamfer distance (symmetric mean NN distance)
       - Hausdorff distance (symmetric worst-case NN distance)
       - RMSE / MAE of NN distances (both directions)
-      - R² (variance explained): how much of the worn tooth's spatial
-        variance is captured by the reconstruction
-      - Coverage: fraction of worn points within threshold of reconstruction
+      - R² (variance explained)
+      - Coverage at 1x / 2x / 5x median point spacing
+      - F-Score at configurable distance thresholds (default 0.5 mm, 1.0 mm)
+      - EMD (Earth Mover's Distance) computed on downsampled clouds (default 2048 pts)
     """
     from scipy.spatial import cKDTree
 
     tree_recon = cKDTree(recon_raw)
-    tree_worn = cKDTree(worn_raw)
+    tree_worn  = cKDTree(worn_raw)
 
     d_worn2recon, _ = tree_recon.query(worn_raw)
     d_recon2worn, _ = tree_worn.query(recon_raw)
 
-    chamfer = float((np.mean(d_worn2recon) + np.mean(d_recon2worn)) / 2.0)
+    chamfer  = float((np.mean(d_worn2recon) + np.mean(d_recon2worn)) / 2.0)
     hausdorff = float(max(np.max(d_worn2recon), np.max(d_recon2worn)))
 
     rmse_worn2recon = float(np.sqrt(np.mean(d_worn2recon ** 2)))
-    mae_worn2recon = float(np.mean(d_worn2recon))
+    mae_worn2recon  = float(np.mean(d_worn2recon))
     rmse_recon2worn = float(np.sqrt(np.mean(d_recon2worn ** 2)))
-    mae_recon2worn = float(np.mean(d_recon2worn))
+    mae_recon2worn  = float(np.mean(d_recon2worn))
 
-    # R²: how much of the worn tooth's spatial variance is "explained"
-    # by the reconstruction. SS_tot = variance of worn points around their
-    # centroid. SS_res = mean squared NN distance from worn to reconstruction.
     worn_centered = worn_raw - worn_raw.mean(axis=0)
-    ss_tot = float(np.sum(worn_centered ** 2))
-    ss_res = float(np.sum(d_worn2recon ** 2))
+    ss_tot    = float(np.sum(worn_centered ** 2))
+    ss_res    = float(np.sum(d_worn2recon ** 2))
     r_squared = float(1.0 - ss_res / ss_tot) if ss_tot > 0 else 0.0
 
-    # Coverage: fraction of worn mesh points within various thresholds
     nn_worn = cKDTree(worn_raw)
     worn_spacing, _ = nn_worn.query(worn_raw, k=2)
-    median_spacing = float(np.median(worn_spacing[:, 1]))
+    median_spacing  = float(np.median(worn_spacing[:, 1]))
 
     cov_1x = float(np.mean(d_worn2recon < median_spacing * 1.0))
     cov_2x = float(np.mean(d_worn2recon < median_spacing * 2.0))
     cov_5x = float(np.mean(d_worn2recon < median_spacing * 5.0))
 
+    # ------------------------------------------------------------------
+    # F-Score at each threshold:
+    #   precision = fraction of recon pts within threshold of any worn pt
+    #   recall    = fraction of worn pts within threshold of any recon pt
+    #   fscore    = harmonic mean of precision and recall
+    # ------------------------------------------------------------------
+    fscores = {}
+    for thr in fscore_thresholds_mm:
+        precision = float(np.mean(d_recon2worn < thr))
+        recall    = float(np.mean(d_worn2recon < thr))
+        denom = precision + recall
+        fs = float(2.0 * precision * recall / denom) if denom > 0 else 0.0
+        key = f"{thr:.1f}".replace(".", "p")          # e.g. "0p5" or "1p0"
+        fscores[f"fscore_{key}mm_precision"] = precision
+        fscores[f"fscore_{key}mm_recall"]    = recall
+        fscores[f"fscore_{key}mm"]           = fs
+
+    # ------------------------------------------------------------------
+    # EMD (Earth Mover's Distance / Wasserstein):
+    #   Exact EMD on 100k pts is intractable; downsample to emd_n_pts
+    #   using uniform random subsampling with a fixed seed for reproducibility.
+    # ------------------------------------------------------------------
+    emd_val = None
+    try:
+        import ot  # Python Optimal Transport (POT)
+        rng = np.random.default_rng(42)
+        idx_r = rng.choice(len(recon_raw), size=min(emd_n_pts, len(recon_raw)), replace=False)
+        idx_w = rng.choice(len(worn_raw),  size=min(emd_n_pts, len(worn_raw)),  replace=False)
+        r_sub = recon_raw[idx_r].astype(np.float64)
+        w_sub = worn_raw[idx_w].astype(np.float64)
+        n_r, n_w = len(r_sub), len(w_sub)
+        a = np.ones(n_r, dtype=np.float64) / n_r   # uniform weights
+        b = np.ones(n_w, dtype=np.float64) / n_w
+        M = ot.dist(r_sub, w_sub, metric="euclidean")  # cost matrix (mm)
+        emd_val = float(ot.emd2(a, b, M))             # scalar transport cost
+    except Exception:
+        emd_val = None
+
     m = {
-        "chamfer_mm": chamfer,
-        "hausdorff_mm": hausdorff,
-        "rmse_worn_to_recon_mm": rmse_worn2recon,
-        "mae_worn_to_recon_mm": mae_worn2recon,
-        "rmse_recon_to_worn_mm": rmse_recon2worn,
-        "mae_recon_to_worn_mm": mae_recon2worn,
-        "r_squared": r_squared,
-        "variance_explained_pct": r_squared * 100.0,
-        "median_spacing_mm": median_spacing,
-        "coverage_1x_spacing": cov_1x,
-        "coverage_2x_spacing": cov_2x,
-        "coverage_5x_spacing": cov_5x,
-        "n_worn_pts": len(worn_raw),
-        "n_recon_pts": len(recon_raw),
+        "chamfer_mm":              chamfer,
+        "hausdorff_mm":            hausdorff,
+        "rmse_worn_to_recon_mm":   rmse_worn2recon,
+        "mae_worn_to_recon_mm":    mae_worn2recon,
+        "rmse_recon_to_worn_mm":   rmse_recon2worn,
+        "mae_recon_to_worn_mm":    mae_recon2worn,
+        "r_squared":               r_squared,
+        "variance_explained_pct":  r_squared * 100.0,
+        "median_spacing_mm":       median_spacing,
+        "coverage_1x_spacing":     cov_1x,
+        "coverage_2x_spacing":     cov_2x,
+        "coverage_5x_spacing":     cov_5x,
+        "emd_mm":                  emd_val,
+        "emd_n_pts":               emd_n_pts,
+        **fscores,
+        "n_worn_pts":              len(worn_raw),
+        "n_recon_pts":             len(recon_raw),
     }
     return m
 
@@ -1100,11 +1137,15 @@ def run_reconstruction_pipeline(correspondence_dir: str,
                         )
                         print(f"    Geometric comparison (recon vs raw worn):")
                         print(f"      R² (variance explained): {geo_metrics['variance_explained_pct']:.2f}%")
-                        print(f"      Chamfer dist:  {geo_metrics['chamfer_mm']:.4f} mm")
-                        print(f"      Hausdorff:     {geo_metrics['hausdorff_mm']:.4f} mm")
-                        print(f"      RMSE worn→rec: {geo_metrics['rmse_worn_to_recon_mm']:.4f} mm")
-                        print(f"      MAE  worn→rec: {geo_metrics['mae_worn_to_recon_mm']:.4f} mm")
-                        print(f"      Coverage (2x spacing): {geo_metrics['coverage_2x_spacing']*100:.1f}%")
+                        print(f"      Chamfer dist:   {geo_metrics['chamfer_mm']:.4f} mm")
+                        print(f"      Hausdorff:      {geo_metrics['hausdorff_mm']:.4f} mm")
+                        print(f"      RMSE worn→rec:  {geo_metrics['rmse_worn_to_recon_mm']:.4f} mm")
+                        print(f"      MAE  worn→rec:  {geo_metrics['mae_worn_to_recon_mm']:.4f} mm")
+                        print(f"      Coverage (2x):  {geo_metrics['coverage_2x_spacing']*100:.1f}%")
+                        print(f"      F-Score@0.5mm:  {geo_metrics.get('fscore_0p5mm', 0):.4f}")
+                        print(f"      F-Score@1.0mm:  {geo_metrics.get('fscore_1p0mm', 0):.4f}")
+                        emd = geo_metrics.get('emd_mm')
+                        print(f"      EMD:            {emd:.4f} mm" if emd is not None else "      EMD:            N/A")
                 except Exception as inv_err:
                     print(f"    [WARN] Inverse transform failed: {inv_err}")
                     reconstructed_raw = None
@@ -1345,7 +1386,7 @@ def main():
     
     correspondence_dir = args.correspondence_dir or os.path.join(script_dir, "output", "correspondence")
     artificial_wear_dir = args.artificial_wear or os.path.join(project_dir, "artificial_wear", "output")
-    output_dir = args.output or os.path.join(script_dir, "output")
+    output_dir = args.output or os.path.join(script_dir, "output", "recon_all_v3")
     
     # Normalize optional held-out tooth ID
     test_tooth = None

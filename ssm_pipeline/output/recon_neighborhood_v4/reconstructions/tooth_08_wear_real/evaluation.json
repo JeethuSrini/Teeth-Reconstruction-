@@ -1,0 +1,77 @@
+{
+  "source_worn": "tooth_08_wear_real",
+  "method": "neighborhood",
+  "neighbor_info": {
+    "worn_tooth": "tooth_08_wear_real",
+    "method": "neighborhood",
+    "n_neighbors": 5,
+    "neighbor_ids": [
+      "15",
+      "11",
+      "10",
+      "02",
+      "08"
+    ],
+    "neighbor_indices": [
+      14,
+      10,
+      9,
+      1,
+      7
+    ],
+    "neighbor_distances": [
+      3.518227337779576,
+      3.681737722104842,
+      4.084306737983339,
+      4.226845867709919,
+      4.501949767696918
+    ],
+    "fallback_reason": null,
+    "threshold": 39.95332940773275
+  },
+  "ssm_components": 4,
+  "ssm_variance_explained": 1.0,
+  "n_points_removed": 15000,
+  "coefficients": [
+    -0.7569826027063702,
+    -0.3135001222155374,
+    0.3496833892796311,
+    0.10917049695394354
+  ],
+  "regularization": 1.0,
+  "refinement": {
+    "ssm_obs_rmse": 0.007734220159107735,
+    "ssm_obs_mae": 0.0066996383824797405,
+    "ssm_obs_max_error": 0.020353694310606105,
+    "missing_avg_displacement": 0.01197314763484375,
+    "missing_max_displacement": 0.017865322090713377,
+    "final_obs_rmse": 0.0,
+    "final_all_rmse": 0.001696482886092649,
+    "n_observed": 85000,
+    "n_missing": 15000
+  },
+  "geometric_comparison": {
+    "chamfer_mm": 0.0470201553917109,
+    "hausdorff_mm": 0.621931631585492,
+    "rmse_worn_to_recon_mm": 0.0633626563458285,
+    "mae_worn_to_recon_mm": 0.047955338351057135,
+    "rmse_recon_to_worn_mm": 0.0600531954138491,
+    "mae_recon_to_worn_mm": 0.04608497243236467,
+    "r_squared": 0.9996459774559707,
+    "variance_explained_pct": 99.96459774559708,
+    "median_spacing_mm": 0.020080836635959668,
+    "coverage_1x_spacing": 0.17664365197997484,
+    "coverage_2x_spacing": 0.5528625999478017,
+    "coverage_5x_spacing": 0.9235176880916791,
+    "emd_mm": 0.36022669070888264,
+    "emd_n_pts": 2048,
+    "fscore_0p5mm_precision": 0.99978,
+    "fscore_0p5mm_recall": 0.9990509407549766,
+    "fscore_0p5mm": 0.9994153374179238,
+    "fscore_1p0mm_precision": 1.0,
+    "fscore_1p0mm_recall": 1.0,
+    "fscore_1p0mm": 1.0,
+    "n_worn_pts": 84294,
+    "n_recon_pts": 100000
+  }
+}

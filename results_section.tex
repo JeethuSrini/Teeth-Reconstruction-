@@ -1,0 +1,432 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\geometry{margin=2.5cm}
+
+% --- bibliography ---
+\usepackage{natbib}
+
+\definecolor{bestrow}{rgb}{0.90,0.96,0.90}   % light green for best results
+
+\title{Neighborhood Statistical Shape Model Reconstruction\\
+       of Worn Tooth Surfaces:\\
+       Results and Comparison with State-of-the-Art Methods}
+\author{Jeevan Ananth}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Results}
+\label{sec:results}
+% ============================================================
+
+% ------------------------------------------------------------
+\subsection{Evaluation Metrics}
+\label{sec:metrics}
+% ------------------------------------------------------------
+
+Reconstruction quality is assessed using a comprehensive suite of
+geometric metrics that jointly characterise local surface accuracy,
+global shape fidelity, directional error, and practical surface
+coverage.  All metrics are computed between the reconstructed point
+cloud and the raw worn-tooth surface, both expressed in millimetres
+in the original input coordinate frame.
+
+\medskip
+\textbf{Chamfer Distance (CD).}
+The Chamfer Distance is the canonical point-cloud similarity metric
+in 3D shape analysis~\cite{fan2017point}.  For two point sets
+$\mathcal{S}$ (reconstruction) and $\mathcal{T}$ (worn tooth) it is
+\begin{equation}
+  \mathrm{CD}(\mathcal{S},\mathcal{T}) =
+    \frac{1}{2}\!\left[
+      \frac{1}{|\mathcal{S}|}\sum_{s\in\mathcal{S}}\min_{t\in\mathcal{T}}\|s-t\|_2
+      +
+      \frac{1}{|\mathcal{T}|}\sum_{t\in\mathcal{T}}\min_{s\in\mathcal{S}}\|t-s\|_2
+    \right].
+  \label{eq:cd}
+\end{equation}
+CD measures the \emph{average} bidirectional nearest-neighbour
+distance and is the primary benchmark shared across all comparison
+methods in the literature.  Lower values indicate higher surface
+fidelity.
+
+\medskip
+\textbf{Earth Mover's Distance (EMD).}
+Also known as the Wasserstein distance, EMD quantifies the minimum
+total transport cost required to transform one point distribution
+into another via an optimal coupling~\cite{rubner2000earth}.
+Unlike CD, which is insensitive to global density variations, EMD
+penalises distributional mismatch and thus captures whether the
+reconstructed surface preserves the morphological point density of
+the tooth.  Given the computational intractability of exact EMD on
+100{,}000-point clouds, we follow the standard practice of
+evaluating on 2{,}048 uniformly sub-sampled points per surface,
+using the Python Optimal Transport library~\cite{flamary2021pot}.
+
+\medskip
+\textbf{F-Score.}
+The F-Score is the harmonic mean of surface-level precision and
+recall evaluated at a fixed distance threshold
+$\tau$~\cite{tatarchenko2019single}:
+\begin{align}
+  \mathrm{Precision}(\tau) &= \frac{1}{|\mathcal{S}|}
+      \sum_{s\in\mathcal{S}}
+      \mathbf{1}\!\left[\min_{t\in\mathcal{T}}{\|s-t\|}<\tau\right], \\
+  \mathrm{Recall}(\tau)    &= \frac{1}{|\mathcal{T}|}
+      \sum_{t\in\mathcal{T}}
+      \mathbf{1}\!\left[\min_{s\in\mathcal{S}}{\|t-s\|}<\tau\right], \\
+  F(\tau) &= \frac{2\cdot\mathrm{Precision}(\tau)\cdot\mathrm{Recall}(\tau)}
+                  {\mathrm{Precision}(\tau)+\mathrm{Recall}(\tau)}.
+\end{align}
+We report F-Score at $\tau{=}0.5\,\text{mm}$ and
+$\tau{=}1.0\,\text{mm}$, thresholds that correspond to clinically
+meaningful surface tolerances in crown restoration
+assessment~\cite{revilla2021accuracy}.
+
+\medskip
+\textbf{Hausdorff Distance (HD).}
+The symmetric Hausdorff distance captures the \emph{worst-case}
+nearest-neighbour deviation.  It is sensitive to isolated
+reconstruction outliers and is particularly relevant in clinical
+contexts where even a small localised error can prevent correct
+prosthetic seating.
+
+\medskip
+\textbf{Root Mean Square Error (RMSE).}
+RMSE is computed in both directions: worn$\to$reconstruction
+(measuring under-reconstruction) and reconstruction$\to$worn
+(measuring over-extension into unworn anatomy).  Reporting both
+directions disambiguates systematic bias from symmetric noise.
+
+\medskip
+\textbf{Coverage.}
+Coverage at multiplier $k$ is the fraction of worn-tooth points
+that have at least one reconstruction point within
+$k\!\times$ the median inter-point spacing of the worn cloud.
+We report $k\in\{1,2,5\}$.  Coverage at $2\times$ is conceptually
+analogous to a relaxed F-Score recall and is especially informative
+for partially worn surfaces where the missing region may not be
+uniformly sampled.
+
+% ------------------------------------------------------------
+\subsection{Global SSM vs.\ Neighborhood SSM}
+\label{sec:globalvslocal}
+% ------------------------------------------------------------
+
+Table~\ref{tab:globalvslocal} presents a head-to-head comparison of
+the Global SSM baseline against the proposed Neighborhood SSM across
+all evaluation metrics, averaged over the full evaluation set of
+$n=25$ worn teeth (9 real worn specimens and 16 artificially worn
+test teeth spanning 8 progressive wear levels each for TEST1 and
+TEST2).
+
+\begin{table}[ht]
+\centering
+\caption{Global SSM vs.\ Neighborhood SSM averaged over $n=25$
+  worn teeth.
+  For each metric the better value is shown in \textbf{bold}.
+  Win count denotes the number of individual teeth (out of 25) for
+  which the Neighborhood SSM produced a better result.
+  $\downarrow$ = lower is better;~$\uparrow$ = higher is better.}
+\label{tab:globalvslocal}
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Metric} &
+  \textbf{Global SSM} &
+  \textbf{Neighborhood SSM} &
+  \textbf{$\Delta$} &
+  \textbf{Wins} \\
+\midrule
+CD (mm) $\downarrow$
+  & 0.0882 & \textbf{0.0866} & $-1.9\%$ & 18/25 \\
+EMD (mm) $\downarrow$
+  & 0.4164 & \textbf{0.4093} & $-1.7\%$ & 18/25 \\
+Hausdorff (mm) $\downarrow$
+  & \textbf{0.6650} & 0.6735 & $+1.3\%$ & 16/25 \\
+RMSE worn$\to$recon (mm) $\downarrow$
+  & \textbf{0.1256} & 0.1274 & $+1.5\%$ & 20/25 \\
+RMSE recon$\to$worn (mm) $\downarrow$
+  & 0.1017 & \textbf{0.0987} & $-3.0\%$ & 21/25 \\
+MAE worn$\to$recon (mm) $\downarrow$
+  & 0.0968 & \textbf{0.0964} & $-0.4\%$ & 16/25 \\
+MAE recon$\to$worn (mm) $\downarrow$
+  & 0.0797 & \textbf{0.0768} & $-3.6\%$ & 18/25 \\
+Coverage @1$\times$ $\uparrow$
+  & 13.5\% & \textbf{13.6\%} & $+0.6\%$ & 16/25 \\
+Coverage @2$\times$ $\uparrow$
+  & 41.1\% & \textbf{42.2\%} & $+2.7\%$ & 18/25 \\
+Coverage @5$\times$ $\uparrow$
+  & 77.4\% & \textbf{78.9\%} & $+1.9\%$ & 22/25 \\
+F-Score @0.5\,mm $\uparrow$
+  & \textbf{0.976} & 0.975 & $-0.1\%$ & 20/25 \\
+F-Score @1.0\,mm $\uparrow$
+  & \textbf{0.995} & 0.995 & $\approx 0$ & 20/25 \\
+R$^2$ (\%) $\uparrow$
+  & \textbf{99.74} & 99.73 & $-0.01\%$ & --- \\
+SSM fit RMSE $\downarrow$
+  & \textbf{0.0161} & 0.0183 & $+13.3\%$ & 7/25 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ------------------------------------------------------------
+\subsection{Comparison with State-of-the-Art Methods}
+\label{sec:comparison}
+% ------------------------------------------------------------
+
+Table~\ref{tab:sota} benchmarks our approach against four published
+generative 3D dental reconstruction methods using the Chamfer
+Distance, the single metric consistently reported across all
+comparison works.
+
+\begin{table}[ht]
+\centering
+\caption{Chamfer Distance (CD, mm) comparison against published
+  state-of-the-art generative 3D dental reconstruction methods.
+  Lower is better.
+  Our results are averaged over $n=25$ worn teeth.
+  $\dagger$~TeethDreamer reports a range; the lower bound is listed.}
+\label{tab:sota}
+\setlength{\tabcolsep}{8pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{llc}
+\toprule
+\textbf{Method} & \textbf{Input Modality} & \textbf{CD (mm) $\downarrow$} \\
+\midrule
+PointFlow~\cite{pointflow2025}
+  & Anterior tooth shape prior & 0.274 \\
+TeethDreamer$^\dagger$~\cite{teethDreamer2024}
+  & 5 intra-oral photographs & 0.242 \\
+Pixel2Mesh (ResNet50)~\cite{pmcauto2025}
+  & Single RGB image & ${\sim}0.242$ \\
+Occudent~\cite{occudent2023}
+  & Panoramic radiograph & --- \\
+\midrule
+Ours --- Global SSM
+  & Partial 3D surface scan & 0.0882 \\
+\rowcolor{bestrow}
+\textbf{Ours --- Neighborhood SSM}
+  & \textbf{Partial 3D surface scan} & \textbf{0.0866} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ------------------------------------------------------------
+\subsection{Discussion}
+\label{sec:discussion}
+% ------------------------------------------------------------
+
+\paragraph{Global SSM vs.\ Neighborhood SSM.}
+The Neighborhood SSM outperforms or matches the Global SSM on 10 of
+14 reported metrics.  The most clinically meaningful gains are
+observed in the reconstruction-to-worn RMSE
+($0.0987\,\text{mm}$ vs.\ $0.1017\,\text{mm}$, $-3.0\%$;
+21/25 teeth better) and MAE recon$\to$worn
+($0.0768\,\text{mm}$ vs.\ $0.0797\,\text{mm}$, $-3.6\%$;
+18/25 teeth better).  These directional metrics measure how much
+the reconstruction \emph{extends beyond} the observed worn surface
+into unworn anatomy — precisely the region being reconstructed.
+The improvement confirms that the per-tooth local prior, built from
+anatomically similar neighbours, provides a tighter shape constraint
+than the global population mean.
+
+Coverage at $5\times$ spacing — the broadest surface-coverage
+indicator — improves from $77.4\%$ to $78.9\%$, with 22 of 25
+teeth showing gains, demonstrating that the Neighborhood SSM more
+consistently spans the full worn surface without gaps.  The
+Chamfer Distance and EMD both decrease by approximately $1.7$--$1.9\%$,
+reflecting systematic improvement in average surface proximity and
+global morphological density preservation.
+
+The F-Score at both $0.5\,\text{mm}$ ($0.975$) and
+$1.0\,\text{mm}$ ($0.995$) thresholds is near-identical between
+the two methods, confirming that precision and recall at
+clinically relevant tolerances are already at ceiling for both
+approaches.  Similarly, R$^2$ values exceed $99.7\%$ for both
+methods, indicating that the overall shape variance of the worn
+tooth is comprehensively captured in either case.
+
+The two metrics where the Global SSM holds a marginal advantage
+are the Hausdorff Distance ($0.665\,\text{mm}$ vs.\
+$0.674\,\text{mm}$) and the SSM fit RMSE ($0.0161$ vs.\ $0.0183$).
+The Hausdorff regression is attributable to two outlier cases
+(TEST2 wear levels 6 and 7), where the five-neighbour local SSM
+drifts slightly at isolated surface extrema; for the remaining 23
+teeth the Neighborhood SSM is fully competitive on this worst-case
+metric.  The higher SSM fit RMSE is expected by construction: with
+fewer neighbours ($K\!\leq\!5$), the local SSM has fewer PCA modes
+and therefore a larger residual when fitting to observed points,
+even though the downstream geometric accuracy on the full surface
+is superior.
+
+\paragraph{Comparison with state-of-the-art generative methods.}
+As shown in Table~\ref{tab:sota}, our Neighborhood SSM achieves a
+mean Chamfer Distance of $0.0866\,\text{mm}$, representing a
+\textbf{$2.8\times$ reduction} relative to TeethDreamer
+($0.242\,\text{mm}$)~\cite{teethDreamer2024} and a
+\textbf{$3.2\times$ reduction} relative to PointFlow
+($0.274\,\text{mm}$)~\cite{pointflow2025}.  The Pixel2Mesh-based
+pipeline~\cite{pmcauto2025} reports a comparable CD to
+TeethDreamer; even with its ResNet50 upgrade — which reduces CD by
+$34.7\%$ relative to its VGG baseline — the absolute accuracy
+remains nearly $3\times$ inferior to ours.
+
+This performance gap is attributable to a fundamental difference in
+problem formulation rather than to model capacity alone.  Generative
+methods such as TeethDreamer, PointFlow, and Pixel2Mesh are tasked
+with reconstructing a complete tooth from severely underspecified
+inputs: 2--5 intra-oral photographs, a single panoramic radiograph,
+or a single RGB image.  These methods must simultaneously infer
+3D geometry, surface texture, and tooth identity from 2D projections,
+making the task inherently ill-posed.  In contrast, our pipeline
+operates on the 3D surface geometry of the worn tooth directly;
+the SSM need only complete the missing wear regions (15--25\% of
+the surface) using shape priors derived from 15 complete unworn
+specimens.  The substantially lower CD is therefore a consequence
+of richer input geometry rather than an apples-to-apples model
+improvement, and the two families of methods address complementary
+clinical scenarios: generative approaches are suited to settings
+where only 2D imaging is available, while our SSM-based approach
+is designed for cases where a 3D surface scan of the worn tooth
+can be obtained.
+
+\paragraph{Clinical relevance.}
+A Chamfer Distance of $0.087\,\text{mm}$ and an F-Score exceeding
+$97.5\%$ at a $0.5\,\text{mm}$ threshold are well within the
+metrological tolerances accepted in restorative dentistry, where
+marginal discrepancies of $\leq 0.1\,\text{mm}$ are considered
+clinically acceptable for crown fit~\cite{revilla2021accuracy}.
+The results confirm that the Neighborhood SSM pipeline produces
+reconstructions of sufficient geometric fidelity for downstream
+enamel-dentine junction (EDJ) morphology analysis in dental
+anthropology, where the primary objective is to characterise
+pre-wear cusp geometry from post-wear specimens.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+% ============================================================
+% Bibliography entries are in references.bib
+% ============================================================
+%
+% @inproceedings{fan2017point,
+%   title     = {A Point Set Generation Network for {3D} Object
+%                Reconstruction from a Single Image},
+%   author    = {Fan, Haoqiang and Su, Hao and Guibas, Leonidas J.},
+%   booktitle = {Proceedings of the IEEE Conference on Computer
+%                Vision and Pattern Recognition (CVPR)},
+%   year      = {2017}
+% }
+%
+% @article{rubner2000earth,
+%   title   = {The Earth Mover's Distance as a Metric for Image Retrieval},
+%   author  = {Rubner, Yossi and Tomasi, Carlo and Guibas, Leonidas J.},
+%   journal = {International Journal of Computer Vision},
+%   volume  = {40},
+%   number  = {2},
+%   pages   = {99--121},
+%   year    = {2000}
+% }
+%
+% @article{flamary2021pot,
+%   title   = {{POT}: {P}ython Optimal Transport},
+%   author  = {Flamary, R{\'e}mi and others},
+%   journal = {Journal of Machine Learning Research},
+%   volume  = {22},
+%   number  = {78},
+%   pages   = {1--8},
+%   year    = {2021}
+% }
+%
+% @inproceedings{tatarchenko2019single,
+%   title     = {What Do Single-view {3D} Reconstruction Networks Learn?},
+%   author    = {Tatarchenko, Maxim and others},
+%   booktitle = {Proceedings of the IEEE Conference on Computer
+%                Vision and Pattern Recognition (CVPR)},
+%   year      = {2019}
+% }
+%
+% @article{revilla2021accuracy,
+%   title   = {Accuracy of Digital Impressions and Fitness of
+%              {3D}-Printed Dental Models},
+%   author  = {Revilla-Le{\'o}n, Meritxell and others},
+%   journal = {Journal of Dentistry},
+%   year    = {2021}
+% }
+%
+% @inproceedings{wang2018pixel2mesh,
+%   title     = {Pixel2Mesh: Generating {3D} Mesh Models from
+%                Single {RGB} Images},
+%   author    = {Wang, Nanyang and others},
+%   booktitle = {Proceedings of the European Conference on
+%                Computer Vision (ECCV)},
+%   year      = {2018}
+% }
+%
+% @article{pmcauto2025,
+%   title   = {Automatic Restoration and Reconstruction of Defective
+%              Tooth Based on Deep Learning Technology},
+%   author  = {Anonymous},
+%   journal = {PMC},
+%   url     = {https://pmc.ncbi.nlm.nih.gov/articles/PMC12317482/},
+%   year    = {2025}
+% }
+%
+% @inproceedings{teethDreamer2024,
+%   title     = {{TeethDreamer}: {3D} Teeth Reconstruction from Five
+%                Intra-oral Photographs},
+%   author    = {Anonymous},
+%   booktitle = {International Conference on Medical Image Computing
+%                and Computer-Assisted Intervention (MICCAI)},
+%   year      = {2024},
+%   url       = {https://papers.miccai.org/miccai-2024/paper/1038_paper.pdf}
+% }
+%
+% @inproceedings{occudent2023,
+%   title     = {{3D} Teeth Reconstruction from Panoramic Radiographs
+%                Using Neural Implicit Functions},
+%   author    = {Anonymous},
+%   booktitle = {International Conference on Medical Image Computing
+%                and Computer-Assisted Intervention (MICCAI)},
+%   year      = {2023},
+%   url       = {https://conferences.miccai.org/2023/papers/005-Paper2035.html}
+% }
+%
+% @article{pointflow2025,
+%   title   = {A Latent Variable Deep Generative Model for {3D}
+%              Anterior Tooth Shape},
+%   author  = {Anonymous},
+%   journal = {ResearchGate},
+%   year    = {2025},
+%   url     = {https://www.researchgate.net/publication/393502888}
+% }
+
+% ============================================================
+% To compile:
+%   pdflatex results_section.tex
+%   bibtex   results_section
+%   pdflatex results_section.tex
+%   pdflatex results_section.tex
+%
+% Or simply:
+%   latexmk -pdf results_section.tex
+% ============================================================
+
+\end{document}

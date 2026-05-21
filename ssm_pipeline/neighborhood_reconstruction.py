@@ -446,11 +446,15 @@ def run_neighborhood_reconstruction(
                     geo_metrics = compute_geometric_comparison(
                         reconstructed_raw, worn_raw, norm_scale)
                     print(f"    Geometric comparison:")
-                    print(f"      R²:         {geo_metrics['variance_explained_pct']:.2f}%")
-                    print(f"      Chamfer:    {geo_metrics['chamfer_mm']:.4f} mm")
-                    print(f"      Hausdorff:  {geo_metrics['hausdorff_mm']:.4f} mm")
-                    print(f"      RMSE w->r:  {geo_metrics['rmse_worn_to_recon_mm']:.4f} mm")
-                    print(f"      Coverage 2x:{geo_metrics['coverage_2x_spacing']*100:.1f}%")
+                    print(f"      R²:          {geo_metrics['variance_explained_pct']:.2f}%")
+                    print(f"      Chamfer:     {geo_metrics['chamfer_mm']:.4f} mm")
+                    print(f"      Hausdorff:   {geo_metrics['hausdorff_mm']:.4f} mm")
+                    print(f"      RMSE w->r:   {geo_metrics['rmse_worn_to_recon_mm']:.4f} mm")
+                    print(f"      Coverage 2x: {geo_metrics['coverage_2x_spacing']*100:.1f}%")
+                    print(f"      F-Score@0.5: {geo_metrics.get('fscore_0p5mm', 0):.4f}")
+                    print(f"      F-Score@1.0: {geo_metrics.get('fscore_1p0mm', 0):.4f}")
+                    emd = geo_metrics.get('emd_mm')
+                    print(f"      EMD:         {emd:.4f} mm" if emd is not None else "      EMD:         N/A")
             except Exception as e:
                 print(f"    [WARN] Inverse transform / geo comparison failed: {e}")
                 reconstructed_raw = None
@@ -556,29 +560,37 @@ def _print_comparison(results: List[Dict],
             return f"{v:.2f}" if v is not None else "N/A"
 
         # Global row
-        g_r2 = g_geo.get("variance_explained_pct")
+        g_r2  = g_geo.get("variance_explained_pct")
         g_ssm = g_ref.get("ssm_obs_rmse")
-        g_ch = g_geo.get("chamfer_mm")
-        g_hd = g_geo.get("hausdorff_mm")
+        g_ch  = g_geo.get("chamfer_mm")
+        g_hd  = g_geo.get("hausdorff_mm")
         g_cov = g_geo.get("coverage_2x_spacing")
+        g_fs05 = g_geo.get("fscore_0p5mm")
+        g_fs10 = g_geo.get("fscore_1p0mm")
+        g_emd  = g_geo.get("emd_mm")
 
         print(f"{worn_name:<30} {'Global':<12} "
               f"{fmt_pct(g_r2):<10} {fmt(g_ssm):<10} "
               f"{fmt(g_ch):<10} {fmt(g_hd):<10} "
-              f"{fmt_pct(g_cov * 100 if g_cov is not None else None):<10}")
+              f"{fmt_pct(g_cov * 100 if g_cov is not None else None):<10} "
+              f"{fmt(g_fs05):<10} {fmt(g_fs10):<10} {fmt(g_emd):<10}")
 
         # Neighborhood row
-        n_r2 = n_geo.get("variance_explained_pct") if n_geo else None
+        n_r2  = n_geo.get("variance_explained_pct") if n_geo else None
         n_ssm = n_ref.get("ssm_obs_rmse") if n_ref else None
-        n_ch = n_geo.get("chamfer_mm") if n_geo else None
-        n_hd = n_geo.get("hausdorff_mm") if n_geo else None
+        n_ch  = n_geo.get("chamfer_mm") if n_geo else None
+        n_hd  = n_geo.get("hausdorff_mm") if n_geo else None
         n_cov = n_geo.get("coverage_2x_spacing") if n_geo else None
+        n_fs05 = n_geo.get("fscore_0p5mm") if n_geo else None
+        n_fs10 = n_geo.get("fscore_1p0mm") if n_geo else None
+        n_emd  = n_geo.get("emd_mm") if n_geo else None
 
         method_tag = f"Nbr({r['n_neighbors']})" if r["method"] == "neighborhood" else "Fallback"
         print(f"{'':<30} {method_tag:<12} "
               f"{fmt_pct(n_r2):<10} {fmt(n_ssm):<10} "
               f"{fmt(n_ch):<10} {fmt(n_hd):<10} "
-              f"{fmt_pct(n_cov * 100 if n_cov is not None else None):<10}")
+              f"{fmt_pct(n_cov * 100 if n_cov is not None else None):<10} "
+              f"{fmt(n_fs05):<10} {fmt(n_fs10):<10} {fmt(n_emd):<10}")
         print()
 
         comparison_rows.append({
@@ -586,12 +598,20 @@ def _print_comparison(results: List[Dict],
             "method": r["method"],
             "n_neighbors": r["n_neighbors"],
             "neighbor_ids": r["neighbor_ids"],
-            "global": {"r2_pct": g_r2, "ssm_obs_rmse": g_ssm,
-                        "chamfer_mm": g_ch, "hausdorff_mm": g_hd,
-                        "coverage_2x": g_cov},
-            "neighborhood": {"r2_pct": n_r2, "ssm_obs_rmse": n_ssm,
-                              "chamfer_mm": n_ch, "hausdorff_mm": n_hd,
-                              "coverage_2x": n_cov},
+            "global": {
+                "r2_pct": g_r2, "ssm_obs_rmse": g_ssm,
+                "chamfer_mm": g_ch, "hausdorff_mm": g_hd,
+                "coverage_2x": g_cov,
+                "fscore_0p5mm": g_fs05, "fscore_1p0mm": g_fs10,
+                "emd_mm": g_emd,
+            },
+            "neighborhood": {
+                "r2_pct": n_r2, "ssm_obs_rmse": n_ssm,
+                "chamfer_mm": n_ch, "hausdorff_mm": n_hd,
+                "coverage_2x": n_cov,
+                "fscore_0p5mm": n_fs05, "fscore_1p0mm": n_fs10,
+                "emd_mm": n_emd,
+            },
         })
 
     comp_path = os.path.join(output_dir, "comparison.json")
@@ -613,7 +633,7 @@ def main():
     parser.add_argument("--global-recon-dir", type=str, default=None,
                         help="Directory with global-mean reconstruction results (for comparison)")
     parser.add_argument("--output", type=str,
-                        default="output/recon_neighborhood",
+                        default="output/recon_neighborhood_v4",
                         help="Output directory")
     parser.add_argument("--worn-teeth", nargs="+", default=None,
                         help="Specific worn-tooth directory names to reconstruct "

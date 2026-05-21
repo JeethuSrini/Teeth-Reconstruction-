@@ -1,0 +1,736 @@
+{
+  "threshold_info": {
+    "median_pairwise": 8.077037538878141,
+    "q25": 6.038791554535116,
+    "q75": 21.97693748896242,
+    "iqr": 15.938145934427304,
+    "iqr_multiplier": 2.0,
+    "threshold": 39.95332940773275,
+    "n_pairs": 153,
+    "min_pairwise": 3.044693318086517,
+    "max_pairwise": 56.98656221494877,
+    "good_tooth_ids": [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18"
+    ]
+  },
+  "max_neighbors": 5,
+  "selections": [
+    {
+      "worn_tooth": "tooth_01_wear_real",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "08",
+        "10",
+        "04",
+        "15",
+        "11"
+      ],
+      "neighbor_indices": [
+        7,
+        9,
+        3,
+        14,
+        10
+      ],
+      "neighbor_distances": [
+        3.4846881992321017,
+        4.026738899154168,
+        4.735325260530883,
+        5.170558088157764,
+        5.562736048288251
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_02_wear_real",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "05",
+        "17",
+        "03",
+        "02",
+        "12"
+      ],
+      "neighbor_indices": [
+        4,
+        16,
+        2,
+        1,
+        11
+      ],
+      "neighbor_distances": [
+        3.5919477464446503,
+        3.9162319726432315,
+        5.170129312297749,
+        5.359652651758682,
+        5.729973299544763
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_03_wear_real",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "14",
+        "04",
+        "10",
+        "08",
+        "01"
+      ],
+      "neighbor_indices": [
+        13,
+        3,
+        9,
+        7,
+        0
+      ],
+      "neighbor_distances": [
+        7.031458690849362,
+        20.947456366822095,
+        21.6109169603383,
+        22.429899087389035,
+        22.440774020678244
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_04_wear_real",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "02",
+        "01",
+        "03",
+        "15",
+        "12"
+      ],
+      "neighbor_indices": [
+        1,
+        0,
+        2,
+        14,
+        11
+      ],
+      "neighbor_distances": [
+        3.1801438836881313,
+        3.7465484773619573,
+        3.953085615212654,
+        4.312953309111903,
+        4.745175096410968
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_05_wear_real",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "08",
+        "13",
+        "10",
+        "04",
+        "14"
+      ],
+      "neighbor_indices": [
+        7,
+        12,
+        9,
+        3,
+        13
+      ],
+      "neighbor_distances": [
+        29.345234860941154,
+        29.493082532608593,
+        30.371438906932987,
+        30.76476935702135,
+        31.495729677555822
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_06_wear_real",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "14",
+        "04",
+        "01",
+        "10",
+        "07"
+      ],
+      "neighbor_indices": [
+        13,
+        3,
+        0,
+        9,
+        6
+      ],
+      "neighbor_distances": [
+        3.3020153877222196,
+        19.81679353163784,
+        20.22644743513433,
+        20.574625208841645,
+        21.21777183674641
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_07_wear_real",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "14",
+        "04",
+        "10",
+        "08",
+        "15"
+      ],
+      "neighbor_indices": [
+        13,
+        3,
+        9,
+        7,
+        14
+      ],
+      "neighbor_distances": [
+        7.507593588466915,
+        18.60726104827036,
+        19.799322113767825,
+        20.283644783386517,
+        20.38678773781896
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_08_wear_real",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "15",
+        "11",
+        "10",
+        "02",
+        "08"
+      ],
+      "neighbor_indices": [
+        14,
+        10,
+        9,
+        1,
+        7
+      ],
+      "neighbor_distances": [
+        3.518227337779576,
+        3.681737722104842,
+        4.084306737983339,
+        4.226845867709919,
+        4.501949767696918
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_09_wear_real",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "05",
+        "06",
+        "01",
+        "17",
+        "07"
+      ],
+      "neighbor_indices": [
+        4,
+        5,
+        0,
+        16,
+        6
+      ],
+      "neighbor_distances": [
+        3.967016999157001,
+        4.070008712456316,
+        5.556296253926469,
+        6.05578300723083,
+        6.097169931917806
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST1_wear_level0",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "13",
+        "10",
+        "08",
+        "11",
+        "04"
+      ],
+      "neighbor_indices": [
+        12,
+        9,
+        7,
+        10,
+        3
+      ],
+      "neighbor_distances": [
+        3.526327583425406,
+        3.6132636344244817,
+        3.9098637695664706,
+        4.711325664021752,
+        4.757902236708497
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST1_wear_level1",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "13",
+        "10",
+        "01",
+        "11",
+        "07"
+      ],
+      "neighbor_indices": [
+        12,
+        9,
+        0,
+        10,
+        6
+      ],
+      "neighbor_distances": [
+        3.5379040350849777,
+        3.9805597528506973,
+        4.294442594303891,
+        4.30548675751264,
+        4.386753941003684
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST1_wear_level2",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "01",
+        "07",
+        "13",
+        "11",
+        "10"
+      ],
+      "neighbor_indices": [
+        0,
+        6,
+        12,
+        10,
+        9
+      ],
+      "neighbor_distances": [
+        3.383463338595347,
+        3.4492202721730836,
+        3.9785663989888547,
+        4.630764613607064,
+        4.854801177310079
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST1_wear_level3",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "01",
+        "07",
+        "13",
+        "11",
+        "12"
+      ],
+      "neighbor_indices": [
+        0,
+        6,
+        12,
+        10,
+        11
+      ],
+      "neighbor_distances": [
+        3.528067424461171,
+        3.5534174118695874,
+        3.973551027141913,
+        4.704843852939794,
+        4.801034219447192
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST1_wear_level4",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "01",
+        "07",
+        "12",
+        "13",
+        "06"
+      ],
+      "neighbor_indices": [
+        0,
+        6,
+        11,
+        12,
+        5
+      ],
+      "neighbor_distances": [
+        3.0121592591433894,
+        3.1885791997044897,
+        4.365814613020799,
+        4.559246721812519,
+        4.760834391133203
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST1_wear_level5",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "07",
+        "01",
+        "12",
+        "06",
+        "13"
+      ],
+      "neighbor_indices": [
+        6,
+        0,
+        11,
+        5,
+        12
+      ],
+      "neighbor_distances": [
+        3.0564125727000166,
+        3.121539564862197,
+        4.397152014752171,
+        4.506785046337802,
+        4.847547992200236
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST1_wear_level6",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "07",
+        "01",
+        "12",
+        "06",
+        "03"
+      ],
+      "neighbor_indices": [
+        6,
+        0,
+        11,
+        5,
+        2
+      ],
+      "neighbor_distances": [
+        4.729010917021377,
+        5.026300265524596,
+        5.044973753645594,
+        5.221198533776287,
+        6.534897313869008
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST1_wear_level7",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "07",
+        "01",
+        "12",
+        "06",
+        "13"
+      ],
+      "neighbor_indices": [
+        6,
+        0,
+        11,
+        5,
+        12
+      ],
+      "neighbor_distances": [
+        2.734808702007405,
+        2.8899230589056017,
+        4.213156019710869,
+        4.37636924903656,
+        5.155332272225606
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST2_wear_level0",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "15",
+        "03",
+        "17",
+        "02",
+        "01"
+      ],
+      "neighbor_indices": [
+        14,
+        2,
+        16,
+        1,
+        0
+      ],
+      "neighbor_distances": [
+        4.679384128883963,
+        4.857080706923221,
+        5.038919104619159,
+        5.444763471988349,
+        5.49950090451527
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST2_wear_level1",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "15",
+        "03",
+        "17",
+        "01",
+        "02"
+      ],
+      "neighbor_indices": [
+        14,
+        2,
+        16,
+        0,
+        1
+      ],
+      "neighbor_distances": [
+        4.642690091264043,
+        4.8043702721789225,
+        5.022005989354696,
+        5.467175946120967,
+        5.507354876154832
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST2_wear_level2",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "03",
+        "17",
+        "15",
+        "01",
+        "02"
+      ],
+      "neighbor_indices": [
+        2,
+        16,
+        14,
+        0,
+        1
+      ],
+      "neighbor_distances": [
+        4.678597755531916,
+        4.7732176763434015,
+        4.865601119009085,
+        5.480988799608358,
+        5.600660095093862
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST2_wear_level3",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "17",
+        "03",
+        "01",
+        "12",
+        "15"
+      ],
+      "neighbor_indices": [
+        16,
+        2,
+        0,
+        11,
+        14
+      ],
+      "neighbor_distances": [
+        4.247230092194561,
+        4.454948750050713,
+        5.6865210766719105,
+        5.688386019714472,
+        5.705164037207147
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST2_wear_level4",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "17",
+        "03",
+        "12",
+        "05",
+        "01"
+      ],
+      "neighbor_indices": [
+        16,
+        2,
+        11,
+        4,
+        0
+      ],
+      "neighbor_distances": [
+        4.1783539789533055,
+        4.497874256027733,
+        5.743034215599767,
+        5.766342406373821,
+        5.887450355774464
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST2_wear_level5",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "17",
+        "03",
+        "05",
+        "12",
+        "01"
+      ],
+      "neighbor_indices": [
+        16,
+        2,
+        4,
+        11,
+        0
+      ],
+      "neighbor_distances": [
+        4.346572952501267,
+        5.040828032252329,
+        5.328499130655532,
+        6.288664149253764,
+        6.4708216461186225
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST2_wear_level6",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "17",
+        "03",
+        "05",
+        "09",
+        "12"
+      ],
+      "neighbor_indices": [
+        16,
+        2,
+        4,
+        8,
+        11
+      ],
+      "neighbor_distances": [
+        5.380049287777536,
+        6.061142449497304,
+        6.804121422396684,
+        6.846786856308613,
+        6.932878090194355
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    },
+    {
+      "worn_tooth": "tooth_TEST2_wear_level7",
+      "method": "neighborhood",
+      "n_neighbors": 5,
+      "neighbor_ids": [
+        "17",
+        "09",
+        "03",
+        "05",
+        "12"
+      ],
+      "neighbor_indices": [
+        16,
+        8,
+        2,
+        4,
+        11
+      ],
+      "neighbor_distances": [
+        6.5365277967591675,
+        6.782941888672119,
+        7.094391254745372,
+        7.760687105646676,
+        7.794347379059201
+      ],
+      "fallback_reason": null,
+      "threshold": 39.95332940773275
+    }
+  ]
+}

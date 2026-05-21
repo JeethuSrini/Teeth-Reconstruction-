@@ -96,7 +96,7 @@ class CorrespondenceConfig:
     cpd_tolerance: float = 1e-5
     cpd_use_cuda: bool = True    # Use GPU if available
     registration_mode: str = "direct"  # "direct" or "coarse2fine"
-    cpd_points: int = 25000      # CPD points used in coarse2fine mode
+    cpd_points: int = 43000      # CPD points used in coarse2fine mode
     displacement_knn: int = 3    # KNN used to upsample coarse deformation
     
     # Template selection
@@ -588,19 +588,20 @@ def process_single_tooth(mesh_path: str,
             reference_Vt=template_Vt
         )
         
-        # Multi-start sign search: try all 4 right-handed axis-flip
-        # combinations and keep whichever gives the best ICP fitness.
-        # Flipping axes of the PCA-aligned cloud is equivalent to trying
-        # different eigenvector sign assignments without re-running SVD.
+        # Multi-start sign search: always run for all teeth.
+        # reference_Vt in normalize_point_cloud handles axis sign for teeth
+        # close to the template, but teeth with very different PCA orientations
+        # (low ICP fitness) need the full search to find the correct alignment.
         _RIGHT_HANDED_SIGNS = [
             np.array([ 1,  1,  1]),
             np.array([ 1, -1, -1]),
             np.array([-1,  1, -1]),
             np.array([-1, -1,  1]),
+            np.array([-1,  1,  1]),
         ]
         best_fitness = -1.0
         best_signs = _RIGHT_HANDED_SIGNS[0]
-        print("    Multi-start ICP orientation search (4 candidates)...")
+        print("    Multi-start ICP orientation search (5 candidates)...")
         for signs in _RIGHT_HANDED_SIGNS:
             trial = normalized * signs[np.newaxis, :]
             _, _, trial_meta = icp_align(
@@ -613,7 +614,7 @@ def process_single_tooth(mesh_path: str,
             if f > best_fitness:
                 best_fitness = f
                 best_signs = signs
-        
+
         # Apply the winning sign combination
         if not np.array_equal(best_signs, np.array([1, 1, 1])):
             print(f"    Sign correction applied: {best_signs.tolist()}  "
@@ -1048,8 +1049,8 @@ def main():
     parser.add_argument(
         "--cpd-points",
         type=int,
-        default=25000,
-        help="CPD points used in coarse2fine mode (default: 25000)"
+        default=43000,
+        help="CPD points used in coarse2fine mode (default: 43000)"
     )
     parser.add_argument(
         "--displacement-knn",
@@ -1063,17 +1064,43 @@ def main():
         default=42,
         help="Random seed (default: 42)"
     )
-    
+    parser.add_argument(
+        "--include-only",
+        nargs="+",
+        default=None,
+        metavar="FILENAME",
+        help="Only process these PLY filenames (basenames). Use with --template-ply to add new teeth to an existing correspondence set."
+    )
+    parser.add_argument(
+        "--template-ply",
+        type=str,
+        default=None,
+        help="Path to pre-built template.ply (skip template selection and use this). Required when using --include-only to extend an existing run."
+    )
+    parser.add_argument(
+        "--template-vt",
+        type=str,
+        default=None,
+        help="Path to pre-built template_Vt.npy (PCA rotation for sign alignment). Required with --template-ply."
+    )
+    parser.add_argument(
+        "--start-index",
+        type=int,
+        default=None,
+        help="Starting tooth index for naming new teeth (e.g. 16 → tooth_16, tooth_17, ...). "
+             "Defaults to the count of existing tooth_XX dirs in the output good_teeth folder + 1."
+    )
+
     args = parser.parse_args()
-    
+
     # Default paths
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_dir = os.path.dirname(script_dir)
-    
+
     good_teeth_dir = args.good_teeth or os.path.join(project_dir, "Good teeth")
     artificial_wear_dir = args.artificial_wear or os.path.join(project_dir, "artificial_wear", "output")
     output_dir = args.output or os.path.join(script_dir, "output", "correspondence")
-    
+
     # Create config
     config = CorrespondenceConfig(
         n_points=args.n_points,
@@ -1085,8 +1112,50 @@ def main():
         displacement_knn=args.displacement_knn,
         seed=args.seed
     )
-    
-    run_correspondence_pipeline(good_teeth_dir, artificial_wear_dir, output_dir, config, n_gpus=args.n_gpus)
+
+    if args.include_only:
+        # --- Add-new-teeth mode: use existing template, process only specified files ---
+        if not args.template_ply or not args.template_vt:
+            print("ERROR: --template-ply and --template-vt are required when using --include-only")
+            raise SystemExit(1)
+
+        template_points = load_point_cloud(args.template_ply)
+        template_Vt = np.load(args.template_vt)
+        print(f"Loaded template: {args.template_ply}  ({len(template_points):,} pts)")
+
+        good_output_dir = os.path.join(output_dir, "good_teeth")
+        os.makedirs(good_output_dir, exist_ok=True)
+
+        # Determine starting index
+        if args.start_index is not None:
+            next_idx = args.start_index
+        else:
+            existing = sorted(glob(os.path.join(good_output_dir, "tooth_*")))
+            next_idx = len(existing) + 1
+
+        # Collect matching files from the good_teeth directory
+        all_ply = sorted(glob(os.path.join(good_teeth_dir, "*.ply")))
+        include_set = set(args.include_only)
+        tasks = [(f, os.path.join(good_output_dir, f"tooth_{next_idx + i:02d}"),
+                  f"tooth_{next_idx + i:02d}")
+                 for i, f in enumerate(f for f in all_ply
+                                       if os.path.basename(f) in include_set)]
+
+        if not tasks:
+            print(f"ERROR: None of {args.include_only} found in {good_teeth_dir}")
+            raise SystemExit(1)
+
+        print(f"Adding {len(tasks)} new teeth starting at tooth_{next_idx:02d}:")
+        for filepath, tooth_dir, tooth_name in tasks:
+            print(f"  {tooth_name}  <-  {os.path.basename(filepath)}")
+
+        for filepath, tooth_dir, tooth_name in tasks:
+            process_single_tooth(filepath, template_points, tooth_dir, config,
+                                 tooth_name, template_Vt=template_Vt)
+
+        print("\nDone. New corresponded teeth added to:", good_output_dir)
+    else:
+        run_correspondence_pipeline(good_teeth_dir, artificial_wear_dir, output_dir, config, n_gpus=args.n_gpus)
 
 
 if __name__ == "__main__":

@@ -49,13 +49,13 @@ except ImportError:
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.dirname(SCRIPT_DIR)
-PLOT_DIR = os.path.join(SCRIPT_DIR, "plots")
+PLOT_DIR = os.path.join(SCRIPT_DIR, "plots_v2")
 
 DEFAULT_CORR_BASE = os.path.join(
-    PROJECT_DIR, "ssm_pipeline", "output", "correspondence_real_100k_v2"
+    PROJECT_DIR, "ssm_pipeline", "output", "correspondence_all_100k"
 )
 RECON_DIR = os.path.join(
-    PROJECT_DIR, "ssm_pipeline", "output", "recon_all", "reconstructions"
+    PROJECT_DIR, "ssm_pipeline", "output", "recon_neighborhood_v4", "reconstructions"
 )
 
 # ── Style definitions ─────────────────────────────────────────────
