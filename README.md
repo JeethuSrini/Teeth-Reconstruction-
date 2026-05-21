@@ -52,13 +52,13 @@ These figures are produced by `data_analysis/all_teeth_analysis.py` after Stage 
 
 ### PCA Scree Plot — How Much Variance Each Mode Captures
 
-![PCA Scree](data_analysis/plots/all_teeth_scree.png)
+![PCA Scree](data_analysis/plots_v2/all_teeth_scree.png)
 
 The first two PCA modes alone capture **~75 %** of total variance across the 15 good teeth, and ~95 % is reached by mode 8. This is why a 2D PCA plot is a faithful summary of tooth shape — and why local SSMs (K ≤ 5 neighbors) only need 1–4 modes.
 
 ### PCA 2D — Good Teeth, Worn Teeth, and Reconstructions
 
-![PCA 2D all teeth](data_analysis/plots/all_teeth_pca_2d.png)
+![PCA 2D all teeth](data_analysis/plots_v2/all_teeth_pca_2d.png)
 
 Each tooth is one point in the PCA shape space of the 15 good teeth. Blue circles = good teeth, orange = originals, red triangles = real worn inputs, green diamonds = TEST1 wear levels, purple squares = TEST2 wear levels. Stars and X-markers overlay the corresponding **reconstructions**.
 
@@ -68,17 +68,17 @@ Two things jump out:
 
 ### t-SNE (Raw 300,000-D features) — Non-linear Shape Embedding
 
-![t-SNE raw](data_analysis/plots/all_teeth_tsne_raw.png)
+![t-SNE raw](data_analysis/plots_v2/all_teeth_tsne_raw.png)
 
 t-SNE on the full 300,000-D point-cloud features (before PCA) shows the same neighborhood structure that PCA exposes, but non-linearly. TEST2 forms a very tight cluster in the lower-right — every wear level of TEST2 shares nearly identical overall shape. TEST1 fans out along a roughly linear "wear trajectory" on the left side. Real worn teeth are scattered among the good teeth, confirming each one has its own anatomically-similar subset — the core motivation for the neighborhood approach.
 
 ### Worn-to-Reconstruction Distance in PCA Space
 
-![Paired distance PCA 2D](data_analysis/plots/paired_dist_pca_2d.png)
+![Paired distance PCA 2D](data_analysis/plots_v2/paired_dist_pca_2d.png)
 
 Euclidean distance in PC1–PC2 space between each worn tooth and its reconstruction. Small bars mean the reconstruction lands near its input — which is what we want. **T07, T06, T03** show the largest displacements: these are exactly the teeth the neighborhood algorithm flagged as outliers (K=1 with tooth_14 as sole neighbor), because the SSM has to pull a heavily-worn tooth toward a complete-anatomy prior. The TEST1 and TEST2 reconstructions cluster near zero, confirming the pipeline is stable on clean inputs.
 
-A full gallery of paired-distance plots (t-SNE, UMAP, local variants) is in [`data_analysis/plots/`](data_analysis/plots/).
+A full gallery of paired-distance plots (t-SNE, UMAP, local variants) is in [`data_analysis/plots_v2/`](data_analysis/plots_v2/).
 
 ---
 
@@ -335,7 +335,7 @@ python all_teeth_analysis.py \
   --extra-recon-dir ../ssm_pipeline/output/recon_neighborhood/reconstructions
 ```
 
-Produces PCA plots, pairwise-distance matrices, and comparison figures in `data_analysis/plots/`.
+Produces PCA plots, pairwise-distance matrices, and comparison figures in `data_analysis/plots_v2/`.
 
 ---
 
