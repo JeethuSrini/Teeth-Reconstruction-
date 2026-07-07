@@ -1,0 +1,149 @@
+CuPy not available, using CPU for linear algebra
+============================================================
+Wear-Margin Patch Reconstruction
+============================================================
+  Recon dir          : output/recon_neighborhood_v4
+  Correspondence dir : output/correspondence_all_100k
+  Artificial wear    : None
+  Output dir         : output/recon_blend
+  Detect mode        : blend
+  Mode               : swap
+  Deviation pct      : 75.0
+  Deviation thresh   : None
+  Min component size : 200
+  Transition band    : 3.0 x median spacing
+  Annotation PNG     : True
+
+Found 25 worn teeth to patch
+
+--------------------------------------------------
+  Processing tooth_01_wear_real
+    Blend: 11.7% of points blended, 6.8% full-recon (deviation lo=0.0000, hi=0.0003)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_02_wear_real
+    Blend: 7.6% of points blended, 3.4% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_03_wear_real
+    Blend: 10.7% of points blended, 5.9% full-recon (deviation lo=0.0000, hi=0.0001)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_04_wear_real
+    Blend: 10.0% of points blended, 5.3% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_05_wear_real
+    Blend: 1.6% of points blended, 1.2% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_06_wear_real
+    Blend: 14.5% of points blended, 7.6% full-recon (deviation lo=0.0000, hi=0.0050)
+    Blend mesh: blend_mesh.ply (Poisson depth 8 -- COARSE fallback)
+
+--------------------------------------------------
+  Processing tooth_07_wear_real
+    Blend: 14.4% of points blended, 7.4% full-recon (deviation lo=0.0000, hi=0.0064)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_08_wear_real
+    Blend: 10.8% of points blended, 7.4% full-recon (deviation lo=0.0000, hi=0.0004)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_09_wear_real
+    Blend: 3.0% of points blended, 0.8% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level0
+    Blend: 10.6% of points blended, 5.7% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level1
+    Blend: 10.2% of points blended, 5.7% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level2
+    Blend: 12.2% of points blended, 7.6% full-recon (deviation lo=0.0000, hi=0.0006)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level3
+    Blend: 11.7% of points blended, 8.0% full-recon (deviation lo=0.0000, hi=0.0012)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level4
+    Blend: 12.5% of points blended, 8.1% full-recon (deviation lo=0.0000, hi=0.0013)
+    Blend mesh: blend_mesh.ply (Poisson depth 8 -- COARSE fallback)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level5
+    Blend: 13.2% of points blended, 8.1% full-recon (deviation lo=0.0000, hi=0.0012)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level6
+    Blend: 11.9% of points blended, 7.4% full-recon (deviation lo=0.0000, hi=0.0007)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level7
+    Blend: 11.9% of points blended, 8.1% full-recon (deviation lo=0.0000, hi=0.0016)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level0
+    Blend: 10.0% of points blended, 7.2% full-recon (deviation lo=0.0000, hi=0.0003)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level1
+    Blend: 10.0% of points blended, 7.1% full-recon (deviation lo=0.0000, hi=0.0002)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level2
+    Blend: 10.4% of points blended, 7.5% full-recon (deviation lo=0.0000, hi=0.0005)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level3
+    Blend: 10.9% of points blended, 7.9% full-recon (deviation lo=0.0000, hi=0.0011)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level4
+    Blend: 11.4% of points blended, 8.1% full-recon (deviation lo=0.0000, hi=0.0014)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level5
+    Blend: 11.1% of points blended, 8.0% full-recon (deviation lo=0.0000, hi=0.0012)
+    Blend mesh: blend_mesh.ply (Poisson depth 8 -- COARSE fallback)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level6
+    Blend: 13.2% of points blended, 8.4% full-recon (deviation lo=0.0000, hi=0.0026)
+    Blend mesh: blend_mesh.ply (Poisson depth 9)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level7
+    Blend: 12.8% of points blended, 8.0% full-recon (deviation lo=0.0000, hi=0.0018)
+    Blend mesh: blend_mesh.ply (Poisson depth 8 -- COARSE fallback)
+
+============================================================
+Patch Reconstruction Summary
+============================================================
+  Patched teeth: 25
+  Wear fraction: mean=10.7%, range=[1.6%, 14.5%]
+  Output: output/recon_blend

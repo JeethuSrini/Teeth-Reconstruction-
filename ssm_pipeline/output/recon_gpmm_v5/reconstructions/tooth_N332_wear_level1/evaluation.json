@@ -1,0 +1,18 @@
+{
+  "n_iter": 5,
+  "frac_trusted": 0.8957,
+  "median_residual": 0.016170318188103987,
+  "n_modes": 14,
+  "refine": {
+    "ssm_obs_rmse": 0.018479638847419207,
+    "ssm_obs_mae": 0.016809066282734823,
+    "ssm_obs_max_error": 0.046612988234762384,
+    "missing_avg_displacement": 0.016477212975993135,
+    "missing_max_displacement": 0.025437384392901802,
+    "final_obs_rmse": 0.0,
+    "final_all_rmse": 0.001733467480173389,
+    "n_observed": 8957,
+    "n_missing": 1043
+  },
+  "name": "tooth_N332_wear_level1"
+}

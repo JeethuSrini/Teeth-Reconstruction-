@@ -1,0 +1,13 @@
+{
+  "source_worn": "tooth_N459_wear_level6",
+  "detect_mode": "blend",
+  "n_points": 10000,
+  "blend": {
+    "lo_deviation": 0.0,
+    "hi_deviation": 0.0,
+    "frac_blended": 0.048,
+    "frac_full_recon": 0.002,
+    "mean_weight": 0.022057118055555554
+  },
+  "mesh_poisson_depth": 0
+}

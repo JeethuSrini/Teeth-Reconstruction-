@@ -1,0 +1,505 @@
+CuPy not available, using CPU for linear algebra
+============================================================
+GPMM Posterior Reconstruction
+============================================================
+  Excluded 8 unworn '_original' baseline dirs (already complete -- nothing to reconstruct)
+  Good teeth (prior): 90   Worn teeth: 64
+Building Statistical Shape Model...
+  Loaded 90 shapes with 10000 points each
+  Using CPU for SVD...
+  Keeping 14 components (95.4% variance)
+  PCA modes: 14 (95.4% var)
+
+  tooth_N1063_wear_level0
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02136, MAE=0.01982, max=0.04590
+      Missing region displacement:   avg=0.02302, max=0.04325
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=88.9%  iters=5  median_resid=0.0198
+    mesh: skipped (--skip-mesh)
+
+  tooth_N1063_wear_level1
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01874, MAE=0.01690, max=0.04289
+      Missing region displacement:   avg=0.02344, max=0.03501
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=93.0%  iters=3  median_resid=0.0162
+    mesh: skipped (--skip-mesh)
+
+  tooth_N1063_wear_level2
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01806, MAE=0.01637, max=0.03818
+      Missing region displacement:   avg=0.02674, max=0.03760
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=94.4%  iters=3  median_resid=0.0160
+    mesh: skipped (--skip-mesh)
+
+  tooth_N1063_wear_level3
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02030, MAE=0.01897, max=0.04545
+      Missing region displacement:   avg=0.02568, max=0.03301
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=94.8%  iters=3  median_resid=0.0187
+    mesh: skipped (--skip-mesh)
+
+  tooth_N1063_wear_level4
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02707, MAE=0.02490, max=0.05701
+      Missing region displacement:   avg=0.03075, max=0.04608
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=96.3%  iters=3  median_resid=0.0241
+    mesh: skipped (--skip-mesh)
+
+  tooth_N1063_wear_level5
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02862, MAE=0.02512, max=0.07123
+      Missing region displacement:   avg=0.02876, max=0.05823
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=96.1%  iters=4  median_resid=0.0243
+    mesh: skipped (--skip-mesh)
+
+  tooth_N1063_wear_level6
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02939, MAE=0.02664, max=0.06927
+      Missing region displacement:   avg=0.02764, max=0.05251
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=96.0%  iters=4  median_resid=0.0257
+    mesh: skipped (--skip-mesh)
+
+  tooth_N1063_wear_level7
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.03499, MAE=0.03163, max=0.09330
+      Missing region displacement:   avg=0.03570, max=0.04877
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=92.7%  iters=4  median_resid=0.0307
+    mesh: skipped (--skip-mesh)
+
+  tooth_N332_wear_level0
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01727, MAE=0.01526, max=0.04464
+      Missing region displacement:   avg=0.01666, max=0.04345
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=85.1%  iters=4  median_resid=0.0145
+    mesh: skipped (--skip-mesh)
+
+  tooth_N332_wear_level1
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01848, MAE=0.01681, max=0.04661
+      Missing region displacement:   avg=0.01648, max=0.02544
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=89.6%  iters=5  median_resid=0.0162
+    mesh: skipped (--skip-mesh)
+
+  tooth_N332_wear_level2
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02133, MAE=0.01920, max=0.05359
+      Missing region displacement:   avg=0.01849, max=0.02923
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=92.0%  iters=5  median_resid=0.0183
+    mesh: skipped (--skip-mesh)
+
+  tooth_N332_wear_level3
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01802, MAE=0.01587, max=0.04738
+      Missing region displacement:   avg=0.02118, max=0.04665
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=86.1%  iters=5  median_resid=0.0154
+    mesh: skipped (--skip-mesh)
+
+  tooth_N332_wear_level4
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02156, MAE=0.01915, max=0.05704
+      Missing region displacement:   avg=0.02376, max=0.05610
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=90.8%  iters=5  median_resid=0.0185
+    mesh: skipped (--skip-mesh)
+
+  tooth_N332_wear_level5
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02460, MAE=0.02232, max=0.06010
+      Missing region displacement:   avg=0.02674, max=0.03728
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=96.1%  iters=5  median_resid=0.0209
+    mesh: skipped (--skip-mesh)
+
+  tooth_N332_wear_level6
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02610, MAE=0.02306, max=0.06220
+      Missing region displacement:   avg=0.03001, max=0.06084
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=89.2%  iters=12  median_resid=0.0202
+    mesh: skipped (--skip-mesh)
+
+  tooth_N332_wear_level7
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02964, MAE=0.02628, max=0.07220
+      Missing region displacement:   avg=0.03446, max=0.07153
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=96.9%  iters=4  median_resid=0.0234
+    mesh: skipped (--skip-mesh)
+
+  tooth_N459_wear_level0
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01501, MAE=0.01276, max=0.03313
+      Missing region displacement:   avg=0.03211, max=0.03241
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=99.7%  iters=4  median_resid=0.0108
+    mesh: skipped (--skip-mesh)
+
+  tooth_N459_wear_level1
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01334, MAE=0.01181, max=0.02918
+      Missing region displacement:   avg=0.01045, max=0.02608
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=98.3%  iters=4  median_resid=0.0103
+    mesh: skipped (--skip-mesh)
+
+  tooth_N459_wear_level2
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01874, MAE=0.01656, max=0.04865
+      Missing region displacement:   avg=0.04642, max=0.04793
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=98.8%  iters=3  median_resid=0.0158
+    mesh: skipped (--skip-mesh)
+
+  tooth_N459_wear_level3
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01831, MAE=0.01617, max=0.04679
+      Missing region displacement:   avg=0.03499, max=0.04624
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=95.3%  iters=4  median_resid=0.0152
+    mesh: skipped (--skip-mesh)
+
+  tooth_N459_wear_level4
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02939, MAE=0.02672, max=0.06656
+      Missing region displacement:   avg=0.02277, max=0.02959
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=99.6%  iters=4  median_resid=0.0244
+    mesh: skipped (--skip-mesh)
+
+  tooth_N459_wear_level5
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.03252, MAE=0.02858, max=0.07930
+      Missing region displacement:   avg=0.04255, max=0.07816
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=99.8%  iters=4  median_resid=0.0258
+    mesh: skipped (--skip-mesh)
+
+  tooth_N459_wear_level6
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.03543, MAE=0.03134, max=0.08411
+      Missing region displacement:   avg=0.02982, max=0.08299
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=98.8%  iters=4  median_resid=0.0273
+    mesh: skipped (--skip-mesh)
+
+  tooth_N459_wear_level7
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.03575, MAE=0.03161, max=0.08126
+      Missing region displacement:   avg=0.02588, max=0.04089
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=98.9%  iters=4  median_resid=0.0279
+    mesh: skipped (--skip-mesh)
+
+  tooth_N4_wear_level0
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01380, MAE=0.01280, max=0.03038
+      Missing region displacement:   avg=0.02479, max=0.02983
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=98.8%  iters=4  median_resid=0.0129
+    mesh: skipped (--skip-mesh)
+
+  tooth_N4_wear_level1
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01329, MAE=0.01224, max=0.02553
+      Missing region displacement:   avg=0.02055, max=0.02448
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=98.3%  iters=4  median_resid=0.0124
+    mesh: skipped (--skip-mesh)
+
+  tooth_N4_wear_level2
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01547, MAE=0.01469, max=0.03106
+      Missing region displacement:   avg=0.01717, max=0.02601
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=99.5%  iters=4  median_resid=0.0148
+    mesh: skipped (--skip-mesh)
+
+  tooth_N4_wear_level3
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01362, MAE=0.01267, max=0.02803
+      Missing region displacement:   avg=0.02099, max=0.02530
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=97.6%  iters=4  median_resid=0.0128
+    mesh: skipped (--skip-mesh)
+
+  tooth_N4_wear_level4
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01473, MAE=0.01341, max=0.02818
+      Missing region displacement:   avg=0.01506, max=0.01953
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=98.4%  iters=4  median_resid=0.0130
+    mesh: skipped (--skip-mesh)
+
+  tooth_N4_wear_level5
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01827, MAE=0.01692, max=0.04088
+      Missing region displacement:   avg=0.01453, max=0.01963
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=99.6%  iters=4  median_resid=0.0163
+    mesh: skipped (--skip-mesh)
+
+  tooth_N4_wear_level6
+    trusted(unworn)=100.0%  iters=4  median_resid=0.0261
+    mesh: skipped (--skip-mesh)
+
+  tooth_N4_wear_level7
+    trusted(unworn)=100.0%  iters=4  median_resid=0.0256
+    mesh: skipped (--skip-mesh)
+
+  tooth_N705_wear_level0
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01483, MAE=0.01340, max=0.04033
+      Missing region displacement:   avg=0.01909, max=0.03917
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=91.2%  iters=5  median_resid=0.0131
+    mesh: skipped (--skip-mesh)
+
+  tooth_N705_wear_level1
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01509, MAE=0.01350, max=0.03799
+      Missing region displacement:   avg=0.01755, max=0.03698
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=90.3%  iters=5  median_resid=0.0123
+    mesh: skipped (--skip-mesh)
+
+  tooth_N705_wear_level2
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01763, MAE=0.01588, max=0.04069
+      Missing region displacement:   avg=0.01473, max=0.02628
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=97.8%  iters=4  median_resid=0.0141
+    mesh: skipped (--skip-mesh)
+
+  tooth_N705_wear_level3
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01782, MAE=0.01577, max=0.04306
+      Missing region displacement:   avg=0.01717, max=0.04237
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=92.6%  iters=5  median_resid=0.0140
+    mesh: skipped (--skip-mesh)
+
+  tooth_N705_wear_level4
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02990, MAE=0.02768, max=0.06857
+      Missing region displacement:   avg=0.03091, max=0.04472
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=98.4%  iters=3  median_resid=0.0265
+    mesh: skipped (--skip-mesh)
+
+  tooth_N705_wear_level5
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02215, MAE=0.02035, max=0.04899
+      Missing region displacement:   avg=0.01875, max=0.03228
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=97.7%  iters=4  median_resid=0.0180
+    mesh: skipped (--skip-mesh)
+
+  tooth_N705_wear_level6
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02634, MAE=0.02347, max=0.06483
+      Missing region displacement:   avg=0.05263, max=0.06385
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=94.6%  iters=7  median_resid=0.0210
+    mesh: skipped (--skip-mesh)
+
+  tooth_N705_wear_level7
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02859, MAE=0.02569, max=0.06931
+      Missing region displacement:   avg=0.06356, max=0.06870
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=97.4%  iters=4  median_resid=0.0225
+    mesh: skipped (--skip-mesh)
+
+  tooth_N726_wear_level0
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01562, MAE=0.01461, max=0.03180
+      Missing region displacement:   avg=0.01418, max=0.01991
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=83.1%  iters=4  median_resid=0.0154
+    mesh: skipped (--skip-mesh)
+
+  tooth_N726_wear_level1
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01319, MAE=0.01243, max=0.02372
+      Missing region displacement:   avg=0.01520, max=0.02298
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=81.6%  iters=5  median_resid=0.0136
+    mesh: skipped (--skip-mesh)
+
+  tooth_N726_wear_level2
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02142, MAE=0.01860, max=0.05547
+      Missing region displacement:   avg=0.02058, max=0.05414
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=85.0%  iters=12  median_resid=0.0180
+    mesh: skipped (--skip-mesh)
+
+  tooth_N726_wear_level3
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02478, MAE=0.02190, max=0.06473
+      Missing region displacement:   avg=0.02949, max=0.06351
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=87.8%  iters=7  median_resid=0.0210
+    mesh: skipped (--skip-mesh)
+
+  tooth_N726_wear_level4
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02477, MAE=0.02165, max=0.06232
+      Missing region displacement:   avg=0.03044, max=0.06106
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=87.4%  iters=12  median_resid=0.0202
+    mesh: skipped (--skip-mesh)
+
+  tooth_N726_wear_level5
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02936, MAE=0.02671, max=0.06543
+      Missing region displacement:   avg=0.03048, max=0.05431
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=91.8%  iters=4  median_resid=0.0259
+    mesh: skipped (--skip-mesh)
+
+  tooth_N726_wear_level6
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02899, MAE=0.02613, max=0.07351
+      Missing region displacement:   avg=0.03269, max=0.07156
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=88.7%  iters=4  median_resid=0.0239
+    mesh: skipped (--skip-mesh)
+
+  tooth_N726_wear_level7
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.03698, MAE=0.03322, max=0.09441
+      Missing region displacement:   avg=0.03388, max=0.09279
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=92.8%  iters=5  median_resid=0.0306
+    mesh: skipped (--skip-mesh)
+
+  tooth_N728_wear_level0
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01534, MAE=0.01437, max=0.03038
+      Missing region displacement:   avg=0.01377, max=0.02026
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=91.7%  iters=5  median_resid=0.0145
+    mesh: skipped (--skip-mesh)
+
+  tooth_N728_wear_level1
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01628, MAE=0.01477, max=0.03736
+      Missing region displacement:   avg=0.01331, max=0.02477
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=93.1%  iters=4  median_resid=0.0138
+    mesh: skipped (--skip-mesh)
+
+  tooth_N728_wear_level2
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01958, MAE=0.01742, max=0.04743
+      Missing region displacement:   avg=0.02111, max=0.04651
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=92.0%  iters=4  median_resid=0.0154
+    mesh: skipped (--skip-mesh)
+
+  tooth_N728_wear_level3
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02170, MAE=0.01961, max=0.05282
+      Missing region displacement:   avg=0.02015, max=0.04557
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=98.4%  iters=4  median_resid=0.0176
+    mesh: skipped (--skip-mesh)
+
+  tooth_N728_wear_level4
+    trusted(unworn)=100.0%  iters=4  median_resid=0.0208
+    mesh: skipped (--skip-mesh)
+
+  tooth_N728_wear_level5
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02528, MAE=0.02249, max=0.06026
+      Missing region displacement:   avg=0.03044, max=0.05025
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=99.4%  iters=12  median_resid=0.0200
+    mesh: skipped (--skip-mesh)
+
+  tooth_N728_wear_level6
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.03033, MAE=0.02698, max=0.07512
+      Missing region displacement:   avg=0.07212, max=0.07424
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=99.3%  iters=4  median_resid=0.0244
+    mesh: skipped (--skip-mesh)
+
+  tooth_N728_wear_level7
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.03255, MAE=0.02865, max=0.07725
+      Missing region displacement:   avg=0.07274, max=0.07575
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=99.3%  iters=4  median_resid=0.0251
+    mesh: skipped (--skip-mesh)
+
+  tooth_N891_wear_level0
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01462, MAE=0.01351, max=0.03077
+      Missing region displacement:   avg=0.01534, max=0.02445
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=92.3%  iters=4  median_resid=0.0131
+    mesh: skipped (--skip-mesh)
+
+  tooth_N891_wear_level1
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01633, MAE=0.01456, max=0.03635
+      Missing region displacement:   avg=0.01511, max=0.03187
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=91.8%  iters=4  median_resid=0.0130
+    mesh: skipped (--skip-mesh)
+
+  tooth_N891_wear_level2
+    trusted(unworn)=100.0%  iters=3  median_resid=0.0154
+    mesh: skipped (--skip-mesh)
+
+  tooth_N891_wear_level3
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01863, MAE=0.01744, max=0.03492
+      Missing region displacement:   avg=0.01765, max=0.01964
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=99.6%  iters=3  median_resid=0.0171
+    mesh: skipped (--skip-mesh)
+
+  tooth_N891_wear_level4
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02568, MAE=0.02284, max=0.05993
+      Missing region displacement:   avg=0.02168, max=0.04527
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=96.9%  iters=5  median_resid=0.0197
+    mesh: skipped (--skip-mesh)
+
+  tooth_N891_wear_level5
+    trusted(unworn)=100.0%  iters=3  median_resid=0.0181
+    mesh: skipped (--skip-mesh)
+
+  tooth_N891_wear_level6
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.02994, MAE=0.02678, max=0.06788
+      Missing region displacement:   avg=0.02946, max=0.05978
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=97.0%  iters=4  median_resid=0.0249
+    mesh: skipped (--skip-mesh)
+
+  tooth_N891_wear_level7
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.03539, MAE=0.03139, max=0.08650
+      Missing region displacement:   avg=0.02934, max=0.05849
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=98.8%  iters=4  median_resid=0.0281
+    mesh: skipped (--skip-mesh)
+
+Done. 64 reconstructions -> output/recon_gpmm_v5

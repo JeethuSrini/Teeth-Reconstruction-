@@ -1,0 +1,18 @@
+{
+  "n_iter": 4,
+  "frac_trusted": 0.9929,
+  "median_residual": 0.025054722727741827,
+  "n_modes": 14,
+  "refine": {
+    "ssm_obs_rmse": 0.032548855603869525,
+    "ssm_obs_mae": 0.028653895466462766,
+    "ssm_obs_max_error": 0.07724924056731308,
+    "missing_avg_displacement": 0.0727383412766909,
+    "missing_max_displacement": 0.0757471455658384,
+    "final_obs_rmse": 0.0,
+    "final_all_rmse": 0.0007844556661883995,
+    "n_observed": 9929,
+    "n_missing": 71
+  },
+  "name": "tooth_N728_wear_level7"
+}

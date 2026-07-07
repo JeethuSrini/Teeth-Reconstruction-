@@ -75,6 +75,7 @@ class ReconstructionConfig:
     proxy_missing_fraction: float = 0.15  # Fraction of points treated as missing in skip-eval mode
     real_merge_with_input: bool = False   # In real-worn mode, fuse inverse-transformed SSM with input mesh
     real_merge_knn: int = 3               # KNN used when mapping corresponded points back to input mesh
+    skip_mesh: bool = False                # Skip Poisson meshing (point clouds only; mesh later)
 
 
 # =============================================================================
@@ -95,14 +96,23 @@ def save_point_cloud(points: np.ndarray, filepath: str) -> None:
 
 
 def point_cloud_to_mesh(points: np.ndarray,
-                        poisson_depth: int = 9,
+                        poisson_depth: int = None,
                         density_quantile: float = 0.01,
                         smooth_iter: int = 30):
     """
     Convert point cloud to watertight smooth mesh using Open3D Screened Poisson.
     Returns a trimesh.Trimesh with outward normals.
+
+    ``poisson_depth`` defaults to a value scaled to the point count: depth 9 is
+    only appropriate for ~100k-point clouds; for sparser clouds (e.g. 10k) such
+    a deep octree is both poor quality and prone to Open3D's "Failed to close
+    loop" abort, so we use a shallower depth.
     """
     import trimesh
+
+    n = len(points)
+    if poisson_depth is None:
+        poisson_depth = 6 if n < 4000 else 7 if n < 15000 else 8 if n < 60000 else 9
 
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(points)
@@ -155,6 +165,49 @@ def save_mesh(mesh, filepath: str) -> None:
         o3d.io.write_triangle_mesh(filepath, mesh)
     elif hasattr(mesh, 'save'):
         mesh.save(filepath)
+
+
+def _recon_mesh_worker(points: np.ndarray, out_path: str, depth: int) -> None:
+    """Child-process entry point: mesh a cloud and save it (top-level so it is
+    picklable for the 'spawn' start method). Open3D's noisy C++ Poisson logging
+    is redirected to /dev/null; success is signalled by the written file."""
+    import os as _os
+    try:
+        dn = _os.open(_os.devnull, _os.O_WRONLY)
+        _os.dup2(dn, 1); _os.dup2(dn, 2)
+    except Exception:
+        pass
+    mesh = point_cloud_to_mesh(points, poisson_depth=depth)
+    if len(getattr(mesh, "faces", [])) > 0:
+        save_mesh(mesh, out_path)
+
+
+def safe_mesh(points: np.ndarray, out_path: str,
+              attempts: int = 3, timeout: float = 300.0) -> int:
+    """Crash-safe Poisson meshing to ``out_path`` in an isolated subprocess.
+
+    Open3D's Screened Poisson can hard-abort ("Failed to close loop") and take
+    the whole process down, so we run it in a spawned child and contain that.
+    Depth is scaled to the point count and falls back to shallower octrees on
+    failure. Returns the depth that produced the mesh (truthy), or 0 on failure.
+    """
+    import multiprocessing as mp
+    import os as _os
+    pts = np.asarray(points)
+    n = len(pts)
+    base = 6 if n < 4000 else 7 if n < 15000 else 8 if n < 60000 else 9
+    ctx = mp.get_context("spawn")
+    for depth in [d for d in (base, base - 1, base - 2) if d >= 5]:
+        for _ in range(max(1, attempts)):
+            if _os.path.exists(out_path):
+                _os.remove(out_path)
+            proc = ctx.Process(target=_recon_mesh_worker, args=(pts, out_path, depth))
+            proc.start(); proc.join(timeout)
+            if proc.is_alive():
+                proc.terminate(); proc.join(); continue
+            if proc.exitcode == 0 and _os.path.exists(out_path):
+                return depth
+    return 0
 
 
 # =============================================================================
@@ -1179,17 +1232,16 @@ def run_reconstruction_pipeline(correspondence_dir: str,
                         print(f"    [WARN] Legacy fusion failed: {fusion_err}")
             
             # Smooth mesh from the refined reconstruction in input space
-            if reconstructed_raw is not None:
-                try:
-                    mesh_obj = point_cloud_to_mesh(reconstructed_raw)
-                    mesh_path = os.path.join(result_dir, "reconstructed_smooth.ply")
-                    save_mesh(mesh_obj, mesh_path)
-                    n_verts = len(mesh_obj.vertices)
-                    n_tris = len(mesh_obj.faces)
-                    print(f"    Smooth mesh: reconstructed_smooth.ply "
-                          f"({n_verts} verts, {n_tris} tris)")
-                except Exception as mesh_err:
-                    print(f"    [WARN] Smooth mesh failed: {mesh_err}")
+            # (crash-safe: isolated subprocess + adaptive Poisson depth).
+            if config.skip_mesh:
+                print(f"    Smooth mesh: skipped (--skip-mesh)")
+            elif reconstructed_raw is not None:
+                mesh_path = os.path.join(result_dir, "reconstructed_smooth.ply")
+                depth = safe_mesh(reconstructed_raw, mesh_path)
+                if depth:
+                    print(f"    Smooth mesh: reconstructed_smooth.ply (Poisson depth {depth})")
+                else:
+                    print(f"    [WARN] Smooth mesh failed after retries")
             
             eval_data = {
                 "source_worn": worn_dir,
@@ -1377,7 +1429,12 @@ def main():
         default=3,
         help="KNN neighbors for real-worn fusion mapping (default: 3)"
     )
-    
+    parser.add_argument(
+        "--skip-mesh",
+        action="store_true",
+        help="Skip Poisson surface meshing (point clouds only; much faster, mesh later)"
+    )
+
     args = parser.parse_args()
     
     # Default paths
@@ -1408,7 +1465,8 @@ def main():
         skip_eval=args.skip_eval,
         proxy_missing_fraction=args.proxy_missing_fraction,
         real_merge_with_input=args.real_merge_with_input,
-        real_merge_knn=args.real_merge_knn
+        real_merge_knn=args.real_merge_knn,
+        skip_mesh=args.skip_mesh
     )
     
     run_reconstruction_pipeline(correspondence_dir, artificial_wear_dir, output_dir, config)

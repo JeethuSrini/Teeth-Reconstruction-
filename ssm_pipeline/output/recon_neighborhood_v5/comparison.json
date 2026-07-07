@@ -1,0 +1,2372 @@
+{
+  "rows": [
+    {
+      "tooth": "tooth_N1063_wear_level0",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "08",
+        "12",
+        "56",
+        "34",
+        "57",
+        "35",
+        "55",
+        "69",
+        "07",
+        "06"
+      ],
+      "global": {
+        "r2_pct": 99.73572173984091,
+        "ssm_obs_rmse": 0.02023030354208566,
+        "chamfer_mm": 0.19141245450735547,
+        "hausdorff_mm": 1.3378525575859594,
+        "coverage_2x": 0.925,
+        "fscore_0p5mm": 0.9711790476411905,
+        "fscore_1p0mm": 0.9994496973335335,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.74382542756081,
+        "ssm_obs_rmse": 0.019721154337743647,
+        "chamfer_mm": 0.18822647729673592,
+        "hausdorff_mm": 1.1693086332583675,
+        "coverage_2x": 0.9338709677419355,
+        "fscore_0p5mm": 0.9746999076638966,
+        "fscore_1p0mm": 0.9997999599919984,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N1063_wear_level1",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "08",
+        "56",
+        "06",
+        "60",
+        "57",
+        "55",
+        "35",
+        "69",
+        "29",
+        "15"
+      ],
+      "global": {
+        "r2_pct": 99.7532884421326,
+        "ssm_obs_rmse": 0.017544501129382547,
+        "chamfer_mm": 0.18521965132220047,
+        "hausdorff_mm": 1.211600740279322,
+        "coverage_2x": 0.9416264090177133,
+        "fscore_0p5mm": 0.9770764816608309,
+        "fscore_1p0mm": 0.99964987745711,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.73941082688934,
+        "ssm_obs_rmse": 0.017885126619645343,
+        "chamfer_mm": 0.18311631411727441,
+        "hausdorff_mm": 1.09665953961188,
+        "coverage_2x": 0.9351851851851852,
+        "fscore_0p5mm": 0.9757979117087778,
+        "fscore_1p0mm": 0.9997999599919984,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N1063_wear_level2",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "08",
+        "57",
+        "06",
+        "34",
+        "73",
+        "69",
+        "07",
+        "71",
+        "35",
+        "80"
+      ],
+      "global": {
+        "r2_pct": 99.74138960718733,
+        "ssm_obs_rmse": 0.01775917102720234,
+        "chamfer_mm": 0.19297878498401927,
+        "hausdorff_mm": 1.441825776106435,
+        "coverage_2x": 0.9367768595041323,
+        "fscore_0p5mm": 0.9702865143802266,
+        "fscore_1p0mm": 0.9990490966418097,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.73610088143835,
+        "ssm_obs_rmse": 0.01762291910118743,
+        "chamfer_mm": 0.19079418667586845,
+        "hausdorff_mm": 1.2693655273763544,
+        "coverage_2x": 0.9359504132231405,
+        "fscore_0p5mm": 0.9708192002982887,
+        "fscore_1p0mm": 0.999549797408834,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N1063_wear_level3",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "08",
+        "73",
+        "34",
+        "57",
+        "06",
+        "69",
+        "71",
+        "07",
+        "80",
+        "35"
+      ],
+      "global": {
+        "r2_pct": 99.69074188929412,
+        "ssm_obs_rmse": 0.019683122230412853,
+        "chamfer_mm": 0.20964269701659433,
+        "hausdorff_mm": 1.2185670095627978,
+        "coverage_2x": 0.9205648720211828,
+        "fscore_0p5mm": 0.9411883999188806,
+        "fscore_1p0mm": 0.9993495772251965,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.70236878405059,
+        "ssm_obs_rmse": 0.02035859085532246,
+        "chamfer_mm": 0.20649004806285348,
+        "hausdorff_mm": 1.0840952542727003,
+        "coverage_2x": 0.9236540158870256,
+        "fscore_0p5mm": 0.9504021593976469,
+        "fscore_1p0mm": 0.9997999599919984,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N1063_wear_level4",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "08",
+        "34",
+        "73",
+        "06",
+        "57",
+        "72",
+        "07",
+        "25",
+        "71",
+        "69"
+      ],
+      "global": {
+        "r2_pct": 99.70378603955322,
+        "ssm_obs_rmse": 0.024880730850040948,
+        "chamfer_mm": 0.2091438546932739,
+        "hausdorff_mm": 1.3563862833698999,
+        "coverage_2x": 0.9253871421867668,
+        "fscore_0p5mm": 0.93671533228663,
+        "fscore_1p0mm": 0.9968400461453579,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.70863453412228,
+        "ssm_obs_rmse": 0.02515306315191992,
+        "chamfer_mm": 0.2087072803875544,
+        "hausdorff_mm": 1.3463672799235038,
+        "coverage_2x": 0.9244486156733928,
+        "fscore_0p5mm": 0.9437943351559899,
+        "fscore_1p0mm": 0.9979959919839679,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N1063_wear_level5",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "52",
+        "64",
+        "22",
+        "90",
+        "73",
+        "67",
+        "57",
+        "06",
+        "04",
+        "08"
+      ],
+      "global": {
+        "r2_pct": 99.73664745920378,
+        "ssm_obs_rmse": 0.026846833294197788,
+        "chamfer_mm": 0.21292281381886097,
+        "hausdorff_mm": 1.814384916857403,
+        "coverage_2x": 0.9198113207547169,
+        "fscore_0p5mm": 0.9335246833436647,
+        "fscore_1p0mm": 0.9864693660365885,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.72331210017862,
+        "ssm_obs_rmse": 0.026878746224473095,
+        "chamfer_mm": 0.2134713417541781,
+        "hausdorff_mm": 1.6542521179661804,
+        "coverage_2x": 0.9320754716981132,
+        "fscore_0p5mm": 0.9443277457743877,
+        "fscore_1p0mm": 0.9886714594434718,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N1063_wear_level6",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "64",
+        "73",
+        "67",
+        "08",
+        "52",
+        "71",
+        "34",
+        "06",
+        "25",
+        "57"
+      ],
+      "global": {
+        "r2_pct": 99.75139818523341,
+        "ssm_obs_rmse": 0.026469120259761555,
+        "chamfer_mm": 0.21021740387598797,
+        "hausdorff_mm": 1.5869000389027832,
+        "coverage_2x": 0.934320987654321,
+        "fscore_0p5mm": 0.9302313552130279,
+        "fscore_1p0mm": 0.9940649834020722,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.7442332239569,
+        "ssm_obs_rmse": 0.028318206075567693,
+        "chamfer_mm": 0.20991462560110505,
+        "hausdorff_mm": 1.570039935249133,
+        "coverage_2x": 0.9338271604938272,
+        "fscore_0p5mm": 0.9399554749827274,
+        "fscore_1p0mm": 0.9954796584630838,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N1063_wear_level7",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "34",
+        "08",
+        "73",
+        "25",
+        "07",
+        "80",
+        "71",
+        "85",
+        "57",
+        "06"
+      ],
+      "global": {
+        "r2_pct": 99.70300479289216,
+        "ssm_obs_rmse": 0.030357949722018888,
+        "chamfer_mm": 0.2265314806426661,
+        "hausdorff_mm": 1.446541277885179,
+        "coverage_2x": 0.9175853018372704,
+        "fscore_0p5mm": 0.9189523347039734,
+        "fscore_1p0mm": 0.993248988518865,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.7212757625974,
+        "ssm_obs_rmse": 0.032927175139209085,
+        "chamfer_mm": 0.2206459724322638,
+        "hausdorff_mm": 1.3974473497282764,
+        "coverage_2x": 0.9275590551181102,
+        "fscore_0p5mm": 0.9286046001980378,
+        "fscore_1p0mm": 0.9931534434152235,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N332_wear_level0",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "22",
+        "52",
+        "83",
+        "68",
+        "64",
+        "57",
+        "90",
+        "84",
+        "73",
+        "69"
+      ],
+      "global": {
+        "r2_pct": 99.67560048329328,
+        "ssm_obs_rmse": 0.01673073962145826,
+        "chamfer_mm": 0.19358328851969914,
+        "hausdorff_mm": 0.9619074763378609,
+        "coverage_2x": 0.9372990353697749,
+        "fscore_0p5mm": 0.9674718641335732,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.69520649068244,
+        "ssm_obs_rmse": 0.016880332246031696,
+        "chamfer_mm": 0.18731637140993507,
+        "hausdorff_mm": 0.886545991253665,
+        "coverage_2x": 0.9429260450160771,
+        "fscore_0p5mm": 0.9698626478778544,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N332_wear_level1",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "52",
+        "22",
+        "68",
+        "64",
+        "90",
+        "83",
+        "04",
+        "73",
+        "84",
+        "85"
+      ],
+      "global": {
+        "r2_pct": 99.67110513748518,
+        "ssm_obs_rmse": 0.017313330797218678,
+        "chamfer_mm": 0.19311443327262567,
+        "hausdorff_mm": 0.9388461298703834,
+        "coverage_2x": 0.931272875152501,
+        "fscore_0p5mm": 0.9641629178601078,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.69983121311033,
+        "ssm_obs_rmse": 0.015152134639855793,
+        "chamfer_mm": 0.1858357999938914,
+        "hausdorff_mm": 0.808618854124718,
+        "coverage_2x": 0.94509963399756,
+        "fscore_0p5mm": 0.975182013241311,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N332_wear_level2",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "52",
+        "68",
+        "22",
+        "64",
+        "90",
+        "83",
+        "74",
+        "04",
+        "84",
+        "85"
+      ],
+      "global": {
+        "r2_pct": 99.68135893033455,
+        "ssm_obs_rmse": 0.01976821417662284,
+        "chamfer_mm": 0.19457399830592612,
+        "hausdorff_mm": 0.9609809186485136,
+        "coverage_2x": 0.9327800829875519,
+        "fscore_0p5mm": 0.963056033923762,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.70187552830046,
+        "ssm_obs_rmse": 0.014756153406445665,
+        "chamfer_mm": 0.18813053326113555,
+        "hausdorff_mm": 0.883921698536332,
+        "coverage_2x": 0.9406639004149377,
+        "fscore_0p5mm": 0.9742058065833726,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N332_wear_level3",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "52",
+        "64",
+        "22",
+        "83",
+        "90",
+        "73",
+        "68",
+        "07",
+        "57",
+        "34"
+      ],
+      "global": {
+        "r2_pct": 99.6352735402414,
+        "ssm_obs_rmse": 0.017292186001646833,
+        "chamfer_mm": 0.20584730610072516,
+        "hausdorff_mm": 0.9260932335328076,
+        "coverage_2x": 0.9208782104391052,
+        "fscore_0p5mm": 0.9602429735070355,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.66403133163357,
+        "ssm_obs_rmse": 0.01693454506631844,
+        "chamfer_mm": 0.19869910489607212,
+        "hausdorff_mm": 0.8014145274638307,
+        "coverage_2x": 0.9328914664457332,
+        "fscore_0p5mm": 0.9689866010570588,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N332_wear_level4",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "52",
+        "64",
+        "22",
+        "90",
+        "83",
+        "73",
+        "34",
+        "07",
+        "80",
+        "71"
+      ],
+      "global": {
+        "r2_pct": 99.59638855467773,
+        "ssm_obs_rmse": 0.019634461299336183,
+        "chamfer_mm": 0.21888995291136337,
+        "hausdorff_mm": 1.0012180604354635,
+        "coverage_2x": 0.9002613240418118,
+        "fscore_0p5mm": 0.941791678674898,
+        "fscore_1p0mm": 0.999949997499875,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.63480746276863,
+        "ssm_obs_rmse": 0.020403546820330014,
+        "chamfer_mm": 0.21142122955138495,
+        "hausdorff_mm": 0.95744883596705,
+        "coverage_2x": 0.919425087108014,
+        "fscore_0p5mm": 0.9553545214796131,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N332_wear_level5",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "52",
+        "64",
+        "22",
+        "90",
+        "73",
+        "83",
+        "80",
+        "57",
+        "71",
+        "67"
+      ],
+      "global": {
+        "r2_pct": 99.60093217134454,
+        "ssm_obs_rmse": 0.02223134637600773,
+        "chamfer_mm": 0.22132817118276849,
+        "hausdorff_mm": 1.0754362511389448,
+        "coverage_2x": 0.9035555555555556,
+        "fscore_0p5mm": 0.9343895937124717,
+        "fscore_1p0mm": 0.9997499374843711,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.64174223541255,
+        "ssm_obs_rmse": 0.021522167287695265,
+        "chamfer_mm": 0.21093446720812348,
+        "hausdorff_mm": 0.9907772506297815,
+        "coverage_2x": 0.9217777777777778,
+        "fscore_0p5mm": 0.949125566259701,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N332_wear_level6",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "52",
+        "64",
+        "90",
+        "73",
+        "22",
+        "83",
+        "80",
+        "71",
+        "25",
+        "34"
+      ],
+      "global": {
+        "r2_pct": 99.533471611055,
+        "ssm_obs_rmse": 0.023002991214396636,
+        "chamfer_mm": 0.23525216026937207,
+        "hausdorff_mm": 1.1977252937943195,
+        "coverage_2x": 0.8793738489871087,
+        "fscore_0p5mm": 0.9125053184614504,
+        "fscore_1p0mm": 0.9981967541574834,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.57419214663406,
+        "ssm_obs_rmse": 0.023339773833802525,
+        "chamfer_mm": 0.22767646888901705,
+        "hausdorff_mm": 1.2213502604503013,
+        "coverage_2x": 0.8987108655616943,
+        "fscore_0p5mm": 0.9365495738653681,
+        "fscore_1p0mm": 0.998848675977374,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N332_wear_level7",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "64",
+        "52",
+        "73",
+        "22",
+        "90",
+        "80",
+        "71",
+        "25",
+        "67",
+        "57"
+      ],
+      "global": {
+        "r2_pct": 99.580909168377,
+        "ssm_obs_rmse": 0.02490312458316842,
+        "chamfer_mm": 0.23726753389342092,
+        "hausdorff_mm": 1.2427751281939723,
+        "coverage_2x": 0.8897978825794033,
+        "fscore_0p5mm": 0.9159295234312084,
+        "fscore_1p0mm": 0.9977449260836884,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.60048088042458,
+        "ssm_obs_rmse": 0.02551058019707391,
+        "chamfer_mm": 0.2293263946267651,
+        "hausdorff_mm": 1.2269344882115982,
+        "coverage_2x": 0.9051973051010587,
+        "fscore_0p5mm": 0.9325599097663333,
+        "fscore_1p0mm": 0.9982971050786338,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N459_wear_level0",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "71",
+        "73",
+        "77",
+        "35",
+        "69",
+        "60",
+        "89",
+        "12",
+        "80",
+        "11"
+      ],
+      "global": {
+        "r2_pct": 99.6995488196739,
+        "ssm_obs_rmse": 0.012639246197475362,
+        "chamfer_mm": 0.18162816150504335,
+        "hausdorff_mm": 0.8654624552615025,
+        "coverage_2x": 0.9312714776632303,
+        "fscore_0p5mm": 0.9725524917471139,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.721896200463,
+        "ssm_obs_rmse": 0.012168454731738072,
+        "chamfer_mm": 0.17655367127444857,
+        "hausdorff_mm": 0.7994801722356902,
+        "coverage_2x": 0.9381443298969072,
+        "fscore_0p5mm": 0.9806936191772969,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N459_wear_level1",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "71",
+        "73",
+        "69",
+        "67",
+        "34",
+        "25",
+        "77",
+        "07",
+        "72",
+        "89"
+      ],
+      "global": {
+        "r2_pct": 99.69427276989337,
+        "ssm_obs_rmse": 0.011432930823301036,
+        "chamfer_mm": 0.18255517751673456,
+        "hausdorff_mm": 0.8262007981757258,
+        "coverage_2x": 0.9292964648232411,
+        "fscore_0p5mm": 0.9706118243110887,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.71469834847666,
+        "ssm_obs_rmse": 0.010686727384424161,
+        "chamfer_mm": 0.1780898170242985,
+        "hausdorff_mm": 0.7832371230788696,
+        "coverage_2x": 0.9334966748337417,
+        "fscore_0p5mm": 0.9794321716825274,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N459_wear_level2",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "25",
+        "73",
+        "67",
+        "71",
+        "85",
+        "34",
+        "90",
+        "22",
+        "80",
+        "07"
+      ],
+      "global": {
+        "r2_pct": 99.66445795962706,
+        "ssm_obs_rmse": 0.015695687998418653,
+        "chamfer_mm": 0.19054272536805889,
+        "hausdorff_mm": 0.8631322206607492,
+        "coverage_2x": 0.9189092213850018,
+        "fscore_0p5mm": 0.9619558503823153,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.6789140100282,
+        "ssm_obs_rmse": 0.015006589688442996,
+        "chamfer_mm": 0.1874827188029895,
+        "hausdorff_mm": 0.8885184712085809,
+        "coverage_2x": 0.9174739863652673,
+        "fscore_0p5mm": 0.9706333354619082,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N459_wear_level3",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "73",
+        "67",
+        "25",
+        "71",
+        "85",
+        "34",
+        "80",
+        "72",
+        "22",
+        "90"
+      ],
+      "global": {
+        "r2_pct": 99.65369100757164,
+        "ssm_obs_rmse": 0.01525294328063063,
+        "chamfer_mm": 0.19622494452497674,
+        "hausdorff_mm": 0.9501628365285821,
+        "coverage_2x": 0.9099890230515917,
+        "fscore_0p5mm": 0.954204783334595,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.68205134992446,
+        "ssm_obs_rmse": 0.013834405752174803,
+        "chamfer_mm": 0.18972281863718504,
+        "hausdorff_mm": 0.957235667809758,
+        "coverage_2x": 0.9191364800585438,
+        "fscore_0p5mm": 0.9637724909286868,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N459_wear_level4",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "52",
+        "64",
+        "74",
+        "04",
+        "67",
+        "90",
+        "22",
+        "25",
+        "71",
+        "85"
+      ],
+      "global": {
+        "r2_pct": 99.60644316244107,
+        "ssm_obs_rmse": 0.02769762167150938,
+        "chamfer_mm": 0.20881747000676998,
+        "hausdorff_mm": 1.1654455459656974,
+        "coverage_2x": 0.8871715610510046,
+        "fscore_0p5mm": 0.9302493584190409,
+        "fscore_1p0mm": 0.9983472730004507,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.6254822609686,
+        "ssm_obs_rmse": 0.025634715558994787,
+        "chamfer_mm": 0.2057418061198717,
+        "hausdorff_mm": 1.1233048742081977,
+        "coverage_2x": 0.8879443585780525,
+        "fscore_0p5mm": 0.940532167657322,
+        "fscore_1p0mm": 0.9987985582699239,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N459_wear_level5",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "52",
+        "64",
+        "90",
+        "74",
+        "67",
+        "04",
+        "25",
+        "22",
+        "73",
+        "71"
+      ],
+      "global": {
+        "r2_pct": 99.59034269030677,
+        "ssm_obs_rmse": 0.029890390400751934,
+        "chamfer_mm": 0.2147805460826685,
+        "hausdorff_mm": 1.1813632215580552,
+        "coverage_2x": 0.8816733067729083,
+        "fscore_0p5mm": 0.9284438415910751,
+        "fscore_1p0mm": 0.9980461900706378,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.61251446766894,
+        "ssm_obs_rmse": 0.02928871348306802,
+        "chamfer_mm": 0.21150651251131009,
+        "hausdorff_mm": 1.1575005997490575,
+        "coverage_2x": 0.8876494023904382,
+        "fscore_0p5mm": 0.9372724948369996,
+        "fscore_1p0mm": 0.9980461900706378,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N459_wear_level6",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "52",
+        "74",
+        "90",
+        "67",
+        "64",
+        "25",
+        "85",
+        "04",
+        "71",
+        "34"
+      ],
+      "global": {
+        "r2_pct": 99.63017134599599,
+        "ssm_obs_rmse": 0.03163708415660468,
+        "chamfer_mm": 0.21493065607070289,
+        "hausdorff_mm": 1.2359250327798827,
+        "coverage_2x": 0.8949771689497716,
+        "fscore_0p5mm": 0.928474240489751,
+        "fscore_1p0mm": 0.9963366286947357,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.64369185599602,
+        "ssm_obs_rmse": 0.03266750162675088,
+        "chamfer_mm": 0.2106067684376261,
+        "hausdorff_mm": 1.2682634684568146,
+        "coverage_2x": 0.8941469489414695,
+        "fscore_0p5mm": 0.9346153189334986,
+        "fscore_1p0mm": 0.9971921379863617,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N459_wear_level7",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "52",
+        "67",
+        "64",
+        "90",
+        "74",
+        "04",
+        "25",
+        "71",
+        "85",
+        "22"
+      ],
+      "global": {
+        "r2_pct": 99.67223485366424,
+        "ssm_obs_rmse": 0.03157660760932537,
+        "chamfer_mm": 0.20932376401467295,
+        "hausdorff_mm": 1.430234913188918,
+        "coverage_2x": 0.9081589064502349,
+        "fscore_0p5mm": 0.93177242174515,
+        "fscore_1p0mm": 0.9947728186570165,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.6836273141506,
+        "ssm_obs_rmse": 0.03259134671738783,
+        "chamfer_mm": 0.20606051260774477,
+        "hausdorff_mm": 1.3467924858400584,
+        "coverage_2x": 0.9064502349423323,
+        "fscore_0p5mm": 0.9406185267965902,
+        "fscore_1p0mm": 0.9960847304487501,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N4_wear_level0",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "57",
+        "07",
+        "89",
+        "69",
+        "06",
+        "73",
+        "08",
+        "14",
+        "22",
+        "29"
+      ],
+      "global": {
+        "r2_pct": 99.69553349435934,
+        "ssm_obs_rmse": 0.013761174069910329,
+        "chamfer_mm": 0.16924647827908124,
+        "hausdorff_mm": 0.902026563976793,
+        "coverage_2x": 0.9475870885266858,
+        "fscore_0p5mm": 0.9829987080638494,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.70808068082712,
+        "ssm_obs_rmse": 0.013303972276005264,
+        "chamfer_mm": 0.16605404175685465,
+        "hausdorff_mm": 0.792765775535501,
+        "coverage_2x": 0.9517417705337169,
+        "fscore_0p5mm": 0.9888053978063267,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N4_wear_level1",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "07",
+        "57",
+        "73",
+        "06",
+        "69",
+        "89",
+        "08",
+        "14",
+        "22",
+        "25"
+      ],
+      "global": {
+        "r2_pct": 99.69775969877742,
+        "ssm_obs_rmse": 0.013346220937865456,
+        "chamfer_mm": 0.16862946098411055,
+        "hausdorff_mm": 0.9364167874670706,
+        "coverage_2x": 0.9420663018989379,
+        "fscore_0p5mm": 0.9811214246171123,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.71076659367962,
+        "ssm_obs_rmse": 0.012182343270370257,
+        "chamfer_mm": 0.16603688625542798,
+        "hausdorff_mm": 0.7363462692774272,
+        "coverage_2x": 0.9514000643707756,
+        "fscore_0p5mm": 0.987906493896073,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N4_wear_level2",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "06",
+        "89",
+        "57",
+        "69",
+        "07",
+        "73",
+        "08",
+        "11",
+        "14",
+        "23"
+      ],
+      "global": {
+        "r2_pct": 99.68583113095741,
+        "ssm_obs_rmse": 0.015144027313326563,
+        "chamfer_mm": 0.17080850463996217,
+        "hausdorff_mm": 0.8824999214041254,
+        "coverage_2x": 0.9440650406504065,
+        "fscore_0p5mm": 0.9814000649466841,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.7008700076098,
+        "ssm_obs_rmse": 0.013886232763628194,
+        "chamfer_mm": 0.16750679267594631,
+        "hausdorff_mm": 0.8151901745900593,
+        "coverage_2x": 0.9492682926829268,
+        "fscore_0p5mm": 0.9873604907268273,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N4_wear_level3",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "07",
+        "57",
+        "08",
+        "06",
+        "73",
+        "69",
+        "89",
+        "14",
+        "34",
+        "25"
+      ],
+      "global": {
+        "r2_pct": 99.69467878389896,
+        "ssm_obs_rmse": 0.013790071275058309,
+        "chamfer_mm": 0.17055875568440876,
+        "hausdorff_mm": 0.9283935771743234,
+        "coverage_2x": 0.9432855280312907,
+        "fscore_0p5mm": 0.982660051621552,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.71201866819023,
+        "ssm_obs_rmse": 0.012882306992204925,
+        "chamfer_mm": 0.16622780071139617,
+        "hausdorff_mm": 0.7616076943480513,
+        "coverage_2x": 0.953715775749674,
+        "fscore_0p5mm": 0.9888852385188686,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N4_wear_level4",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "07",
+        "73",
+        "25",
+        "08",
+        "06",
+        "57",
+        "67",
+        "64",
+        "34",
+        "22"
+      ],
+      "global": {
+        "r2_pct": 99.67548100494695,
+        "ssm_obs_rmse": 0.014459089124476555,
+        "chamfer_mm": 0.17638354860857614,
+        "hausdorff_mm": 0.8829210327544267,
+        "coverage_2x": 0.9319959197551854,
+        "fscore_0p5mm": 0.9739904932794505,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.69123298577927,
+        "ssm_obs_rmse": 0.013456681520812568,
+        "chamfer_mm": 0.17137975506542366,
+        "hausdorff_mm": 0.819395831614694,
+        "coverage_2x": 0.9428765725943556,
+        "fscore_0p5mm": 0.982952236369072,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N4_wear_level5",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "06",
+        "25",
+        "07",
+        "73",
+        "08",
+        "57",
+        "64",
+        "67",
+        "69",
+        "34"
+      ],
+      "global": {
+        "r2_pct": 99.6797255793344,
+        "ssm_obs_rmse": 0.01810463313332145,
+        "chamfer_mm": 0.17869087796551214,
+        "hausdorff_mm": 0.8720549753974387,
+        "coverage_2x": 0.9337328163553049,
+        "fscore_0p5mm": 0.9664844695134968,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.69601450914321,
+        "ssm_obs_rmse": 0.016020870278312924,
+        "chamfer_mm": 0.17446194247339136,
+        "hausdorff_mm": 0.895391344307002,
+        "coverage_2x": 0.9383151216073317,
+        "fscore_0p5mm": 0.9788954784255689,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N4_wear_level6",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "52",
+        "64",
+        "74",
+        "90",
+        "67",
+        "22",
+        "04",
+        "25",
+        "73",
+        "07"
+      ],
+      "global": {
+        "r2_pct": 99.64970053926643,
+        "ssm_obs_rmse": 0.029278488612488728,
+        "chamfer_mm": 0.18926265770334327,
+        "hausdorff_mm": 1.145203770235371,
+        "coverage_2x": 0.9193786982248521,
+        "fscore_0p5mm": 0.9501095985915581,
+        "fscore_1p0mm": 0.9997999599919984,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.66993371265352,
+        "ssm_obs_rmse": 0.027351779709448545,
+        "chamfer_mm": 0.18280745880010738,
+        "hausdorff_mm": 1.137861225692378,
+        "coverage_2x": 0.9234467455621301,
+        "fscore_0p5mm": 0.9659415471347094,
+        "fscore_1p0mm": 0.9996999099729919,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N4_wear_level7",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "52",
+        "64",
+        "67",
+        "90",
+        "25",
+        "22",
+        "73",
+        "04",
+        "08",
+        "07"
+      ],
+      "global": {
+        "r2_pct": 99.67660548981311,
+        "ssm_obs_rmse": 0.029165417833907276,
+        "chamfer_mm": 0.19411011978738957,
+        "hausdorff_mm": 1.2893334277424104,
+        "coverage_2x": 0.9244391971664699,
+        "fscore_0p5mm": 0.943074043176635,
+        "fscore_1p0mm": 0.9990991892703432,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.69943374166806,
+        "ssm_obs_rmse": 0.02980523235436546,
+        "chamfer_mm": 0.1862610682646028,
+        "hausdorff_mm": 1.2017953269689226,
+        "coverage_2x": 0.9323101141282959,
+        "fscore_0p5mm": 0.9568948714494584,
+        "fscore_1p0mm": 0.9989488963411582,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N705_wear_level0",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "44",
+        "58",
+        "40",
+        "42",
+        "48",
+        "20",
+        "46",
+        "61",
+        "88",
+        "59"
+      ],
+      "global": {
+        "r2_pct": 99.79226069681611,
+        "ssm_obs_rmse": 0.013243375265798158,
+        "chamfer_mm": 0.1328463813704816,
+        "hausdorff_mm": 0.9691484389753614,
+        "coverage_2x": 0.9776519666269369,
+        "fscore_0p5mm": 0.9940072780649717,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.80447241619804,
+        "ssm_obs_rmse": 0.01292013794627951,
+        "chamfer_mm": 0.13083867628478185,
+        "hausdorff_mm": 0.9960456651234176,
+        "coverage_2x": 0.9791418355184743,
+        "fscore_0p5mm": 0.9952113424307079,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N705_wear_level1",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "44",
+        "58",
+        "40",
+        "42",
+        "48",
+        "20",
+        "88",
+        "21",
+        "46",
+        "59"
+      ],
+      "global": {
+        "r2_pct": 99.80510322216291,
+        "ssm_obs_rmse": 0.013165767845817255,
+        "chamfer_mm": 0.13299396943752728,
+        "hausdorff_mm": 0.8946795955071318,
+        "coverage_2x": 0.9819059107358263,
+        "fscore_0p5mm": 0.9944577986188344,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.81085947091725,
+        "ssm_obs_rmse": 0.011658709342237474,
+        "chamfer_mm": 0.13143342984935108,
+        "hausdorff_mm": 0.9583867425602948,
+        "coverage_2x": 0.9819059107358263,
+        "fscore_0p5mm": 0.9956699872628334,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N705_wear_level2",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "21",
+        "40",
+        "42",
+        "58",
+        "44",
+        "18",
+        "46",
+        "48",
+        "38",
+        "20"
+      ],
+      "global": {
+        "r2_pct": 99.77735837194903,
+        "ssm_obs_rmse": 0.015788096915650487,
+        "chamfer_mm": 0.1415097355261169,
+        "hausdorff_mm": 0.862431438318703,
+        "coverage_2x": 0.9759036144578314,
+        "fscore_0p5mm": 0.9942094168699986,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.78541213488464,
+        "ssm_obs_rmse": 0.014109127469791748,
+        "chamfer_mm": 0.14081728456565196,
+        "hausdorff_mm": 0.925848333471946,
+        "coverage_2x": 0.9795180722891567,
+        "fscore_0p5mm": 0.9951751991215528,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N705_wear_level3",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "42",
+        "40",
+        "58",
+        "44",
+        "21",
+        "48",
+        "46",
+        "20",
+        "18",
+        "43"
+      ],
+      "global": {
+        "r2_pct": 99.79519921676729,
+        "ssm_obs_rmse": 0.015365624878026809,
+        "chamfer_mm": 0.13914398168723102,
+        "hausdorff_mm": 0.8466275713627386,
+        "coverage_2x": 0.9777986241400876,
+        "fscore_0p5mm": 0.993061330083448,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.8073006519442,
+        "ssm_obs_rmse": 0.013769997507688814,
+        "chamfer_mm": 0.1369372013862179,
+        "hausdorff_mm": 0.8596197955999606,
+        "coverage_2x": 0.983739837398374,
+        "fscore_0p5mm": 0.9939596409232345,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N705_wear_level4",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "54",
+        "71",
+        "21",
+        "18",
+        "83",
+        "42",
+        "43",
+        "58",
+        "30",
+        "84"
+      ],
+      "global": {
+        "r2_pct": 99.65054040550815,
+        "ssm_obs_rmse": 0.027599162797281383,
+        "chamfer_mm": 0.18400081012921082,
+        "hausdorff_mm": 1.1698528804319797,
+        "coverage_2x": 0.928451461202553,
+        "fscore_0p5mm": 0.9556129880906491,
+        "fscore_1p0mm": 0.9992494370778084,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.6538976335081,
+        "ssm_obs_rmse": 0.029595891632907472,
+        "chamfer_mm": 0.1785464248753904,
+        "hausdorff_mm": 1.1608058315141878,
+        "coverage_2x": 0.9187101108498489,
+        "fscore_0p5mm": 0.9561836482986505,
+        "fscore_1p0mm": 0.9994997498749374,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N705_wear_level5",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "21",
+        "40",
+        "18",
+        "42",
+        "58",
+        "38",
+        "46",
+        "44",
+        "43",
+        "48"
+      ],
+      "global": {
+        "r2_pct": 99.79245881076316,
+        "ssm_obs_rmse": 0.02030634161147322,
+        "chamfer_mm": 0.15292202757737028,
+        "hausdorff_mm": 1.1629039097549756,
+        "coverage_2x": 0.9727177334732424,
+        "fscore_0p5mm": 0.975477930424197,
+        "fscore_1p0mm": 0.998397435897436,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.78474380898442,
+        "ssm_obs_rmse": 0.017866185343092984,
+        "chamfer_mm": 0.15332282900071448,
+        "hausdorff_mm": 1.137441453232487,
+        "coverage_2x": 0.9727177334732424,
+        "fscore_0p5mm": 0.9742289103089744,
+        "fscore_1p0mm": 0.9990490966418097,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N705_wear_level6",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "21",
+        "18",
+        "75",
+        "38",
+        "40",
+        "46",
+        "58",
+        "42",
+        "01",
+        "09"
+      ],
+      "global": {
+        "r2_pct": 99.78362277144572,
+        "ssm_obs_rmse": 0.023333406317350085,
+        "chamfer_mm": 0.1638403756587717,
+        "hausdorff_mm": 1.2598706615980677,
+        "coverage_2x": 0.9731800766283525,
+        "fscore_0p5mm": 0.969970467849361,
+        "fscore_1p0mm": 0.9981967541574834,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.77956663807468,
+        "ssm_obs_rmse": 0.02310127971178224,
+        "chamfer_mm": 0.16140295509805985,
+        "hausdorff_mm": 1.2628516524887208,
+        "coverage_2x": 0.9712643678160919,
+        "fscore_0p5mm": 0.9715455148286191,
+        "fscore_1p0mm": 0.9986983078001402,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N705_wear_level7",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "21",
+        "18",
+        "75",
+        "38",
+        "46",
+        "40",
+        "58",
+        "01",
+        "42",
+        "09"
+      ],
+      "global": {
+        "r2_pct": 99.75868597380826,
+        "ssm_obs_rmse": 0.025244968181313297,
+        "chamfer_mm": 0.1777226815176951,
+        "hausdorff_mm": 1.2332603653302474,
+        "coverage_2x": 0.9551461754104926,
+        "fscore_0p5mm": 0.9531052783222533,
+        "fscore_1p0mm": 0.9974434808762345,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.75456713174108,
+        "ssm_obs_rmse": 0.023777402283548604,
+        "chamfer_mm": 0.1756830747772941,
+        "hausdorff_mm": 1.2677699477712787,
+        "coverage_2x": 0.9519423307969563,
+        "fscore_0p5mm": 0.9513592539268537,
+        "fscore_1p0mm": 0.9979959919839679,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N726_wear_level0",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "29",
+        "60",
+        "15",
+        "12",
+        "35",
+        "56",
+        "11",
+        "86",
+        "27",
+        "28"
+      ],
+      "global": {
+        "r2_pct": 99.66232023812876,
+        "ssm_obs_rmse": 0.016334463958276885,
+        "chamfer_mm": 0.18778544367673017,
+        "hausdorff_mm": 1.090658799382637,
+        "coverage_2x": 0.9419354838709677,
+        "fscore_0p5mm": 0.982747113967511,
+        "fscore_1p0mm": 0.9997983464408148,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.67710623359532,
+        "ssm_obs_rmse": 0.013873519422851765,
+        "chamfer_mm": 0.18515634962797603,
+        "hausdorff_mm": 1.0840501666423397,
+        "coverage_2x": 0.9516129032258065,
+        "fscore_0p5mm": 0.9858010572453703,
+        "fscore_1p0mm": 0.99959661153691,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N726_wear_level1",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "29",
+        "60",
+        "15",
+        "12",
+        "35",
+        "86",
+        "56",
+        "11",
+        "28",
+        "55"
+      ],
+      "global": {
+        "r2_pct": 99.67623587657695,
+        "ssm_obs_rmse": 0.0147969154293462,
+        "chamfer_mm": 0.18441183535574018,
+        "hausdorff_mm": 1.040370256880377,
+        "coverage_2x": 0.9428571428571428,
+        "fscore_0p5mm": 0.9813180160610916,
+        "fscore_1p0mm": 0.9997958767095325,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.6836294471597,
+        "ssm_obs_rmse": 0.011597928692192333,
+        "chamfer_mm": 0.18340267471797905,
+        "hausdorff_mm": 1.0922216787291346,
+        "coverage_2x": 0.9473469387755102,
+        "fscore_0p5mm": 0.9840405735125309,
+        "fscore_1p0mm": 0.9997958767095325,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N726_wear_level2",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "80",
+        "85",
+        "73",
+        "34",
+        "35",
+        "83",
+        "84",
+        "22",
+        "57",
+        "60"
+      ],
+      "global": {
+        "r2_pct": 99.63181141893685,
+        "ssm_obs_rmse": 0.02083569177755995,
+        "chamfer_mm": 0.20190036197778932,
+        "hausdorff_mm": 1.133285571011272,
+        "coverage_2x": 0.9249670908293111,
+        "fscore_0p5mm": 0.9552804224920415,
+        "fscore_1p0mm": 0.9992995096567597,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.64369576149011,
+        "ssm_obs_rmse": 0.01667883039087391,
+        "chamfer_mm": 0.19756577890228097,
+        "hausdorff_mm": 1.0382702745533348,
+        "coverage_2x": 0.9227731461167179,
+        "fscore_0p5mm": 0.9647221749954268,
+        "fscore_1p0mm": 0.9998999899989999,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N726_wear_level3",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "85",
+        "80",
+        "83",
+        "73",
+        "22",
+        "84",
+        "90",
+        "34",
+        "68",
+        "57"
+      ],
+      "global": {
+        "r2_pct": 99.62070492630613,
+        "ssm_obs_rmse": 0.024150929596916063,
+        "chamfer_mm": 0.20555455979214055,
+        "hausdorff_mm": 1.1130619590838537,
+        "coverage_2x": 0.9176898590268304,
+        "fscore_0p5mm": 0.9522040538059439,
+        "fscore_1p0mm": 0.9993495772251965,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.623793403956,
+        "ssm_obs_rmse": 0.021188710916102266,
+        "chamfer_mm": 0.20609387245216762,
+        "hausdorff_mm": 1.1618910419295843,
+        "coverage_2x": 0.9163256025466121,
+        "fscore_0p5mm": 0.954518859682075,
+        "fscore_1p0mm": 0.9991492768853525,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N726_wear_level4",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "80",
+        "72",
+        "85",
+        "35",
+        "73",
+        "60",
+        "57",
+        "34",
+        "06",
+        "71"
+      ],
+      "global": {
+        "r2_pct": 99.58728291252962,
+        "ssm_obs_rmse": 0.02293728006903129,
+        "chamfer_mm": 0.21187385716999266,
+        "hausdorff_mm": 1.1662726190985366,
+        "coverage_2x": 0.904122278832793,
+        "fscore_0p5mm": 0.944251094544647,
+        "fscore_1p0mm": 0.9991993594875901,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.6025700017705,
+        "ssm_obs_rmse": 0.020545566847377166,
+        "chamfer_mm": 0.20814676379429653,
+        "hausdorff_mm": 1.1377431130743243,
+        "coverage_2x": 0.9073645206113942,
+        "fscore_0p5mm": 0.9491877656824693,
+        "fscore_1p0mm": 0.9990490966418097,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N726_wear_level5",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "90",
+        "80",
+        "73",
+        "85",
+        "22",
+        "52",
+        "67",
+        "64",
+        "25",
+        "83"
+      ],
+      "global": {
+        "r2_pct": 99.5898967955023,
+        "ssm_obs_rmse": 0.027431944033575063,
+        "chamfer_mm": 0.21805472057835842,
+        "hausdorff_mm": 1.2207358075456993,
+        "coverage_2x": 0.8958944281524927,
+        "fscore_0p5mm": 0.9343599636158406,
+        "fscore_1p0mm": 0.9986481750362989,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.59532209495109,
+        "ssm_obs_rmse": 0.025237565987065082,
+        "chamfer_mm": 0.21881120165634402,
+        "hausdorff_mm": 1.2155913949863542,
+        "coverage_2x": 0.9007820136852395,
+        "fscore_0p5mm": 0.9415234608991935,
+        "fscore_1p0mm": 0.998848675977374,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N726_wear_level6",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "85",
+        "80",
+        "90",
+        "73",
+        "67",
+        "72",
+        "25",
+        "34",
+        "22",
+        "71"
+      ],
+      "global": {
+        "r2_pct": 99.64541119215762,
+        "ssm_obs_rmse": 0.026011465129634887,
+        "chamfer_mm": 0.21719537865872363,
+        "hausdorff_mm": 1.3976206023908218,
+        "coverage_2x": 0.9269454737956591,
+        "fscore_0p5mm": 0.9320975796693919,
+        "fscore_1p0mm": 0.9950758717716812,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.65381129135979,
+        "ssm_obs_rmse": 0.023381056049421985,
+        "chamfer_mm": 0.21616405510008121,
+        "hausdorff_mm": 1.3495717411795467,
+        "coverage_2x": 0.9338274219163578,
+        "fscore_0p5mm": 0.9370960196634318,
+        "fscore_1p0mm": 0.9956814301496434,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N726_wear_level7",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "85",
+        "90",
+        "67",
+        "80",
+        "73",
+        "52",
+        "25",
+        "72",
+        "22",
+        "64"
+      ],
+      "global": {
+        "r2_pct": 99.66506476173808,
+        "ssm_obs_rmse": 0.03222037653468132,
+        "chamfer_mm": 0.22253916855419814,
+        "hausdorff_mm": 1.5542232137223981,
+        "coverage_2x": 0.9367301231802911,
+        "fscore_0p5mm": 0.9258276971610624,
+        "fscore_1p0mm": 0.9925955774945852,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.66456052013571,
+        "ssm_obs_rmse": 0.03177339850417988,
+        "chamfer_mm": 0.22256512189727537,
+        "hausdorff_mm": 1.5664717127968961,
+        "coverage_2x": 0.9305711086226204,
+        "fscore_0p5mm": 0.9296846651316908,
+        "fscore_1p0mm": 0.9925955774945852,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N728_wear_level0",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "48",
+        "44",
+        "58",
+        "40",
+        "42",
+        "59",
+        "20",
+        "61",
+        "88",
+        "41"
+      ],
+      "global": {
+        "r2_pct": 99.83705932666287,
+        "ssm_obs_rmse": 0.014921969443244587,
+        "chamfer_mm": 0.13064010740042242,
+        "hausdorff_mm": 0.6845228220527578,
+        "coverage_2x": 0.9844124700239808,
+        "fscore_0p5mm": 0.9964421354455315,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.84965376095451,
+        "ssm_obs_rmse": 0.0122590134539427,
+        "chamfer_mm": 0.12704455215054797,
+        "hausdorff_mm": 0.7766940220601612,
+        "coverage_2x": 0.991207034372502,
+        "fscore_0p5mm": 0.9969933854479855,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N728_wear_level1",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "58",
+        "40",
+        "42",
+        "48",
+        "44",
+        "21",
+        "46",
+        "18",
+        "20",
+        "61"
+      ],
+      "global": {
+        "r2_pct": 99.83634713479553,
+        "ssm_obs_rmse": 0.01450134970252666,
+        "chamfer_mm": 0.13548942177857626,
+        "hausdorff_mm": 0.6683840542446648,
+        "coverage_2x": 0.988519885198852,
+        "fscore_0p5mm": 0.9953787110128621,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.84278710741876,
+        "ssm_obs_rmse": 0.01449227009537214,
+        "chamfer_mm": 0.13269535683093225,
+        "hausdorff_mm": 0.7279464230832282,
+        "coverage_2x": 0.990979909799098,
+        "fscore_0p5mm": 0.9962444052420703,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N728_wear_level2",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "21",
+        "40",
+        "58",
+        "42",
+        "18",
+        "48",
+        "44",
+        "46",
+        "41",
+        "20"
+      ],
+      "global": {
+        "r2_pct": 99.83645786561922,
+        "ssm_obs_rmse": 0.017079254046893384,
+        "chamfer_mm": 0.13811949581617605,
+        "hausdorff_mm": 0.8122709512094111,
+        "coverage_2x": 0.9876910016977929,
+        "fscore_0p5mm": 0.9924472461958241,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.84779373705086,
+        "ssm_obs_rmse": 0.016225387793639943,
+        "chamfer_mm": 0.1343509891410664,
+        "hausdorff_mm": 0.8496100805104843,
+        "coverage_2x": 0.9906621392190152,
+        "fscore_0p5mm": 0.9936434359259964,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N728_wear_level3",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "21",
+        "40",
+        "18",
+        "58",
+        "42",
+        "44",
+        "41",
+        "46",
+        "38",
+        "48"
+      ],
+      "global": {
+        "r2_pct": 99.82604514868815,
+        "ssm_obs_rmse": 0.01921471524449792,
+        "chamfer_mm": 0.1429450723378316,
+        "hausdorff_mm": 0.8821456268768038,
+        "coverage_2x": 0.9816031537450722,
+        "fscore_0p5mm": 0.9877537282805665,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.83586599302336,
+        "ssm_obs_rmse": 0.01829870029349734,
+        "chamfer_mm": 0.13991531943281102,
+        "hausdorff_mm": 0.8648279376234009,
+        "coverage_2x": 0.985545335085414,
+        "fscore_0p5mm": 0.9906855660870831,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N728_wear_level4",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "21",
+        "18",
+        "40",
+        "38",
+        "58",
+        "46",
+        "42",
+        "75",
+        "09",
+        "82"
+      ],
+      "global": {
+        "r2_pct": 99.82745061780325,
+        "ssm_obs_rmse": 0.021525306422903047,
+        "chamfer_mm": 0.14912652943976853,
+        "hausdorff_mm": 0.9346843981987241,
+        "coverage_2x": 0.9805914972273567,
+        "fscore_0p5mm": 0.9820635813668526,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.8354394023114,
+        "ssm_obs_rmse": 0.019411947969847975,
+        "chamfer_mm": 0.1460878988628691,
+        "hausdorff_mm": 0.9294080490835812,
+        "coverage_2x": 0.9856746765249538,
+        "fscore_0p5mm": 0.9831580807468421,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N728_wear_level5",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "21",
+        "38",
+        "18",
+        "40",
+        "75",
+        "46",
+        "42",
+        "58",
+        "41",
+        "82"
+      ],
+      "global": {
+        "r2_pct": 99.8368526153213,
+        "ssm_obs_rmse": 0.02309977782544299,
+        "chamfer_mm": 0.1534914376702297,
+        "hausdorff_mm": 1.0735591411102356,
+        "coverage_2x": 0.9820670127418594,
+        "fscore_0p5mm": 0.9746723304486163,
+        "fscore_1p0mm": 0.99964987745711,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.82840085928196,
+        "ssm_obs_rmse": 0.0202870260985305,
+        "chamfer_mm": 0.1554327116740991,
+        "hausdorff_mm": 1.0529414271938267,
+        "coverage_2x": 0.9811231713072204,
+        "fscore_0p5mm": 0.9739409455710437,
+        "fscore_1p0mm": 0.9996999099729919,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N728_wear_level6",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "21",
+        "18",
+        "75",
+        "38",
+        "01",
+        "40",
+        "82",
+        "09",
+        "46",
+        "41"
+      ],
+      "global": {
+        "r2_pct": 99.7916176654347,
+        "ssm_obs_rmse": 0.027249944396524884,
+        "chamfer_mm": 0.1678157419192849,
+        "hausdorff_mm": 1.2739135071083483,
+        "coverage_2x": 0.9634567901234568,
+        "fscore_0p5mm": 0.9637600072215248,
+        "fscore_1p0mm": 0.9974937343358395,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.78601264919733,
+        "ssm_obs_rmse": 0.026697943620664005,
+        "chamfer_mm": 0.16866940830320903,
+        "hausdorff_mm": 1.2976899534364115,
+        "coverage_2x": 0.9634567901234568,
+        "fscore_0p5mm": 0.9631698777558744,
+        "fscore_1p0mm": 0.9977449260836884,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N728_wear_level7",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "21",
+        "75",
+        "18",
+        "38",
+        "40",
+        "01",
+        "82",
+        "46",
+        "09",
+        "42"
+      ],
+      "global": {
+        "r2_pct": 99.79483113254538,
+        "ssm_obs_rmse": 0.028760670523516236,
+        "chamfer_mm": 0.17272872711612053,
+        "hausdorff_mm": 1.3016473690442325,
+        "coverage_2x": 0.9689092762487258,
+        "fscore_0p5mm": 0.9607759807329906,
+        "fscore_1p0mm": 0.9968400461453579,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.78874148322217,
+        "ssm_obs_rmse": 0.027393755027784947,
+        "chamfer_mm": 0.17457882711028994,
+        "hausdorff_mm": 1.2797219034707632,
+        "coverage_2x": 0.9709480122324159,
+        "fscore_0p5mm": 0.9607475583308394,
+        "fscore_1p0mm": 0.9967897271268058,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N891_wear_level0",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "76",
+        "42",
+        "58",
+        "20",
+        "46",
+        "48",
+        "18",
+        "19",
+        "44",
+        "40"
+      ],
+      "global": {
+        "r2_pct": 99.819976766759,
+        "ssm_obs_rmse": 0.014115318612510261,
+        "chamfer_mm": 0.14604579976523063,
+        "hausdorff_mm": 0.8639488292000124,
+        "coverage_2x": 0.9698879551820728,
+        "fscore_0p5mm": 0.9937230801147624,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.83146337735784,
+        "ssm_obs_rmse": 0.014639224734845633,
+        "chamfer_mm": 0.14461677013874547,
+        "hausdorff_mm": 0.8136698966665927,
+        "coverage_2x": 0.9793417366946778,
+        "fscore_0p5mm": 0.9956594413813941,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N891_wear_level1",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "76",
+        "20",
+        "42",
+        "58",
+        "61",
+        "47",
+        "81",
+        "48",
+        "46",
+        "24"
+      ],
+      "global": {
+        "r2_pct": 99.83372280888307,
+        "ssm_obs_rmse": 0.015372786981851835,
+        "chamfer_mm": 0.14371554260836084,
+        "hausdorff_mm": 0.9697544530323412,
+        "coverage_2x": 0.9807417974322397,
+        "fscore_0p5mm": 0.9947658589454912,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.837224444627,
+        "ssm_obs_rmse": 0.015341908587716314,
+        "chamfer_mm": 0.14324085087710295,
+        "hausdorff_mm": 0.9223296208743512,
+        "coverage_2x": 0.9821683309557775,
+        "fscore_0p5mm": 0.9951126374455366,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N891_wear_level2",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "76",
+        "42",
+        "46",
+        "18",
+        "58",
+        "20",
+        "51",
+        "19",
+        "38",
+        "21"
+      ],
+      "global": {
+        "r2_pct": 99.82111078442477,
+        "ssm_obs_rmse": 0.01606687337259789,
+        "chamfer_mm": 0.15323537765523754,
+        "hausdorff_mm": 0.8554163653328255,
+        "coverage_2x": 0.9736549165120594,
+        "fscore_0p5mm": 0.9904262468278168,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.83373104089664,
+        "ssm_obs_rmse": 0.01471341526400124,
+        "chamfer_mm": 0.1498694097393327,
+        "hausdorff_mm": 0.8753435884553029,
+        "coverage_2x": 0.9758812615955473,
+        "fscore_0p5mm": 0.9911972991941026,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N891_wear_level3",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "18",
+        "42",
+        "21",
+        "76",
+        "58",
+        "46",
+        "38",
+        "20",
+        "75",
+        "40"
+      ],
+      "global": {
+        "r2_pct": 99.81661477483642,
+        "ssm_obs_rmse": 0.017635476376841815,
+        "chamfer_mm": 0.1595541073070314,
+        "hausdorff_mm": 0.9666640029446392,
+        "coverage_2x": 0.9706457925636007,
+        "fscore_0p5mm": 0.9826385249653562,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.82991724063622,
+        "ssm_obs_rmse": 0.01630449104308431,
+        "chamfer_mm": 0.15617292262026025,
+        "hausdorff_mm": 0.9358038600133168,
+        "coverage_2x": 0.9757338551859099,
+        "fscore_0p5mm": 0.9837658985804782,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N891_wear_level4",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "85",
+        "90",
+        "71",
+        "80",
+        "73",
+        "67",
+        "25",
+        "22",
+        "52",
+        "64"
+      ],
+      "global": {
+        "r2_pct": 99.46896339310962,
+        "ssm_obs_rmse": 0.022468913621676686,
+        "chamfer_mm": 0.24860626222544352,
+        "hausdorff_mm": 1.2382662369450463,
+        "coverage_2x": 0.8432114333753677,
+        "fscore_0p5mm": 0.8943336566588508,
+        "fscore_1p0mm": 0.9971485754807168,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.50209787687183,
+        "ssm_obs_rmse": 0.02312082607189848,
+        "chamfer_mm": 0.24167087399761844,
+        "hausdorff_mm": 1.1850439772655614,
+        "coverage_2x": 0.8520386717108028,
+        "fscore_0p5mm": 0.9152432696318455,
+        "fscore_1p0mm": 0.9980885918745982,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N891_wear_level5",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "18",
+        "76",
+        "42",
+        "58",
+        "46",
+        "38",
+        "21",
+        "75",
+        "20",
+        "51"
+      ],
+      "global": {
+        "r2_pct": 99.8193098233703,
+        "ssm_obs_rmse": 0.018340882964161163,
+        "chamfer_mm": 0.1647756547704124,
+        "hausdorff_mm": 0.8962881989032068,
+        "coverage_2x": 0.9747393744987971,
+        "fscore_0p5mm": 0.9805002890152967,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.83159379162502,
+        "ssm_obs_rmse": 0.017031950164119476,
+        "chamfer_mm": 0.16012011254914976,
+        "hausdorff_mm": 0.9460932977630532,
+        "coverage_2x": 0.9747393744987971,
+        "fscore_0p5mm": 0.9793674111513128,
+        "fscore_1p0mm": 1.0,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N891_wear_level6",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "90",
+        "85",
+        "80",
+        "71",
+        "52",
+        "67",
+        "64",
+        "25",
+        "73",
+        "22"
+      ],
+      "global": {
+        "r2_pct": 99.43491390370934,
+        "ssm_obs_rmse": 0.02651329094598061,
+        "chamfer_mm": 0.27059883568921295,
+        "hausdorff_mm": 1.5242607722780144,
+        "coverage_2x": 0.8245533669262483,
+        "fscore_0p5mm": 0.8690126319994139,
+        "fscore_1p0mm": 0.9887320300098696,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.45618930433837,
+        "ssm_obs_rmse": 0.028075385023537108,
+        "chamfer_mm": 0.2654155084665878,
+        "hausdorff_mm": 1.4995761464926067,
+        "coverage_2x": 0.8295923041685753,
+        "fscore_0p5mm": 0.8801945181255526,
+        "fscore_1p0mm": 0.9902034203454485,
+        "emd_mm": null
+      }
+    },
+    {
+      "tooth": "tooth_N891_wear_level7",
+      "method": "neighborhood",
+      "n_neighbors": 10,
+      "neighbor_ids": [
+        "90",
+        "64",
+        "85",
+        "67",
+        "71",
+        "25",
+        "80",
+        "52",
+        "73",
+        "22"
+      ],
+      "global": {
+        "r2_pct": 99.47201595597733,
+        "ssm_obs_rmse": 0.030104006775963605,
+        "chamfer_mm": 0.2669996252028747,
+        "hausdorff_mm": 1.5305234949385333,
+        "coverage_2x": 0.8407372400756143,
+        "fscore_0p5mm": 0.8710417086107427,
+        "fscore_1p0mm": 0.9880576765937022,
+        "emd_mm": null
+      },
+      "neighborhood": {
+        "r2_pct": 99.4659168804179,
+        "ssm_obs_rmse": 0.03218723211928098,
+        "chamfer_mm": 0.26517509868389827,
+        "hausdorff_mm": 1.5277293955745226,
+        "coverage_2x": 0.833648393194707,
+        "fscore_0p5mm": 0.8794156314791562,
+        "fscore_1p0mm": 0.9879121854729631,
+        "emd_mm": null
+      }
+    }
+  ]
+}

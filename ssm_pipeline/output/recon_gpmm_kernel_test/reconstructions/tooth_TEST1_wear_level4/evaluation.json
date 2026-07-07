@@ -1,0 +1,18 @@
+{
+  "n_iter": 8,
+  "frac_trusted": 0.73252,
+  "median_residual": 0.007996103313047984,
+  "n_modes": 69,
+  "refine": {
+    "ssm_obs_rmse": 0.008002253158609446,
+    "ssm_obs_mae": 0.007169976614708996,
+    "ssm_obs_max_error": 0.02466041054579135,
+    "missing_avg_displacement": 0.0093648882029899,
+    "missing_max_displacement": 0.024271098109785248,
+    "final_obs_rmse": 0.0,
+    "final_all_rmse": 0.005249235460004295,
+    "n_observed": 73252,
+    "n_missing": 26748
+  },
+  "name": "tooth_TEST1_wear_level4"
+}

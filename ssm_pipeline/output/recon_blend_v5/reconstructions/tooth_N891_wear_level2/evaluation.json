@@ -1,0 +1,13 @@
+{
+  "source_worn": "tooth_N891_wear_level2",
+  "detect_mode": "blend",
+  "n_points": 10000,
+  "blend": {
+    "lo_deviation": 0.0,
+    "hi_deviation": 0.0,
+    "frac_blended": 0.0794,
+    "frac_full_recon": 0.0149,
+    "mean_weight": 0.04045295138888889
+  },
+  "mesh_poisson_depth": 0
+}

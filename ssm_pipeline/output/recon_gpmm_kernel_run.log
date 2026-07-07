@@ -1,0 +1,142 @@
+CuPy not available, using CPU for linear algebra
+============================================================
+GPMM Posterior Reconstruction
+============================================================
+  Good teeth (prior): 18   Worn teeth: 25
+  Restricted to 16 worn teeth
+Building Statistical Shape Model...
+  Loaded 18 shapes with 100000 points each
+  Using CPU for SVD...
+  Keeping 9 components (95.9% variance)
+  PCA modes: 9 (95.9% var)
+  + 60 analytic Gaussian modes -> 69 total modes (GPMM)
+
+  tooth_TEST1_wear_level0
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.00787, MAE=0.00678, max=0.02390
+      Missing region displacement:   avg=0.00973, max=0.02292
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=68.7%  iters=7  median_resid=0.0079
+    mesh: skipped
+
+  tooth_TEST1_wear_level1
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.00792, MAE=0.00687, max=0.02418
+      Missing region displacement:   avg=0.00934, max=0.02369
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=70.1%  iters=7  median_resid=0.0078
+    mesh: reconstructed_smooth.ply (depth 9)
+
+  tooth_TEST1_wear_level2
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.00779, MAE=0.00704, max=0.02335
+      Missing region displacement:   avg=0.00869, max=0.02234
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=70.9%  iters=7  median_resid=0.0079
+    mesh: reconstructed_smooth.ply (depth 7)
+
+  tooth_TEST1_wear_level3
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.00799, MAE=0.00719, max=0.02413
+      Missing region displacement:   avg=0.00901, max=0.02247
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=70.9%  iters=8  median_resid=0.0080
+    mesh: reconstructed_smooth.ply (depth 8)
+
+  tooth_TEST1_wear_level4
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.00800, MAE=0.00717, max=0.02466
+      Missing region displacement:   avg=0.00936, max=0.02427
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=73.3%  iters=8  median_resid=0.0080
+    mesh: reconstructed_smooth.ply (depth 7)
+
+  tooth_TEST1_wear_level5
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.00867, MAE=0.00760, max=0.02604
+      Missing region displacement:   avg=0.01141, max=0.02546
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=74.1%  iters=7  median_resid=0.0084
+    mesh: reconstructed_smooth.ply (depth 8)
+
+  tooth_TEST1_wear_level6
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01299, MAE=0.01141, max=0.03624
+      Missing region displacement:   avg=0.01729, max=0.03586
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=73.9%  iters=10  median_resid=0.0117
+    mesh: reconstructed_smooth.ply (depth 8)
+
+  tooth_TEST1_wear_level7
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01091, MAE=0.00991, max=0.03287
+      Missing region displacement:   avg=0.01474, max=0.03253
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=81.1%  iters=8  median_resid=0.0107
+    mesh: reconstructed_smooth.ply (depth 9)
+
+  tooth_TEST2_wear_level0
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01289, MAE=0.01121, max=0.03232
+      Missing region displacement:   avg=0.01828, max=0.03213
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=88.4%  iters=8  median_resid=0.0105
+    mesh: reconstructed_smooth.ply (depth 9)
+
+  tooth_TEST2_wear_level1
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01273, MAE=0.01106, max=0.03158
+      Missing region displacement:   avg=0.01735, max=0.03126
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=88.4%  iters=10  median_resid=0.0102
+    mesh: skipped
+
+  tooth_TEST2_wear_level2
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01274, MAE=0.01102, max=0.03192
+      Missing region displacement:   avg=0.01716, max=0.03175
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=88.2%  iters=7  median_resid=0.0103
+    mesh: reconstructed_smooth.ply (depth 7)
+
+  tooth_TEST2_wear_level3
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01254, MAE=0.01082, max=0.03120
+      Missing region displacement:   avg=0.01719, max=0.03103
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=87.1%  iters=11  median_resid=0.0101
+    mesh: reconstructed_smooth.ply (depth 9)
+
+  tooth_TEST2_wear_level4
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01263, MAE=0.01081, max=0.03146
+      Missing region displacement:   avg=0.01669, max=0.03127
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=86.9%  iters=11  median_resid=0.0102
+    mesh: reconstructed_smooth.ply (depth 9)
+
+  tooth_TEST2_wear_level5
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01338, MAE=0.01159, max=0.03278
+      Missing region displacement:   avg=0.01825, max=0.03260
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=87.7%  iters=12  median_resid=0.0106
+    mesh: reconstructed_smooth.ply (depth 7)
+
+  tooth_TEST2_wear_level6
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01611, MAE=0.01424, max=0.04205
+      Missing region displacement:   avg=0.02228, max=0.04175
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=85.4%  iters=7  median_resid=0.0136
+    mesh: reconstructed_smooth.ply (depth 7)
+
+  tooth_TEST2_wear_level7
+    Non-rigid refinement:
+      SSM fit error at observed pts: RMSE=0.01817, MAE=0.01589, max=0.04743
+      Missing region displacement:   avg=0.02306, max=0.04703
+      Final self-consistency:         obs RMSE=0.00000000 (should be ~0)
+    trusted(unworn)=83.5%  iters=9  median_resid=0.0154
+    mesh: reconstructed_smooth.ply (depth 9)
+
+Done. 16 reconstructions -> output/recon_gpmm_kernel_test

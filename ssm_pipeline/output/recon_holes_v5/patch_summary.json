@@ -1,0 +1,593 @@
+{
+  "recon_dir": "output/recon_neighborhood_v5",
+  "correspondence_dir": "output/correspondence_v5_10k",
+  "mode": "swap",
+  "n_patched": 64,
+  "deviation_percentile": 75.0,
+  "deviation_threshold": null,
+  "min_component_size": 200,
+  "transition_band": 3.0,
+  "wear_fraction_mean": 0.0319109375,
+  "wear_fraction_min": 0.0043,
+  "wear_fraction_max": 0.0693,
+  "chamfer_mm_mean": null,
+  "results": [
+    {
+      "name": "tooth_N1063_wear_level0",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 2256,
+      "wear_fraction": 0.0122,
+      "n_ring_points": 202,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N1063_wear_level1",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 2834,
+      "wear_fraction": 0.0185,
+      "n_ring_points": 286,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N1063_wear_level2",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 4094,
+      "wear_fraction": 0.0258,
+      "n_ring_points": 358,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N1063_wear_level3",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 6559,
+      "wear_fraction": 0.0367,
+      "n_ring_points": 484,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N1063_wear_level4",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 8089,
+      "wear_fraction": 0.044,
+      "n_ring_points": 544,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N1063_wear_level5",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 8058,
+      "wear_fraction": 0.0371,
+      "n_ring_points": 467,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N1063_wear_level6",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 9578,
+      "wear_fraction": 0.0479,
+      "n_ring_points": 576,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N1063_wear_level7",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 12274,
+      "wear_fraction": 0.0693,
+      "n_ring_points": 821,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level0",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 1005,
+      "wear_fraction": 0.0078,
+      "n_ring_points": 167,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level1",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 1916,
+      "wear_fraction": 0.0113,
+      "n_ring_points": 218,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level2",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 2515,
+      "wear_fraction": 0.0183,
+      "n_ring_points": 283,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level3",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 3335,
+      "wear_fraction": 0.0198,
+      "n_ring_points": 293,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level4",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 5119,
+      "wear_fraction": 0.0295,
+      "n_ring_points": 391,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level5",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 6676,
+      "wear_fraction": 0.0354,
+      "n_ring_points": 461,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level6",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 8320,
+      "wear_fraction": 0.0443,
+      "n_ring_points": 545,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level7",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 7624,
+      "wear_fraction": 0.0428,
+      "n_ring_points": 518,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level0",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 1963,
+      "wear_fraction": 0.0098,
+      "n_ring_points": 196,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level1",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 2876,
+      "wear_fraction": 0.0205,
+      "n_ring_points": 304,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level2",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 3494,
+      "wear_fraction": 0.0231,
+      "n_ring_points": 320,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level3",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 4275,
+      "wear_fraction": 0.027,
+      "n_ring_points": 368,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level4",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 6472,
+      "wear_fraction": 0.0329,
+      "n_ring_points": 445,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level5",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 7641,
+      "wear_fraction": 0.0413,
+      "n_ring_points": 515,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level6",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 9399,
+      "wear_fraction": 0.0485,
+      "n_ring_points": 588,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level7",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 10436,
+      "wear_fraction": 0.0558,
+      "n_ring_points": 659,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level0",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 525,
+      "wear_fraction": 0.0059,
+      "n_ring_points": 150,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level1",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 571,
+      "wear_fraction": 0.0043,
+      "n_ring_points": 118,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level2",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 1603,
+      "wear_fraction": 0.0148,
+      "n_ring_points": 236,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level3",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 1746,
+      "wear_fraction": 0.009,
+      "n_ring_points": 173,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level4",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 3771,
+      "wear_fraction": 0.0242,
+      "n_ring_points": 333,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level5",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 4689,
+      "wear_fraction": 0.0294,
+      "n_ring_points": 398,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level6",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 6033,
+      "wear_fraction": 0.0437,
+      "n_ring_points": 522,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level7",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 7209,
+      "wear_fraction": 0.0457,
+      "n_ring_points": 552,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level0",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 1349,
+      "wear_fraction": 0.0097,
+      "n_ring_points": 195,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level1",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 1150,
+      "wear_fraction": 0.0105,
+      "n_ring_points": 189,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level2",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 4577,
+      "wear_fraction": 0.0302,
+      "n_ring_points": 397,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level3",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 2875,
+      "wear_fraction": 0.0215,
+      "n_ring_points": 311,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level4",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 4847,
+      "wear_fraction": 0.0327,
+      "n_ring_points": 416,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level5",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 6931,
+      "wear_fraction": 0.0417,
+      "n_ring_points": 515,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level6",
+      "mode": "holes",
+      "n_interior_holes": 1,
+      "n_patch_points": 10429,
+      "wear_fraction": 0.0607,
+      "n_ring_points": 707,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level7",
+      "mode": "holes",
+      "n_interior_holes": 1,
+      "n_patch_points": 11858,
+      "wear_fraction": 0.0569,
+      "n_ring_points": 671,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level0",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 2351,
+      "wear_fraction": 0.0145,
+      "n_ring_points": 246,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level1",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 2248,
+      "wear_fraction": 0.0169,
+      "n_ring_points": 254,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level2",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 5513,
+      "wear_fraction": 0.0332,
+      "n_ring_points": 430,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level3",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 7067,
+      "wear_fraction": 0.0388,
+      "n_ring_points": 496,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level4",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 5813,
+      "wear_fraction": 0.0476,
+      "n_ring_points": 590,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level5",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 5896,
+      "wear_fraction": 0.0544,
+      "n_ring_points": 640,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level6",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 9439,
+      "wear_fraction": 0.0557,
+      "n_ring_points": 665,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level7",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 11360,
+      "wear_fraction": 0.0675,
+      "n_ring_points": 785,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level0",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 1231,
+      "wear_fraction": 0.0084,
+      "n_ring_points": 187,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level1",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 2308,
+      "wear_fraction": 0.0175,
+      "n_ring_points": 260,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level2",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 4331,
+      "wear_fraction": 0.0285,
+      "n_ring_points": 377,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level3",
+      "mode": "holes",
+      "n_interior_holes": 5,
+      "n_patch_points": 6265,
+      "wear_fraction": 0.041,
+      "n_ring_points": 503,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level4",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 6886,
+      "wear_fraction": 0.0402,
+      "n_ring_points": 504,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level5",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 8335,
+      "wear_fraction": 0.0425,
+      "n_ring_points": 541,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level6",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 10998,
+      "wear_fraction": 0.0562,
+      "n_ring_points": 659,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level7",
+      "mode": "holes",
+      "n_interior_holes": 1,
+      "n_patch_points": 12046,
+      "wear_fraction": 0.0565,
+      "n_ring_points": 676,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level0",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 1383,
+      "wear_fraction": 0.0101,
+      "n_ring_points": 203,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level1",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 1703,
+      "wear_fraction": 0.0089,
+      "n_ring_points": 173,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level2",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 2964,
+      "wear_fraction": 0.0176,
+      "n_ring_points": 284,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level3",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 5911,
+      "wear_fraction": 0.0289,
+      "n_ring_points": 387,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level4",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 5428,
+      "wear_fraction": 0.0363,
+      "n_ring_points": 475,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level5",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 6572,
+      "wear_fraction": 0.0354,
+      "n_ring_points": 443,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level6",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 7370,
+      "wear_fraction": 0.0389,
+      "n_ring_points": 490,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level7",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 9169,
+      "wear_fraction": 0.0463,
+      "n_ring_points": 556,
+      "geometric_comparison": null
+    }
+  ],
+  "timestamp": "2026-07-06T20:59:40.685968"
+}

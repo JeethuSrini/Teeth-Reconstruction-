@@ -1,0 +1,18 @@
+{
+  "n_iter": 4,
+  "frac_trusted": 0.9889,
+  "median_residual": 0.027938219074598643,
+  "n_modes": 14,
+  "refine": {
+    "ssm_obs_rmse": 0.03575082911296809,
+    "ssm_obs_mae": 0.031611053512941745,
+    "ssm_obs_max_error": 0.08126330635890387,
+    "missing_avg_displacement": 0.02588245803052476,
+    "missing_max_displacement": 0.04088778654382518,
+    "final_obs_rmse": 0.0,
+    "final_all_rmse": 0.0007306961083049979,
+    "n_observed": 9889,
+    "n_missing": 111
+  },
+  "name": "tooth_N459_wear_level7"
+}

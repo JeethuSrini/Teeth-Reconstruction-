@@ -1,0 +1,344 @@
+CuPy not available, using CPU for linear algebra
+============================================================
+Wear-Margin Patch Reconstruction
+============================================================
+  Recon dir          : output/recon_neighborhood_v5
+  Correspondence dir : output/correspondence_v5_10k
+  Artificial wear    : None
+  Output dir         : output/recon_blend_v5
+  Detect mode        : blend
+  Mode               : swap
+  Deviation pct      : 75.0
+  Deviation thresh   : None
+  Min component size : 200
+  Transition band    : 3.0 x median spacing
+  Annotation PNG     : True
+
+Found 64 worn teeth to patch
+
+--------------------------------------------------
+  Processing tooth_N1063_wear_level0
+    Blend: 7.4% of points blended, 1.6% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N1063_wear_level1
+    Blend: 4.7% of points blended, 1.1% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N1063_wear_level2
+    Blend: 11.2% of points blended, 4.2% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N1063_wear_level3
+    Blend: 12.2% of points blended, 4.0% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N1063_wear_level4
+    Blend: 11.5% of points blended, 3.1% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N1063_wear_level5
+    Blend: 8.0% of points blended, 3.8% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N1063_wear_level6
+    Blend: 13.0% of points blended, 4.2% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N1063_wear_level7
+    Blend: 6.8% of points blended, 1.4% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N332_wear_level0
+    Blend: 2.1% of points blended, 0.1% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N332_wear_level1
+    Blend: 6.3% of points blended, 2.6% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N332_wear_level2
+    Blend: 2.3% of points blended, 0.5% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N332_wear_level3
+    Blend: 4.6% of points blended, 0.9% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N332_wear_level4
+    Blend: 6.2% of points blended, 1.0% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N332_wear_level5
+    Blend: 5.5% of points blended, 0.5% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N332_wear_level6
+    Blend: 13.3% of points blended, 4.7% full-recon (deviation lo=0.0000, hi=0.0010)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N332_wear_level7
+    Blend: 11.2% of points blended, 3.4% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N459_wear_level0
+    Blend: 3.1% of points blended, 1.4% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N459_wear_level1
+    Blend: 10.0% of points blended, 4.0% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N459_wear_level2
+    Blend: 3.9% of points blended, 1.0% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N459_wear_level3
+    Blend: 7.0% of points blended, 2.5% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N459_wear_level4
+    Blend: 5.7% of points blended, 1.3% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N459_wear_level5
+    Blend: 8.5% of points blended, 1.4% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N459_wear_level6
+    Blend: 4.8% of points blended, 0.2% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N459_wear_level7
+    Blend: 6.7% of points blended, 1.7% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N4_wear_level0
+    Blend: 12.1% of points blended, 4.3% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N4_wear_level1
+    Blend: 10.9% of points blended, 5.1% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N4_wear_level2
+    Blend: 12.7% of points blended, 6.0% full-recon (deviation lo=0.0000, hi=0.0006)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N4_wear_level3
+    Blend: 14.4% of points blended, 5.8% full-recon (deviation lo=0.0000, hi=0.0008)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N4_wear_level4
+    Blend: 14.8% of points blended, 7.2% full-recon (deviation lo=0.0000, hi=0.0018)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N4_wear_level5
+    Blend: 12.8% of points blended, 6.4% full-recon (deviation lo=0.0000, hi=0.0009)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N4_wear_level6
+    Blend: 9.6% of points blended, 2.5% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N4_wear_level7
+    Blend: 13.5% of points blended, 4.4% full-recon (deviation lo=0.0000, hi=0.0004)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N705_wear_level0
+    Blend: 0.9% of points blended, 0.0% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N705_wear_level1
+    Blend: 0.9% of points blended, 0.0% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N705_wear_level2
+    Blend: 2.4% of points blended, 0.7% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N705_wear_level3
+    Blend: 1.8% of points blended, 0.2% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N705_wear_level4
+    Blend: 8.5% of points blended, 3.5% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N705_wear_level5
+    Blend: 6.8% of points blended, 1.8% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N705_wear_level6
+    Blend: 8.6% of points blended, 3.7% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N705_wear_level7
+    Blend: 8.7% of points blended, 2.3% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N726_wear_level0
+    Blend: 5.2% of points blended, 2.1% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N726_wear_level1
+    Blend: 8.0% of points blended, 2.3% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N726_wear_level2
+    Blend: 8.5% of points blended, 2.9% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N726_wear_level3
+    Blend: 9.8% of points blended, 3.7% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N726_wear_level4
+    Blend: 11.5% of points blended, 5.1% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N726_wear_level5
+    Blend: 12.5% of points blended, 5.2% full-recon (deviation lo=0.0000, hi=0.0005)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N726_wear_level6
+    Blend: 10.5% of points blended, 3.1% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N726_wear_level7
+    Blend: 13.4% of points blended, 4.6% full-recon (deviation lo=0.0000, hi=0.0007)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N728_wear_level0
+    Blend: 10.0% of points blended, 3.0% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N728_wear_level1
+    Blend: 3.2% of points blended, 1.2% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N728_wear_level2
+    Blend: 6.5% of points blended, 1.3% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N728_wear_level3
+    Blend: 6.0% of points blended, 1.3% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N728_wear_level4
+    Blend: 8.0% of points blended, 1.4% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N728_wear_level5
+    Blend: 5.3% of points blended, 1.1% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N728_wear_level6
+    Blend: 7.2% of points blended, 1.1% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N728_wear_level7
+    Blend: 8.5% of points blended, 2.5% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N891_wear_level0
+    Blend: 13.0% of points blended, 5.2% full-recon (deviation lo=0.0000, hi=0.0003)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N891_wear_level1
+    Blend: 13.0% of points blended, 6.9% full-recon (deviation lo=0.0000, hi=0.0015)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N891_wear_level2
+    Blend: 7.9% of points blended, 1.5% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N891_wear_level3
+    Blend: 9.7% of points blended, 2.1% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N891_wear_level4
+    Blend: 4.2% of points blended, 0.9% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N891_wear_level5
+    Blend: 9.7% of points blended, 2.4% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N891_wear_level6
+    Blend: 5.3% of points blended, 1.4% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+--------------------------------------------------
+  Processing tooth_N891_wear_level7
+    Blend: 6.5% of points blended, 2.5% full-recon (deviation lo=0.0000, hi=0.0000)
+    Blend mesh: skipped (--no-mesh)
+
+============================================================
+Patch Reconstruction Summary
+============================================================
+  Patched teeth: 64
+  Wear fraction: mean=8.1%, range=[0.9%, 14.8%]
+  Output: output/recon_blend_v5

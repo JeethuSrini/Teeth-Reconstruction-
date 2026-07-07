@@ -1,0 +1,18 @@
+{
+  "n_iter": 10,
+  "frac_trusted": 0.88606,
+  "median_residual": 0.017652439312072166,
+  "n_modes": 9,
+  "refine": {
+    "ssm_obs_rmse": 0.02107780879878874,
+    "ssm_obs_mae": 0.018714430537264095,
+    "ssm_obs_max_error": 0.054462257559147326,
+    "missing_avg_displacement": 0.027789142715881895,
+    "missing_max_displacement": 0.053590614882229146,
+    "final_obs_rmse": 0.0,
+    "final_all_rmse": 0.00728599927058287,
+    "n_observed": 88606,
+    "n_missing": 11394
+  },
+  "name": "tooth_06_wear_real"
+}

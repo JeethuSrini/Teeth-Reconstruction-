@@ -46,6 +46,60 @@ SSM trained on 15 unworn ULM3 teeth. Evaluation set: 9 real worn teeth + 8 artif
 
 ---
 
+## Reconstruction Methods
+
+Since the Global versus Neighborhood SSM comparison above, the pipeline has grown three additional reconstruction strategies. All four are evaluated head to head on two independent datasets.
+
+| # | Method | Script | Core idea |
+|---|---|---|---|
+| 1 | **Global / Neighborhood SSM** | `reconstruction_pipeline.py`, `neighborhood_reconstruction.py` | Fit a PCA shape model (one global model, or a per tooth local model built from the K nearest anatomically similar good teeth) to the observed points; missing or worn points come from the model. |
+| 2 | **Correspondence Blend** | `patch_reconstruction.py --detect-mode blend` | Per point confidence blend between the corresponded worn surface and the SSM reconstruction, weighted by outward deviation. Keeps real detail everywhere the surface is intact and smoothly fades to the model only where wear is detected. |
+| 3 | **Patch / Hole Filling** | `patch_reconstruction.py --detect-mode holes` | Detects genuine open holes on the raw scanned surface (not the corresponded template cloud) and grafts the SSM reconstruction into just those holes using a thin plate spline height field plus a harmonic mesh blend. Filling is restricted to the occlusal surface so the cervical base is never patched. |
+| 4 | **GPMM Posterior (Tier 1)** | `gpmm_reconstruction.py` | Gaussian Process posterior shape completion. Treats reliably observed points as GP observations and computes the posterior mean under the PCA SSM prior, optionally kernel augmented into a full GPMM, with robust IRLS based detection of which points are trustworthy. Produces one globally consistent surface by construction, with no grafting or seams. |
+
+### Results Summary
+
+Every method was scored against the true original (unworn) tooth on two independent datasets: the original 16 case set (TEST1 vs n0245, TEST2 vs n0257) and a newer 64 case set (8 real specimens x 8 Molnar wear levels). Two metrics were used per case: a full surface metric (every point) and a worn region metric (restricted to points genuinely worn away, the fairer restoration test). Full detail, every case and every metric, is in [results.md](results.md).
+
+**Old dataset, mean of 16 cases.** Plain SSM (Global and Neighborhood, nearly tied) is the best restorer once scored on the worn region only. Patch/Holes has by far the best full surface score because it changes the fewest points of any method, but that is also why it is the worst restorer of the six once judged fairly on what it actually filled in.
+
+| Method | Full Chamfer (mm) | Worn Region RMSE (mm) |
+|---|---:|---:|
+| Global SSM | 0.0572 | 0.0688 |
+| Neighborhood SSM | 0.0582 | 0.0696 |
+| Blend | 0.0703 | 0.0839 |
+| GPMM | 0.0709 | 0.0864 |
+| GPMM (kernel augmented) | 0.0709 | 0.0864 |
+| Patch / Hole Filling | 0.0393 | 0.0911 |
+
+**v5 dataset, mean of 64 cases.** Neighborhood SSM and Global SSM are essentially tied for best among the four index paired methods. Patch/Holes shows the lowest numbers overall, but its worn region there is self selected and smaller on average than the shared mask used by the other four, so this particular comparison is not perfectly fair. See [results.md](results.md) for the full explanation.
+
+| Method | Full RMSE or Chamfer (mm) | Worn Region RMSE (mm) |
+|---|---:|---:|
+| Neighborhood SSM | 0.02626 | 0.02712 |
+| Global SSM | 0.02633 | 0.02716 |
+| GPMM | 0.02688 | 0.02767 |
+| Blend | 0.02710 | 0.02800 |
+| Patch / Hole Filling | 0.01251 | 0.01663 |
+
+### Testing Status
+
+Done:
+- All 6 method variants (Global SSM, Neighborhood SSM, Blend, Patch/Holes, GPMM, GPMM kernel augmented) evaluated on the old dataset (16 cases) with both metrics.
+- Global SSM, Neighborhood SSM, GPMM, Blend, and Patch/Holes evaluated on the v5 dataset (64 cases) with both metrics.
+- Correspondence and reconstruction pipeline re run on a new, larger training set (90 good teeth, 8 held out test specimens, 10k points per tooth, `--max-neighbors 10`) to check the approach generalizes beyond the original 15 tooth training set.
+
+Not yet done:
+- Reconcile the worn region mask methodology between the old and v5 datasets so Patch/Hole Filling's v5 result is directly comparable to the other methods.
+- Test GPMM kernel augmentation on the v5 dataset (only tested on the old dataset so far).
+- Investigate the severe wear (Molnar stage 6, wear level 7) failure mode where Blend and Patch/Holes both degrade sharply relative to plain SSM.
+- Seam quality polish on Patch/Holes meshes (ragged re opened cervical edge, occasional proud bump at a filled hole).
+- Commit `patch_reconstruction.py`, `gpmm_reconstruction.py`, and `evaluate_all_methods.py` to version control (currently untracked).
+
+Full numeric detail for everything above: [results.md](results.md).
+
+---
+
 ## Data Analysis — Shape Space Visualizations
 
 These figures are produced by `data_analysis/all_teeth_analysis.py` after Stage 2, and give a geometric view of how the 15 good teeth, 25 worn teeth, and their reconstructions distribute in shape space.
@@ -104,10 +158,10 @@ Output per worn tooth: a 100k-point reconstructed point cloud, a smooth watertig
 ## Pipeline Overview
 
 ```
-                TOOTH RECONSTRUCTION PIPELINE (3 STAGES)
+                        TOOTH RECONSTRUCTION PIPELINE
 
   +-------------------+        +-------------------+
-  |  Good Teeth (15)  |        |  Worn Teeth (25)  |
+  |  Good Teeth       |        |  Worn Teeth       |
   |  Unworn ULM3 PLY  |        |  Real + Test PLY  |
   +---------+---------+        +---------+---------+
             |                            |
@@ -116,43 +170,45 @@ Output per worn tooth: a 100k-point reconstructed point cloud, a smooth watertig
   |  STAGE 1: CORRESPONDENCE                                 |
   |  correspondence_pipeline.py                              |
   |                                                          |
-  |   1. Sample 100,000 uniform points per tooth             |
-  |   2. Normalize (center, scale to bbox diag, PCA-align)   |
-  |   3. ICP rigid alignment to auto-selected template       |
-  |   4. Coarse-to-fine CPD non-rigid registration           |
-  |      (CPD on 43k subset -> KNN upsample to 100k)         |
+  |   1. Sample uniform points per tooth                     |
+  |   2. Normalize (center, scale to bbox diag, PCA align)   |
+  |   3. ICP rigid alignment to auto selected template       |
+  |   4. Coarse to fine CPD non-rigid registration           |
+  |      (CPD on a subset, then KNN upsample to full count)  |
   |                                                          |
   |  Output: corresponded.ply per tooth                      |
-  |          (100k points in shared anatomical frame)        |
+  |          (shared point ordering across every tooth)      |
   +-------------------------+--------------------------------+
                             |
-              +-------------+-------------+
-              |                           |
-              v                           v
-  +---------------------------+  +---------------------------+
-  |  STAGE 2a: GLOBAL SSM     |  |  STAGE 2b: NEIGHBORHOOD   |
-  |  reconstruction_          |  |  neighborhood_            |
-  |      pipeline.py          |  |      reconstruction.py    |
-  |                           |  |                           |
-  |  - PCA on all 15 teeth    |  |  For EACH worn tooth:     |
-  |  - Fit SSM coefficients   |  |   1. Project into PCA     |
-  |  - Non-rigid refinement   |  |      shape space          |
-  |  - Poisson mesh           |  |   2. Pick good teeth      |
-  |                           |  |      within threshold (<=5)|
-  |                           |  |   3. Build LOCAL SSM      |
-  |                           |  |   4. Fit + refine + mesh  |
-  +-------------+-------------+  +-------------+-------------+
-                |                              |
-                +--------------+---------------+
-                               |
-                               v
+       +----------+---------+---------+----------+
+       |          |         |         |          |
+       v          v         v         v          v
+  +--------+ +--------+ +--------+ +--------+ +--------+
+  |STAGE 2a| |STAGE 2b| |STAGE 2c| |STAGE 2d| |STAGE 2e|
+  |GLOBAL  | |NEIGHBOR| |BLEND   | |PATCH/  | |GPMM    |
+  |SSM     | |HOOD SSM| |        | |HOLES   | |        |
+  |        | |        | |        | |        | |        |
+  |reconst-| |neighbor| |patch_  | |patch_  | |gpmm_   |
+  |ruction_| |hood_   | |reconst-| |reconst-| |reconst-|
+  |pipe-   | |reconst-| |ruction.| |ruction.| |ruction.|
+  |line.py | |ruction.| |py      | |py      | |py      |
+  |        | |py      | |(blend  | |(holes  | |        |
+  |        | |        | |mode)   | |mode)   | |        |
+  +---+----+ +---+----+ +---+----+ +---+----+ +---+----+
+      |          |          |          |          |
+      +----------+----------+----------+----------+
+                             |
+                             v
   +----------------------------------------------------------+
-  |  STAGE 3: COMPARISON & ANALYSIS                          |
-  |  data_analysis/all_teeth_analysis.py                     |
+  |  STAGE 3: EVALUATION AND ANALYSIS                        |
+  |  evaluate_all_methods.py, data_analysis/                 |
   |                                                          |
-  |  PCA scores, pairwise distances, % improvement plots     |
+  |  Full surface and worn region Chamfer, RMSE, Hausdorff,  |
+  |  coverage; PCA, t-SNE, and UMAP shape space plots        |
   +----------------------------------------------------------+
 ```
+
+Stage 1 produces one shared, point aligned representation of every tooth. Stages 2a through 2e are five independent reconstruction methods that all read that same Stage 1 output; none of them depend on each other, so any subset can be run on its own. Stage 3 scores whichever methods were run, against the true original tooth where one is available.
 
 ---
 
@@ -177,7 +233,7 @@ For every worn tooth, the pipeline decides *which* good teeth to build the local
 
 ```
 Teeth-Reconstruction-/
-├── all_good_teeth/                 # 15 unworn ULM3 EDJ meshes (SSM training set)
+├── all_good_teeth/                 # 15 unworn ULM3 EDJ meshes (original SSM training set)
 │   └── cprc_nyu_*.ply
 ├── all_worn_input/                 # 25 worn tooth inputs (9 real + TEST1 + TEST2)
 │   ├── tooth_01/wear_real.ply      # Real worn teeth
@@ -189,36 +245,48 @@ Teeth-Reconstruction-/
 │   │   └── wear_level7.ply
 │   └── tooth_TEST2/
 │       └── wear_level0..7.ply
+├── new_good teeth_ULM3's/          # 98 unworn ULM3 teeth (larger v5 training pool)
+├── Artificially Worn/               # 8 real specimens x 8 Molnar wear levels (v5 test set)
 │
 ├── ssm_pipeline/
 │   ├── correspondence_pipeline.py       # STAGE 1: point correspondence
 │   ├── reconstruction_pipeline.py       # STAGE 2a: global SSM reconstruction
 │   ├── neighborhood_reconstruction.py   # STAGE 2b: neighborhood-adaptive SSM
+│   ├── patch_reconstruction.py          # blend / patch-hole-filling reconstruction (--detect-mode blend|holes)
+│   ├── gpmm_reconstruction.py           # GPMM posterior shape-completion reconstruction (Tier 1)
+│   ├── evaluate_all_methods.py          # consolidated Chamfer/RMSE evaluation, all methods x both datasets
 │   ├── local_mean_reconstruction.py     # (legacy) single-tooth local mean
 │   ├── correspond_originals.py          # utility: correspond original-space outputs
 │   ├── run_correspondence_a100_short.slurm
 │   ├── run_full_pipeline.slurm          # correspondence + global recon
 │   ├── run_neighborhood_recon.slurm     # neighborhood reconstruction only
+│   ├── input_v5/                        # staged v5 inputs (90 good teeth, 8 test teeth reorganized)
 │   └── output/
-│       ├── correspondence_all_100k/     # Stage 1 output (15 good + 25 worn corresponded)
-│       ├── recon_all/                   # Stage 2a global reconstructions
-│       └── recon_neighborhood/          # Stage 2b neighborhood reconstructions
-│           ├── ssm/
-│           ├── neighbor_selection.json  # which neighbors each worn tooth used
-│           ├── comparison.json          # global vs neighborhood per tooth
-│           └── reconstructions/tooth_XX/
-│               ├── worn_input.ply
-│               ├── reconstructed.ply
-│               ├── reconstructed_in_input_space.ply
-│               ├── reconstructed_smooth.ply
-│               ├── coefficients.npy, removed_mask.npy
-│               └── evaluation.json
+│       ├── correspondence_all_100k/     # Stage 1 output, old dataset (15 good + 25 worn corresponded)
+│       ├── correspondence_v5_10k/       # Stage 1 output, v5 dataset (90 good + 64 worn corresponded, 10k pts/tooth)
+│       ├── recon_all/, recon_all_v5/               # Stage 2a global reconstructions
+│       ├── recon_neighborhood/, recon_neighborhood_v5/  # Stage 2b neighborhood reconstructions
+│       │   ├── ssm/
+│       │   ├── neighbor_selection.json  # which neighbors each worn tooth used
+│       │   ├── comparison.json          # global vs neighborhood per tooth
+│       │   └── reconstructions/tooth_XX/
+│       │       ├── worn_input.ply
+│       │       ├── reconstructed.ply
+│       │       ├── reconstructed_in_input_space.ply
+│       │       ├── reconstructed_smooth.ply
+│       │       ├── coefficients.npy, removed_mask.npy
+│       │       └── evaluation.json
+│       ├── recon_blend/, recon_blend_v5/           # correspondence-blend reconstructions
+│       ├── recon_holes_final/, recon_holes_v5/     # patch/hole-filling reconstructions
+│       ├── recon_gpmm_test/, recon_gpmm_v5/        # GPMM reconstructions
+│       ├── eval_old_dataset.csv, eval_v5_dataset.csv  # consolidated evaluation results (current)
+│       └── archive/                     # superseded experimental iterations (gitignored, local only)
 │
 ├── data_analysis/
-│   ├── all_teeth_analysis.py       # PCA + distance + comparison plots across all recon outputs
+│   ├── all_teeth_analysis.py       # PCA + t-SNE + UMAP + comparison plots across all recon outputs
 │   ├── good_teeth_pca.py           # PCA on just the good-tooth training set
 │   ├── worn_teeth_projection.py    # project worn teeth into good-teeth PCA space
-│   └── plots/                      # generated figures
+│   └── plots_v2/                   # generated figures
 │
 ├── requirements.txt                # pip freeze of `teeth` conda env
 ├── worn.png / reconstruction.png   # example visualization (input vs output)

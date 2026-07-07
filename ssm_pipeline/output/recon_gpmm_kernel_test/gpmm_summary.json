@@ -1,0 +1,299 @@
+{
+  "correspondence_dir": "output/correspondence_all_100k",
+  "n_reconstructed": 16,
+  "variance": 0.95,
+  "kernel_modes": 60,
+  "kernel_sigma": 2.0,
+  "regularization": 1.0,
+  "robust_iters": 12,
+  "results": [
+    {
+      "n_iter": 7,
+      "frac_trusted": 0.68658,
+      "median_residual": 0.007867059925681645,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.007874114854831893,
+        "ssm_obs_mae": 0.006781834687181103,
+        "ssm_obs_max_error": 0.023903995536274914,
+        "missing_avg_displacement": 0.009734624356684193,
+        "missing_max_displacement": 0.022921588220189883,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.004508011227947463,
+        "n_observed": 68658,
+        "n_missing": 31342
+      },
+      "name": "tooth_TEST1_wear_level0"
+    },
+    {
+      "n_iter": 7,
+      "frac_trusted": 0.70074,
+      "median_residual": 0.00783684633420122,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.007919652211228487,
+        "ssm_obs_mae": 0.006867688556925466,
+        "ssm_obs_max_error": 0.024176445246999145,
+        "missing_avg_displacement": 0.009339871576324535,
+        "missing_max_displacement": 0.02368671985263374,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.004477939884910217,
+        "n_observed": 70074,
+        "n_missing": 29926
+      },
+      "name": "tooth_TEST1_wear_level1"
+    },
+    {
+      "n_iter": 7,
+      "frac_trusted": 0.70945,
+      "median_residual": 0.00794531930879293,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.007787168784094328,
+        "ssm_obs_mae": 0.0070432862876098025,
+        "ssm_obs_max_error": 0.023350357657952656,
+        "missing_avg_displacement": 0.008693613680773166,
+        "missing_max_displacement": 0.02234362162987919,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.004583735678460817,
+        "n_observed": 70945,
+        "n_missing": 29055
+      },
+      "name": "tooth_TEST1_wear_level2"
+    },
+    {
+      "n_iter": 8,
+      "frac_trusted": 0.70859,
+      "median_residual": 0.008005028330596683,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.007989307904019667,
+        "ssm_obs_mae": 0.007189590760881326,
+        "ssm_obs_max_error": 0.024129275528753852,
+        "missing_avg_displacement": 0.009012211844308558,
+        "missing_max_displacement": 0.02247207288883465,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.004767465873180177,
+        "n_observed": 70859,
+        "n_missing": 29141
+      },
+      "name": "tooth_TEST1_wear_level3"
+    },
+    {
+      "n_iter": 8,
+      "frac_trusted": 0.73252,
+      "median_residual": 0.007996103313047984,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.008002253158609446,
+        "ssm_obs_mae": 0.007169976614708996,
+        "ssm_obs_max_error": 0.02466041054579135,
+        "missing_avg_displacement": 0.0093648882029899,
+        "missing_max_displacement": 0.024271098109785248,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.005249235460004295,
+        "n_observed": 73252,
+        "n_missing": 26748
+      },
+      "name": "tooth_TEST1_wear_level4"
+    },
+    {
+      "n_iter": 7,
+      "frac_trusted": 0.74062,
+      "median_residual": 0.008441028466335983,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.008666952852895092,
+        "ssm_obs_mae": 0.007603142427777701,
+        "ssm_obs_max_error": 0.026043079185478653,
+        "missing_avg_displacement": 0.011414443238288868,
+        "missing_max_displacement": 0.02545816569832222,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.005419769043529765,
+        "n_observed": 74062,
+        "n_missing": 25938
+      },
+      "name": "tooth_TEST1_wear_level5"
+    },
+    {
+      "n_iter": 10,
+      "frac_trusted": 0.73933,
+      "median_residual": 0.011746339915390218,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.012991130168452028,
+        "ssm_obs_mae": 0.011414355390087932,
+        "ssm_obs_max_error": 0.03624458850224169,
+        "missing_avg_displacement": 0.017293413775814857,
+        "missing_max_displacement": 0.03586395906575359,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.008185902119494107,
+        "n_observed": 73933,
+        "n_missing": 26067
+      },
+      "name": "tooth_TEST1_wear_level6"
+    },
+    {
+      "n_iter": 8,
+      "frac_trusted": 0.81082,
+      "median_residual": 0.010652614581203024,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.010910114393796405,
+        "ssm_obs_mae": 0.009908650966079059,
+        "ssm_obs_max_error": 0.03287235487881608,
+        "missing_avg_displacement": 0.01474239335601706,
+        "missing_max_displacement": 0.0325251174654524,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.004748051777300396,
+        "n_observed": 81082,
+        "n_missing": 18918
+      },
+      "name": "tooth_TEST1_wear_level7"
+    },
+    {
+      "n_iter": 8,
+      "frac_trusted": 0.88362,
+      "median_residual": 0.010475400191275502,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.01288607574714943,
+        "ssm_obs_mae": 0.011210482068079345,
+        "ssm_obs_max_error": 0.03232351754987038,
+        "missing_avg_displacement": 0.01828055482968447,
+        "missing_max_displacement": 0.03213464511314277,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.001991070145745185,
+        "n_observed": 88362,
+        "n_missing": 11638
+      },
+      "name": "tooth_TEST2_wear_level0"
+    },
+    {
+      "n_iter": 10,
+      "frac_trusted": 0.88408,
+      "median_residual": 0.010233204564225494,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.012733835124664184,
+        "ssm_obs_mae": 0.011060780594957766,
+        "ssm_obs_max_error": 0.03157660408804528,
+        "missing_avg_displacement": 0.017347949657604528,
+        "missing_max_displacement": 0.03125954666416665,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.0019445457649743608,
+        "n_observed": 88408,
+        "n_missing": 11592
+      },
+      "name": "tooth_TEST2_wear_level1"
+    },
+    {
+      "n_iter": 7,
+      "frac_trusted": 0.88169,
+      "median_residual": 0.010345545072881457,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.012740194386774907,
+        "ssm_obs_mae": 0.011021732501943734,
+        "ssm_obs_max_error": 0.031919805540641014,
+        "missing_avg_displacement": 0.017157791600606268,
+        "missing_max_displacement": 0.03175240925499008,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.0020747803120766436,
+        "n_observed": 88169,
+        "n_missing": 11831
+      },
+      "name": "tooth_TEST2_wear_level2"
+    },
+    {
+      "n_iter": 11,
+      "frac_trusted": 0.87073,
+      "median_residual": 0.010111321710739241,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.01254215032392176,
+        "ssm_obs_mae": 0.01082227798260866,
+        "ssm_obs_max_error": 0.03120215862961233,
+        "missing_avg_displacement": 0.017189004399103838,
+        "missing_max_displacement": 0.031026520896885828,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.0021177858411231586,
+        "n_observed": 87073,
+        "n_missing": 12927
+      },
+      "name": "tooth_TEST2_wear_level3"
+    },
+    {
+      "n_iter": 11,
+      "frac_trusted": 0.86868,
+      "median_residual": 0.010196443515000181,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.012630566644567633,
+        "ssm_obs_mae": 0.010808957615033275,
+        "ssm_obs_max_error": 0.03146437851215405,
+        "missing_avg_displacement": 0.016687308784439005,
+        "missing_max_displacement": 0.031268294713194734,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.0021839770026813956,
+        "n_observed": 86868,
+        "n_missing": 13132
+      },
+      "name": "tooth_TEST2_wear_level4"
+    },
+    {
+      "n_iter": 12,
+      "frac_trusted": 0.87685,
+      "median_residual": 0.010622386575517527,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.013379680993347185,
+        "ssm_obs_mae": 0.011585107038901584,
+        "ssm_obs_max_error": 0.03277654572398675,
+        "missing_avg_displacement": 0.01824816311097453,
+        "missing_max_displacement": 0.03260145261213078,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.0019598296673415737,
+        "n_observed": 87685,
+        "n_missing": 12315
+      },
+      "name": "tooth_TEST2_wear_level5"
+    },
+    {
+      "n_iter": 7,
+      "frac_trusted": 0.85397,
+      "median_residual": 0.013632883824464388,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.016107757445463933,
+        "ssm_obs_mae": 0.014236696519730106,
+        "ssm_obs_max_error": 0.04204986632585275,
+        "missing_avg_displacement": 0.02228380190678264,
+        "missing_max_displacement": 0.04175056674868253,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.003733751634760496,
+        "n_observed": 85397,
+        "n_missing": 14603
+      },
+      "name": "tooth_TEST2_wear_level6"
+    },
+    {
+      "n_iter": 9,
+      "frac_trusted": 0.83464,
+      "median_residual": 0.015377748688989407,
+      "n_modes": 69,
+      "refine": {
+        "ssm_obs_rmse": 0.01817388964573837,
+        "ssm_obs_mae": 0.015891505066053486,
+        "ssm_obs_max_error": 0.04743473066650299,
+        "missing_avg_displacement": 0.023061858053836592,
+        "missing_max_displacement": 0.047026713460144816,
+        "final_obs_rmse": 0.0,
+        "final_all_rmse": 0.004909992874123068,
+        "n_observed": 83464,
+        "n_missing": 16536
+      },
+      "name": "tooth_TEST2_wear_level7"
+    }
+  ]
+}

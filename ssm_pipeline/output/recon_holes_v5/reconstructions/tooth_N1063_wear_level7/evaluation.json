@@ -1,0 +1,95 @@
+{
+  "source_worn": "tooth_N1063_wear_level7",
+  "detect_mode": "holes",
+  "worn_source": "icp_aligned",
+  "n_points": 10000,
+  "n_interior_holes": 2,
+  "extras": {
+    "status": "skipped"
+  },
+  "holes": {
+    "status": "ok",
+    "median_spacing": 0.0035286483974559827,
+    "cell_size": 0.008821620993639957,
+    "grid_shape": [
+      78,
+      67
+    ],
+    "projection_axes": [
+      [
+        -0.9903864123122791,
+        0.10178179085350503,
+        0.09367615148940402
+      ],
+      [
+        -0.11869479940696692,
+        -0.9730634095665079,
+        -0.19763386743304695
+      ]
+    ],
+    "projection_centroid": [
+      0.0013651703629822805,
+      0.016901469056982,
+      -0.03191750581385859
+    ],
+    "grid_origin": [
+      -0.3342383295131813,
+      -0.25434825127440097
+    ],
+    "n_rim_points": 821,
+    "outer_rim_size": 128,
+    "n_interior_holes": 2,
+    "interior_holes": [
+      {
+        "n_rim_points": 494,
+        "n_cells": 1249,
+        "area_normalized": 0.09719842519733111,
+        "perimeter": 31.17059240696991,
+        "centroid": [
+          0.0853974438744809,
+          -0.01447910479233866,
+          0.024357226798249604
+        ]
+      },
+      {
+        "n_rim_points": 202,
+        "n_cells": 307,
+        "area_normalized": 0.023891046065316775,
+        "perimeter": 8.624262197229942,
+        "centroid": [
+          -0.1961655950376598,
+          0.03892819983463983,
+          0.06796385445585935
+        ]
+      }
+    ]
+  },
+  "patch": {
+    "status": "ok",
+    "n_worn_points": 10000,
+    "n_patch_points": 12274,
+    "n_total_points": 22274,
+    "fill_dilate": 2,
+    "align": true,
+    "collar_iter": 4,
+    "patch_cell_mult": 0.9,
+    "n_holes_patched": 2,
+    "per_hole": [
+      {
+        "hole_id": 0,
+        "n_fill": 10005,
+        "aligned": true,
+        "resampled": true,
+        "local_spacing": 0.0035751173682600154
+      },
+      {
+        "hole_id": 1,
+        "n_fill": 2269,
+        "aligned": true,
+        "resampled": true,
+        "local_spacing": 0.00370284772110658
+      }
+    ],
+    "mesh_poisson_depth": 0
+  }
+}

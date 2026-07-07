@@ -1,0 +1,362 @@
+CuPy not available, using CPU for linear algebra
+============================================================
+Wear-Margin Patch Reconstruction
+============================================================
+  Recon dir          : output/recon_neighborhood_v4
+  Correspondence dir : output/correspondence_all_100k
+  Artificial wear    : None
+  Output dir         : output/recon_holes_final
+  Detect mode        : holes
+  Clean extras       : False (envelope x6.0, min cluster=150)
+  Patch align        : True (collar=4)
+  Mode               : swap
+  Deviation pct      : 75.0
+  Deviation thresh   : None
+  Min component size : 200
+  Transition band    : 3.0 x median spacing
+  Annotation PNG     : True
+
+Found 25 worn teeth to patch
+
+--------------------------------------------------
+  Processing tooth_01_wear_real
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 0 enclosed hole(s), outer rim=491 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 0 interior holes)
+    No enclosed holes -> nothing to patch
+
+--------------------------------------------------
+  Processing tooth_02_wear_real
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 1 enclosed hole(s), outer rim=465 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 1 interior holes)
+      ICP refinement: median dist 0.0068 → 0.0023 mm
+    Patched: +2353 recon pts -> 102353 total (aligned)
+      ICP refinement: median dist 0.0064 → 0.0022 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 719 fill verts)
+
+--------------------------------------------------
+  Processing tooth_03_wear_real
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 3 enclosed hole(s), outer rim=488 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 3 interior holes)
+      ICP refinement: median dist 0.0035 → 0.0028 mm
+      ICP refinement: median dist 0.0127 → 0.0110 mm
+      ICP refinement: median dist 0.0182 → 0.0081 mm
+    Patched: +7632 recon pts -> 107632 total (aligned)
+      ICP refinement: median dist 0.0045 → 0.0027 mm
+      ICP refinement: median dist 0.0133 → 0.0132 mm
+      ICP refinement: median dist 0.0181 → 0.0078 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 4252 fill verts)
+
+--------------------------------------------------
+  Processing tooth_04_wear_real
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 2 enclosed hole(s), outer rim=411 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 2 interior holes)
+      ICP refinement: median dist 0.0039 → 0.0019 mm
+      ICP refinement: median dist 0.0038 → 0.0018 mm
+    Patched: +1400 recon pts -> 101400 total (aligned)
+      ICP refinement: median dist 0.0029 → 0.0017 mm
+      ICP refinement: median dist 0.0038 → 0.0017 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 732 fill verts)
+
+--------------------------------------------------
+  Processing tooth_05_wear_real
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 0 enclosed hole(s), outer rim=483 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 0 interior holes)
+    No enclosed holes -> nothing to patch
+
+--------------------------------------------------
+  Processing tooth_06_wear_real
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 3 enclosed hole(s), outer rim=544 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 3 interior holes)
+      ICP refinement: median dist 0.0115 → 0.0084 mm
+      ICP refinement: median dist 0.0146 → 0.0132 mm
+      ICP refinement: median dist 0.0049 → 0.0033 mm
+    Patched: +11057 recon pts -> 111057 total (aligned)
+      ICP refinement: median dist 0.0083 → 0.0064 mm
+      ICP refinement: median dist 0.0141 → 0.0112 mm
+      ICP refinement: median dist 0.0059 → 0.0032 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 5259 fill verts)
+
+--------------------------------------------------
+  Processing tooth_07_wear_real
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 2 enclosed hole(s), outer rim=539 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 2 interior holes)
+      ICP refinement: median dist 0.0135 → 0.0102 mm
+      ICP refinement: median dist 0.0097 → 0.0097 mm
+    Patched: +5202 recon pts -> 105202 total (aligned)
+      ICP refinement: median dist 0.0127 → 0.0083 mm
+      ICP refinement: median dist 0.0112 → 0.0016 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 3022 fill verts)
+
+--------------------------------------------------
+  Processing tooth_08_wear_real
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 1 enclosed hole(s), outer rim=488 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 1 interior holes)
+      ICP refinement: median dist 0.0083 → 0.0051 mm
+    Patched: +2931 recon pts -> 102931 total (aligned)
+      ICP refinement: median dist 0.0072 → 0.0044 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 1027 fill verts)
+
+--------------------------------------------------
+  Processing tooth_09_wear_real
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 1 enclosed hole(s), outer rim=386 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 1 interior holes)
+      ICP refinement: median dist 0.0069 → 0.0032 mm
+    Patched: +2193 recon pts -> 102193 total (aligned)
+      ICP refinement: median dist 0.0063 → 0.0029 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 1015 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level0
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 3 enclosed hole(s), outer rim=409 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 3 interior holes)
+      ICP refinement: median dist 0.0061 → 0.0029 mm
+      ICP refinement: median dist 0.0039 → 0.0023 mm
+      ICP refinement: median dist 0.0038 → 0.0025 mm
+    Patched: +5940 recon pts -> 105940 total (aligned)
+      ICP refinement: median dist 0.0060 → 0.0027 mm
+      ICP refinement: median dist 0.0039 → 0.0021 mm
+      ICP refinement: median dist 0.0037 → 0.0026 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 8, 1947 fill verts -- COARSE fallback)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level1
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 2 enclosed hole(s), outer rim=421 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 2 interior holes)
+      ICP refinement: median dist 0.0055 → 0.0033 mm
+      ICP refinement: median dist 0.0042 → 0.0034 mm
+    Patched: +5752 recon pts -> 105752 total (aligned)
+      ICP refinement: median dist 0.0047 → 0.0028 mm
+      ICP refinement: median dist 0.0041 → 0.0033 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 2024 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level2
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 3 enclosed hole(s), outer rim=431 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 3 interior holes)
+      ICP refinement: median dist 0.0043 → 0.0037 mm
+      ICP refinement: median dist 0.0076 → 0.0051 mm
+      ICP refinement: median dist 0.0102 → 0.0079 mm
+    Patched: +12366 recon pts -> 112366 total (aligned)
+      ICP refinement: median dist 0.0040 → 0.0034 mm
+      ICP refinement: median dist 0.0065 → 0.0038 mm
+      ICP refinement: median dist 0.0089 → 0.0054 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 3922 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level3
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 5 enclosed hole(s), outer rim=422 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 5 interior holes)
+      ICP refinement: median dist 0.0096 → 0.0071 mm
+      ICP refinement: median dist 0.0072 → 0.0035 mm
+      ICP refinement: median dist 0.0072 → 0.0051 mm
+      ICP refinement: median dist 0.0049 → 0.0038 mm
+      ICP refinement: median dist 0.0023 → 0.0023 mm
+    Patched: +14103 recon pts -> 114103 total (aligned)
+      ICP refinement: median dist 0.0084 → 0.0048 mm
+      ICP refinement: median dist 0.0074 → 0.0033 mm
+      ICP refinement: median dist 0.0062 → 0.0039 mm
+      ICP refinement: median dist 0.0043 → 0.0033 mm
+      ICP refinement: median dist 0.0026 → 0.0014 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 4607 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level4
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 4 enclosed hole(s), outer rim=409 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 4 interior holes)
+      ICP refinement: median dist 0.0143 → 0.0093 mm
+      ICP refinement: median dist 0.0051 → 0.0034 mm
+      ICP refinement: median dist 0.0085 → 0.0054 mm
+      ICP refinement: median dist 0.0073 → 0.0063 mm
+    Patched: +17949 recon pts -> 117949 total (aligned)
+      ICP refinement: median dist 0.0112 → 0.0070 mm
+      ICP refinement: median dist 0.0054 → 0.0031 mm
+      ICP refinement: median dist 0.0069 → 0.0035 mm
+      ICP refinement: median dist 0.0060 → 0.0052 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 5719 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level5
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 4 enclosed hole(s), outer rim=410 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 4 interior holes)
+      ICP refinement: median dist 0.0128 → 0.0089 mm
+      ICP refinement: median dist 0.0117 → 0.0074 mm
+      ICP refinement: median dist 0.0090 → 0.0057 mm
+      ICP refinement: median dist 0.0100 → 0.0077 mm
+    Patched: +20423 recon pts -> 120423 total (aligned)
+      ICP refinement: median dist 0.0105 → 0.0064 mm
+      ICP refinement: median dist 0.0104 → 0.0062 mm
+      ICP refinement: median dist 0.0073 → 0.0035 mm
+      ICP refinement: median dist 0.0077 → 0.0055 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 6868 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level6
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 3 enclosed hole(s), outer rim=418 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 3 interior holes)
+      ICP refinement: median dist 0.0097 → 0.0051 mm
+      ICP refinement: median dist 0.0118 → 0.0093 mm
+      ICP refinement: median dist 0.0124 → 0.0104 mm
+    Patched: +34949 recon pts -> 134949 total (aligned)
+      ICP refinement: median dist 0.0070 → 0.0044 mm
+      ICP refinement: median dist 0.0089 → 0.0059 mm
+      ICP refinement: median dist 0.0096 → 0.0080 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 13877 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST1_wear_level7
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 4 enclosed hole(s), outer rim=453 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 4 interior holes)
+      ICP refinement: median dist 0.0093 → 0.0088 mm
+      ICP refinement: median dist 0.0099 → 0.0072 mm
+      ICP refinement: median dist 0.0083 → 0.0049 mm
+      ICP refinement: median dist 0.0032 → 0.0028 mm
+    Patched: +41792 recon pts -> 141792 total (aligned)
+      ICP refinement: median dist 0.0072 → 0.0062 mm
+      ICP refinement: median dist 0.0061 → 0.0044 mm
+      ICP refinement: median dist 0.0078 → 0.0045 mm
+      ICP refinement: median dist 0.0029 → 0.0027 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 10288 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level0
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 2 enclosed hole(s), outer rim=418 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 2 interior holes)
+      ICP refinement: median dist 0.0041 → 0.0024 mm
+      ICP refinement: median dist 0.0039 → 0.0033 mm
+    Patched: +2774 recon pts -> 102774 total (aligned)
+      ICP refinement: median dist 0.0039 → 0.0022 mm
+      ICP refinement: median dist 0.0033 → 0.0025 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 1219 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level1
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 3 enclosed hole(s), outer rim=413 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 3 interior holes)
+      ICP refinement: median dist 0.0036 → 0.0032 mm
+      ICP refinement: median dist 0.0045 → 0.0028 mm
+      ICP refinement: median dist 0.0036 → 0.0031 mm
+    Patched: +4593 recon pts -> 104593 total (aligned)
+      ICP refinement: median dist 0.0031 → 0.0025 mm
+      ICP refinement: median dist 0.0043 → 0.0023 mm
+      ICP refinement: median dist 0.0036 → 0.0026 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 1971 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level2
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 3 enclosed hole(s), outer rim=436 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 3 interior holes)
+      ICP refinement: median dist 0.0039 → 0.0030 mm
+      ICP refinement: median dist 0.0065 → 0.0042 mm
+      ICP refinement: median dist 0.0048 → 0.0037 mm
+    Patched: +7922 recon pts -> 107922 total (aligned)
+      ICP refinement: median dist 0.0033 → 0.0024 mm
+      ICP refinement: median dist 0.0057 → 0.0036 mm
+      ICP refinement: median dist 0.0043 → 0.0032 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 2702 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level3
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 3 enclosed hole(s), outer rim=437 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 3 interior holes)
+      ICP refinement: median dist 0.0042 → 0.0032 mm
+      ICP refinement: median dist 0.0061 → 0.0042 mm
+      ICP refinement: median dist 0.0109 → 0.0102 mm
+    Patched: +10070 recon pts -> 110070 total (aligned)
+      ICP refinement: median dist 0.0036 → 0.0027 mm
+      ICP refinement: median dist 0.0053 → 0.0034 mm
+      ICP refinement: median dist 0.0083 → 0.0078 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 2982 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level4
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 3 enclosed hole(s), outer rim=432 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 3 interior holes)
+      ICP refinement: median dist 0.0063 → 0.0050 mm
+      ICP refinement: median dist 0.0069 → 0.0051 mm
+      ICP refinement: median dist 0.0116 → 0.0113 mm
+    Patched: +12998 recon pts -> 112998 total (aligned)
+      ICP refinement: median dist 0.0054 → 0.0039 mm
+      ICP refinement: median dist 0.0053 → 0.0038 mm
+      ICP refinement: median dist 0.0087 → 0.0082 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 4044 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level5
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 4 enclosed hole(s), outer rim=443 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 4 interior holes)
+      ICP refinement: median dist 0.0082 → 0.0070 mm
+      ICP refinement: median dist 0.0135 → 0.0051 mm
+      ICP refinement: median dist 0.0069 → 0.0065 mm
+      ICP refinement: median dist 0.0150 → 0.0118 mm
+    Patched: +20097 recon pts -> 120097 total (aligned)
+      ICP refinement: median dist 0.0060 → 0.0053 mm
+      ICP refinement: median dist 0.0117 → 0.0051 mm
+      ICP refinement: median dist 0.0055 → 0.0050 mm
+      ICP refinement: median dist 0.0105 → 0.0094 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 7732 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level6
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 5 enclosed hole(s), outer rim=456 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 5 interior holes)
+      ICP refinement: median dist 0.0179 → 0.0098 mm
+      ICP refinement: median dist 0.0150 → 0.0088 mm
+      ICP refinement: median dist 0.0066 → 0.0058 mm
+      ICP refinement: median dist 0.0033 → 0.0033 mm
+      ICP refinement: median dist 0.0191 → 0.0189 mm
+    Patched: +34265 recon pts -> 134265 total (aligned)
+      ICP refinement: median dist 0.0146 → 0.0075 mm
+      ICP refinement: median dist 0.0125 → 0.0075 mm
+      ICP refinement: median dist 0.0057 → 0.0044 mm
+      ICP refinement: median dist 0.0033 → 0.0014 mm
+      ICP refinement: median dist 0.0144 → 0.0137 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 13770 fill verts)
+
+--------------------------------------------------
+  Processing tooth_TEST2_wear_level7
+    Real worn surface (icp_aligned): 100000 pts
+    Geometric holes: 5 enclosed hole(s), outer rim=488 pts
+    Annotation: hole_annotation.ply + .png (red outlines = 5 interior holes)
+      ICP refinement: median dist 0.0099 → 0.0087 mm
+      ICP refinement: median dist 0.0155 → 0.0075 mm
+      ICP refinement: median dist 0.0074 → 0.0056 mm
+      ICP refinement: median dist 0.0191 → 0.0173 mm
+      ICP refinement: median dist 0.0058 → 0.0048 mm
+    Patched: +44277 recon pts -> 144277 total (aligned)
+      ICP refinement: median dist 0.0070 → 0.0057 mm
+      ICP refinement: median dist 0.0117 → 0.0066 mm
+      ICP refinement: median dist 0.0064 → 0.0043 mm
+      ICP refinement: median dist 0.0150 → 0.0131 mm
+      ICP refinement: median dist 0.0043 → 0.0036 mm
+    Patched mesh: patched_holes_mesh.ply (mesh-space blend, Poisson depth 9, 26237 fill verts)
+
+============================================================
+Patch Reconstruction Summary
+============================================================
+  Patched teeth: 25
+  Wear fraction: mean=0.6%, range=[0.0%, 2.2%]
+  Output: output/recon_holes_final

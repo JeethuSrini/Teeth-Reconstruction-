@@ -1,0 +1,13 @@
+{
+  "source_worn": "tooth_N726_wear_level7",
+  "detect_mode": "blend",
+  "n_points": 10000,
+  "blend": {
+    "lo_deviation": 0.0,
+    "hi_deviation": 0.0006845996260631896,
+    "frac_blended": 0.1339,
+    "frac_full_recon": 0.046,
+    "mean_weight": 0.08421147189177691
+  },
+  "mesh_poisson_depth": 0
+}
