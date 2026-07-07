@@ -24,7 +24,7 @@ The neighborhood approach builds a **per-tooth local SSM** from the nearest anat
 | Coverage @1x spacing | 0.135 | 0.136 | +0.6% | Neighborhood better |
 | **Coverage @2x spacing** | 0.411 | 0.422 | **+2.7%** | **Neighborhood better** |
 | **Coverage @5x spacing** | 0.774 | 0.789 | **+1.9%** | **Neighborhood better** |
-| SSM fit RMSE | 0.0161 | 0.0183 | +13.3% | Global (expected — fewer modes) |
+| SSM fit RMSE | 0.0161 | 0.0183 | +13.3% | Global (expected, since it has fewer modes) |
 
 **Neighborhood wins on 7 of 11 metrics**, with the strongest gains on surface-coverage metrics:
 
@@ -44,6 +44,46 @@ The neighborhood approach builds a **per-tooth local SSM** from the nearest anat
 
 SSM trained on 15 unworn ULM3 teeth. Evaluation set: 9 real worn teeth + 8 artificially-worn levels of TEST1 + 8 artificially-worn levels of TEST2 = 25 teeth total.
 
+### Adding GPMM and Patch / Hole Filling to the Comparison
+
+The table above compares only the two SSM variants, each reconstruction scored against its own raw worn tooth scan (the only ground truth available for the 9 real worn teeth, which have no known original). The same comparison was extended to the two other reconstruction methods this project now includes, GPMM and Patch / Hole Filling.
+
+A local copy of the raw worn scan, verified point by point to be free of read corruption, was only available for 19 of the original 25 teeth: all 16 TEST1 and TEST2 levels, plus real teeth 06, 07, and 08. Real teeth 01, 02, 03, 04, 05, and 09 were left out; their local copies each had thousands of corrupted vertices (or, for tooth 03, a smaller but still meaningful number) that would otherwise silently distort these numbers, especially Hausdorff and R squared. All four methods below are scored on this same 19 tooth set, so the comparison across the four columns is fair. As a sanity check, the Global and Neighborhood SSM numbers recomputed here land close to the 25 tooth table above (R squared 99.89 percent here versus 99.74 percent there, Chamfer 0.070 mm here versus 0.088 mm there), which is the expected amount of difference for a slightly smaller, verified subset of teeth against a separately sourced copy of the same raw scans.
+
+Mean across the 19 teeth, reconstruction scored against the raw worn tooth scan:
+
+| Metric | Global SSM | Neighborhood SSM | GPMM | Patch / Hole Filling |
+|---|---:|---:|---:|---:|
+| R² (%) | 99.89 | 99.89 | 99.56 | 99.63 |
+| Chamfer (mm) | 0.070 | 0.071 | 0.148 | 0.138 |
+| Hausdorff (mm) | 0.584 | 0.588 | 0.731 | 0.774 |
+| RMSE worn to recon (mm) | 0.099 | 0.101 | 0.191 | 0.172 |
+| RMSE recon to worn (mm) | 0.085 | 0.085 | 0.175 | 0.167 |
+| MAE worn to recon (mm) | 0.073 | 0.074 | 0.154 | 0.138 |
+| MAE recon to worn (mm) | 0.067 | 0.067 | 0.143 | 0.137 |
+| Coverage at 1x spacing (%) | 15.65 | 15.57 | 6.90 | 8.54 |
+| Coverage at 2x spacing (%) | 45.51 | 45.32 | 21.40 | 26.28 |
+| Coverage at 5x spacing (%) | 82.50 | 82.22 | 52.54 | 58.63 |
+
+Best method per metric, count out of the 19 teeth:
+
+| Metric | Global SSM | Neighborhood SSM | GPMM | Patch / Hole Filling |
+|---|---:|---:|---:|---:|
+| R² | 9 | 6 | 0 | 4 |
+| Chamfer | 11 | 5 | 0 | 3 |
+| Hausdorff | 10 | 1 | 3 | 5 |
+| RMSE worn to recon | 9 | 6 | 0 | 4 |
+| RMSE recon to worn | 11 | 5 | 0 | 3 |
+| MAE worn to recon | 10 | 6 | 0 | 3 |
+| MAE recon to worn | 9 | 7 | 0 | 3 |
+| Coverage at 1x | 9 | 8 | 0 | 2 |
+| Coverage at 2x | 7 | 10 | 0 | 2 |
+| Coverage at 5x | 9 | 6 | 0 | 4 |
+
+On this metric, reconstruction scored against the raw worn scan rather than the true original, the two SSM variants dominate. This is expected rather than a sign GPMM and Patch / Hole Filling are worse restorers: a method that changed nothing at all from the worn input would score perfectly here, so this metric rewards staying close to the observed worn surface more than it rewards recovering the true, unworn anatomy. GPMM in particular refits the whole surface under its shape prior, so it moves further from the raw worn scan than the SSM methods even when it is recovering worn anatomy well. The evaluation against the true original tooth, further down this README and in full detail in [results.md](results.md), is the fairer test of restoration quality and tells a different story.
+
+Full per tooth numbers behind this table: [`ssm_pipeline/output/eval_flagship_19teeth.csv`](ssm_pipeline/output/eval_flagship_19teeth.csv).
+
 ---
 
 ## Reconstruction Methods
@@ -53,48 +93,42 @@ Since the Global versus Neighborhood SSM comparison above, the pipeline has grow
 | # | Method | Script | Core idea |
 |---|---|---|---|
 | 1 | **Global / Neighborhood SSM** | `reconstruction_pipeline.py`, `neighborhood_reconstruction.py` | Fit a PCA shape model (one global model, or a per tooth local model built from the K nearest anatomically similar good teeth) to the observed points; missing or worn points come from the model. |
-| 2 | **Correspondence Blend** | `patch_reconstruction.py --detect-mode blend` | Per point confidence blend between the corresponded worn surface and the SSM reconstruction, weighted by outward deviation. Keeps real detail everywhere the surface is intact and smoothly fades to the model only where wear is detected. |
-| 3 | **Patch / Hole Filling** | `patch_reconstruction.py --detect-mode holes` | Detects genuine open holes on the raw scanned surface (not the corresponded template cloud) and grafts the SSM reconstruction into just those holes using a thin plate spline height field plus a harmonic mesh blend. Filling is restricted to the occlusal surface so the cervical base is never patched. |
-| 4 | **GPMM Posterior (Tier 1)** | `gpmm_reconstruction.py` | Gaussian Process posterior shape completion. Treats reliably observed points as GP observations and computes the posterior mean under the PCA SSM prior, optionally kernel augmented into a full GPMM, with robust IRLS based detection of which points are trustworthy. Produces one globally consistent surface by construction, with no grafting or seams. |
+| 2 | **Patch / Hole Filling** | `patch_reconstruction.py --detect-mode holes` | Detects genuine open holes on the raw scanned surface (not the corresponded template cloud) and grafts the SSM reconstruction into just those holes using a thin plate spline height field plus a harmonic mesh blend. Filling is restricted to the occlusal surface so the cervical base is never patched. |
+| 3 | **GPMM Posterior (Tier 1)** | `gpmm_reconstruction.py` | Gaussian Process posterior shape completion. Treats reliably observed points as GP observations and computes the posterior mean under the PCA SSM prior, with robust IRLS based detection of which points are trustworthy. Produces one globally consistent surface by construction, with no grafting or seams. |
 
 ### Results Summary
 
 Every method was scored against the true original (unworn) tooth on two independent datasets: the original 16 case set (TEST1 vs n0245, TEST2 vs n0257) and a newer 64 case set (8 real specimens x 8 Molnar wear levels). Two metrics were used per case: a full surface metric (every point) and a worn region metric (restricted to points genuinely worn away, the fairer restoration test). Full detail, every case and every metric, is in [results.md](results.md).
 
-**Old dataset, mean of 16 cases.** Plain SSM (Global and Neighborhood, nearly tied) is the best restorer once scored on the worn region only. Patch/Holes has by far the best full surface score because it changes the fewest points of any method, but that is also why it is the worst restorer of the six once judged fairly on what it actually filled in.
+**Old dataset, mean of 16 cases.** Plain SSM (Global and Neighborhood, nearly tied) is the best restorer once scored on the worn region only. Patch/Holes has by far the best full surface score because it changes the fewest points of any method, but that is also why it is the worst restorer of the four once judged fairly on what it actually filled in.
 
 | Method | Full Chamfer (mm) | Worn Region RMSE (mm) |
 |---|---:|---:|
 | Global SSM | 0.0572 | 0.0688 |
 | Neighborhood SSM | 0.0582 | 0.0696 |
-| Blend | 0.0703 | 0.0839 |
 | GPMM | 0.0709 | 0.0864 |
-| GPMM (kernel augmented) | 0.0709 | 0.0864 |
 | Patch / Hole Filling | 0.0393 | 0.0911 |
 
-**v5 dataset, mean of 64 cases.** Neighborhood SSM and Global SSM are essentially tied for best among the four index paired methods. Patch/Holes shows the lowest numbers overall, but its worn region there is self selected and smaller on average than the shared mask used by the other four, so this particular comparison is not perfectly fair. See [results.md](results.md) for the full explanation.
+**v5 dataset, mean of 64 cases.** Neighborhood SSM and Global SSM are essentially tied for best among the three index paired methods. Patch/Holes shows the lowest numbers overall, but its worn region there is self selected and smaller on average than the shared mask used by the other two, so this particular comparison is not perfectly fair. See [results.md](results.md) for the full explanation.
 
 | Method | Full RMSE or Chamfer (mm) | Worn Region RMSE (mm) |
 |---|---:|---:|
 | Neighborhood SSM | 0.02626 | 0.02712 |
 | Global SSM | 0.02633 | 0.02716 |
 | GPMM | 0.02688 | 0.02767 |
-| Blend | 0.02710 | 0.02800 |
 | Patch / Hole Filling | 0.01251 | 0.01663 |
 
 ### Testing Status
 
 Done:
-- All 6 method variants (Global SSM, Neighborhood SSM, Blend, Patch/Holes, GPMM, GPMM kernel augmented) evaluated on the old dataset (16 cases) with both metrics.
-- Global SSM, Neighborhood SSM, GPMM, Blend, and Patch/Holes evaluated on the v5 dataset (64 cases) with both metrics.
+- All 4 methods (Global SSM, Neighborhood SSM, Patch/Holes, GPMM) evaluated on the old dataset (16 cases) with both metrics.
+- All 4 methods evaluated on the v5 dataset (64 cases) with both metrics.
 - Correspondence and reconstruction pipeline re run on a new, larger training set (90 good teeth, 8 held out test specimens, 10k points per tooth, `--max-neighbors 10`) to check the approach generalizes beyond the original 15 tooth training set.
 
 Not yet done:
 - Reconcile the worn region mask methodology between the old and v5 datasets so Patch/Hole Filling's v5 result is directly comparable to the other methods.
-- Test GPMM kernel augmentation on the v5 dataset (only tested on the old dataset so far).
-- Investigate the severe wear (Molnar stage 6, wear level 7) failure mode where Blend and Patch/Holes both degrade sharply relative to plain SSM.
+- Investigate the severe wear (Molnar stage 6, wear level 7) failure mode where Patch/Holes degrades sharply relative to plain SSM.
 - Seam quality polish on Patch/Holes meshes (ragged re opened cervical edge, occasional proud bump at a filled hole).
-- Commit `patch_reconstruction.py`, `gpmm_reconstruction.py`, and `evaluate_all_methods.py` to version control (currently untracked).
 
 Full numeric detail for everything above: [results.md](results.md).
 
@@ -180,23 +214,23 @@ Output per worn tooth: a 100k-point reconstructed point cloud, a smooth watertig
   |          (shared point ordering across every tooth)      |
   +-------------------------+--------------------------------+
                             |
-       +----------+---------+---------+----------+
-       |          |         |         |          |
-       v          v         v         v          v
-  +--------+ +--------+ +--------+ +--------+ +--------+
-  |STAGE 2a| |STAGE 2b| |STAGE 2c| |STAGE 2d| |STAGE 2e|
-  |GLOBAL  | |NEIGHBOR| |BLEND   | |PATCH/  | |GPMM    |
-  |SSM     | |HOOD SSM| |        | |HOLES   | |        |
-  |        | |        | |        | |        | |        |
-  |reconst-| |neighbor| |patch_  | |patch_  | |gpmm_   |
-  |ruction_| |hood_   | |reconst-| |reconst-| |reconst-|
-  |pipe-   | |reconst-| |ruction.| |ruction.| |ruction.|
-  |line.py | |ruction.| |py      | |py      | |py      |
-  |        | |py      | |(blend  | |(holes  | |        |
-  |        | |        | |mode)   | |mode)   | |        |
-  +---+----+ +---+----+ +---+----+ +---+----+ +---+----+
-      |          |          |          |          |
-      +----------+----------+----------+----------+
+          +----------+---------+----------+
+          |          |         |          |
+          v          v         v          v
+     +--------+ +--------+ +--------+ +--------+
+     |STAGE 2a| |STAGE 2b| |STAGE 2c| |STAGE 2d|
+     |GLOBAL  | |NEIGHBOR| |PATCH/  | |GPMM    |
+     |SSM     | |HOOD SSM| |HOLES   | |        |
+     |        | |        | |        | |        |
+     |reconst-| |neighbor| |patch_  | |gpmm_   |
+     |ruction_| |hood_   | |reconst-| |reconst-|
+     |pipe-   | |reconst-| |ruction.| |ruction.|
+     |line.py | |ruction.| |py      | |py      |
+     |        | |py      | |(holes  | |        |
+     |        | |        | |mode)   | |        |
+     +---+----+ +---+----+ +---+----+ +---+----+
+         |          |          |          |
+         +----------+----------+----------+
                              |
                              v
   +----------------------------------------------------------+
@@ -208,7 +242,7 @@ Output per worn tooth: a 100k-point reconstructed point cloud, a smooth watertig
   +----------------------------------------------------------+
 ```
 
-Stage 1 produces one shared, point aligned representation of every tooth. Stages 2a through 2e are five independent reconstruction methods that all read that same Stage 1 output; none of them depend on each other, so any subset can be run on its own. Stage 3 scores whichever methods were run, against the true original tooth where one is available.
+Stage 1 produces one shared, point aligned representation of every tooth. Stages 2a through 2d are four independent reconstruction methods that all read that same Stage 1 output; none of them depend on each other, so any subset can be run on its own. Stage 3 scores whichever methods were run, against the true original tooth where one is available.
 
 ---
 
@@ -252,7 +286,7 @@ Teeth-Reconstruction-/
 │   ├── correspondence_pipeline.py       # STAGE 1: point correspondence
 │   ├── reconstruction_pipeline.py       # STAGE 2a: global SSM reconstruction
 │   ├── neighborhood_reconstruction.py   # STAGE 2b: neighborhood-adaptive SSM
-│   ├── patch_reconstruction.py          # blend / patch-hole-filling reconstruction (--detect-mode blend|holes)
+│   ├── patch_reconstruction.py          # patch / hole-filling reconstruction (--detect-mode holes)
 │   ├── gpmm_reconstruction.py           # GPMM posterior shape-completion reconstruction (Tier 1)
 │   ├── evaluate_all_methods.py          # consolidated Chamfer/RMSE evaluation, all methods x both datasets
 │   ├── local_mean_reconstruction.py     # (legacy) single-tooth local mean
@@ -276,10 +310,10 @@ Teeth-Reconstruction-/
 │       │       ├── reconstructed_smooth.ply
 │       │       ├── coefficients.npy, removed_mask.npy
 │       │       └── evaluation.json
-│       ├── recon_blend/, recon_blend_v5/           # correspondence-blend reconstructions
 │       ├── recon_holes_final/, recon_holes_v5/     # patch/hole-filling reconstructions
 │       ├── recon_gpmm_test/, recon_gpmm_v5/        # GPMM reconstructions
 │       ├── eval_old_dataset.csv, eval_v5_dataset.csv  # consolidated evaluation results (current)
+│       ├── eval_flagship_19teeth.csv    # 4-method comparison vs raw worn tooth, 19 of 25 old-dataset teeth
 │       └── archive/                     # superseded experimental iterations (gitignored, local only)
 │
 ├── data_analysis/
