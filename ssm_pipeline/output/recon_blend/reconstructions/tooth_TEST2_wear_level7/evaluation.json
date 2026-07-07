@@ -1,0 +1,13 @@
+{
+  "source_worn": "tooth_TEST2_wear_level7",
+  "detect_mode": "blend",
+  "n_points": 100000,
+  "blend": {
+    "lo_deviation": 0.0,
+    "hi_deviation": 0.0017918981048061565,
+    "frac_blended": 0.12844,
+    "frac_full_recon": 0.07961,
+    "mean_weight": 0.10103078612107452
+  },
+  "mesh_poisson_depth": 8
+}

@@ -1,0 +1,88 @@
+{
+  "source_worn": "tooth_09_wear_real",
+  "detect_mode": "holes",
+  "worn_source": "icp_aligned",
+  "n_points": 100000,
+  "n_interior_holes": 1,
+  "extras": {
+    "status": "skipped"
+  },
+  "holes": {
+    "status": "ok",
+    "median_spacing": 0.0013374496439960686,
+    "cell_size": 0.0033436241099901714,
+    "grid_shape": [
+      199,
+      194
+    ],
+    "projection_axes": [
+      [
+        0.9902326755000002,
+        0.1393783350138085,
+        -0.0035955668384202127
+      ],
+      [
+        0.13942448413669095,
+        -0.9898558693842264,
+        0.027316132025146475
+      ]
+    ],
+    "projection_centroid": [
+      -0.003840791383744861,
+      -0.0025396355743465496,
+      0.008655045962273823
+    ],
+    "grid_origin": [
+      -0.34517060507048725,
+      -0.2781200719421074
+    ],
+    "n_rim_points": 563,
+    "outer_rim_size": 386,
+    "n_interior_holes": 1,
+    "interior_holes": [
+      {
+        "n_rim_points": 177,
+        "n_cells": 151,
+        "area_normalized": 0.0016881531505250425,
+        "perimeter": 1.642688339156292,
+        "centroid": [
+          0.14905089813437167,
+          -0.11684118169175703,
+          -0.16790919216339198
+        ]
+      }
+    ]
+  },
+  "patch": {
+    "status": "ok",
+    "n_worn_points": 100000,
+    "n_patch_points": 2193,
+    "n_total_points": 102193,
+    "fill_dilate": 2,
+    "align": true,
+    "collar_iter": 4,
+    "patch_cell_mult": 0.9,
+    "n_holes_patched": 1,
+    "per_hole": [
+      {
+        "hole_id": 0,
+        "n_fill": 2193,
+        "aligned": true,
+        "resampled": true,
+        "local_spacing": 0.0013893217885207801
+      }
+    ],
+    "mesh_patch": {
+      "status": "ok",
+      "method": "mesh_space_harmonic_blend",
+      "mesh_poisson_depth": 9,
+      "n_caps_triangulated": 0,
+      "n_holes_filled": 1,
+      "n_fill_vertices": 1015,
+      "n_deep_vertices": 191,
+      "n_smoothed_vertices": 1067,
+      "n_base_faces_trimmed": 52436,
+      "occl_cut": -0.08523113658529725
+    }
+  }
+}

@@ -36,6 +36,7 @@ import numpy as np
 import trimesh
 from matplotlib.lines import Line2D
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
+from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from tqdm import tqdm
@@ -83,6 +84,10 @@ STYLE = {
     "Recon local (Real)":  {"color": "#DD8452", "marker": "X", "size": 140},
     "Recon local (TEST1)": {"color": "#6BAF7A", "marker": "X", "size": 140},
     "Recon local (TEST2)": {"color": "#9B8FC9", "marker": "X", "size": 140},
+    # GPMM posterior shape-completion reconstructions
+    "Recon GPMM (Real)":  {"color": "#2A9D8F", "marker": "P", "size": 150},
+    "Recon GPMM (TEST1)": {"color": "#52B69A", "marker": "P", "size": 150},
+    "Recon GPMM (TEST2)": {"color": "#168AAD", "marker": "P", "size": 150},
 }
 
 WORN_TO_RECON_COLOR = {
@@ -95,6 +100,12 @@ WORN_TO_LOCAL_RECON_COLOR = {
     "Real worn": "Recon local (Real)",
     "TEST1":     "Recon local (TEST1)",
     "TEST2":     "Recon local (TEST2)",
+}
+
+WORN_TO_GPMM_RECON_COLOR = {
+    "Real worn": "Recon GPMM (Real)",
+    "TEST1":     "Recon GPMM (TEST1)",
+    "TEST2":     "Recon GPMM (TEST2)",
 }
 
 
@@ -190,18 +201,37 @@ def classify_worn_dir(dirname: str):
     if "TEST2" in dirname:
         m = re.search(r"level(\d+)", dirname)
         return "TEST2", int(m.group(1)) if m else 0
+    if re.match(r"tooth_.+_original$", dirname):
+        return "Original", -1
     return "Real worn", 0
 
 
 def worn_dir_label(dirname: str) -> str:
+    """Per-directory short label. Handles three naming schemes seen across
+    datasets: old real-worn (tooth_01_wear_real), TEST1/TEST2
+    (tooth_TEST1_wear_levelN), and v5 (tooth_<specimen>_wear_levelN /
+    tooth_<specimen>_original) -- the v5 scheme previously fell through to a
+    blind dirname[:12] truncation that dropped the wear-level number entirely,
+    making every level of a tooth share one label."""
     if "TEST1" in dirname:
         m = re.search(r"level(\d+)", dirname)
         return f"T1_L{m.group(1)}" if m else "TEST1"
     if "TEST2" in dirname:
         m = re.search(r"level(\d+)", dirname)
         return f"T2_L{m.group(1)}" if m else "TEST2"
-    m = re.search(r"tooth_(\d+)", dirname)
-    return f"T{m.group(1)}_w" if m else dirname[:12]
+    m = re.match(r"tooth_(.+)_wear_level(\d+)$", dirname)
+    if m:
+        return f"{m.group(1)}_L{m.group(2)}"
+    m = re.match(r"tooth_(.+)_original$", dirname)
+    if m:
+        return f"{m.group(1)}_orig"
+    m = re.match(r"tooth_(\d+)_wear_real$", dirname)
+    if m:
+        return f"T{m.group(1)}_w"
+    m = re.match(r"tooth_(\d+)$", dirname)
+    if m:
+        return f"T{m.group(1)}_w"
+    return dirname[:12]
 
 
 def recon_label_from_worn(worn_label: str) -> str:
@@ -214,6 +244,11 @@ def recon_label_from_worn(worn_label: str) -> str:
 def local_recon_label_from_worn(worn_label: str) -> str:
     """Distinct annotation for local-mean (or other alternate) reconstructions."""
     return recon_label_from_worn(worn_label) + "L"
+
+
+def gpmm_recon_label_from_worn(worn_label: str) -> str:
+    """Distinct annotation for GPMM posterior reconstructions."""
+    return recon_label_from_worn(worn_label) + "G"
 
 
 # ── Loading ───────────────────────────────────────────────────────
@@ -266,10 +301,11 @@ def load_all(corr_good_dir, corr_worn_dir, recon_dir):
             matched_worn_idx, worn_keys)
 
 
-def load_extra_reconstructions(extra_recon_dir, worn_keys, worn_labels, worn_groups):
+def load_extra_reconstructions(extra_recon_dir, worn_keys, worn_labels, worn_groups,
+                               label_fn=local_recon_label_from_worn, tag="extra"):
     """
-    Load alternate reconstructions (e.g. local-mean SSM) keyed by the same
-    artificial_worn directory names as the primary recon set.
+    Load alternate reconstructions (e.g. local-mean SSM, GPMM) keyed by the
+    same artificial_worn directory names as the primary recon set.
     """
     if not extra_recon_dir or not os.path.isdir(extra_recon_dir):
         return [], [], [], []
@@ -280,22 +316,22 @@ def load_extra_reconstructions(extra_recon_dir, worn_keys, worn_labels, worn_gro
         if not os.path.exists(rply):
             continue
         extra_files.append(rply)
-        extra_labels.append(local_recon_label_from_worn(worn_labels[wi]))
+        extra_labels.append(label_fn(worn_labels[wi]))
         extra_groups.append(worn_groups[wi])
         extra_wi.append(wi)
-        print(f"  [extra recon] {key} -> {extra_labels[-1]}")
+        print(f"  [{tag} recon] {key} -> {extra_labels[-1]}")
 
     if not extra_files:
         return [], [], [], []
 
-    extra_clouds = [_load_ply(f) for f in tqdm(extra_files, desc="Loading extra recon")]
+    extra_clouds = [_load_ply(f) for f in tqdm(extra_files, desc=f"Loading {tag} recon")]
     return extra_clouds, extra_labels, extra_groups, extra_wi
 
 
 # ── Plotting helpers ──────────────────────────────────────────────
 
 def _legend_handles(include_recon=True, include_original=True,
-                    include_local_recon=False):
+                    include_local_recon=False, include_gpmm_recon=False):
     keys = ["Good"]
     if include_original:
         keys.append("Original")
@@ -304,6 +340,8 @@ def _legend_handles(include_recon=True, include_original=True,
         keys += ["Recon (Real)", "Recon (TEST1)", "Recon (TEST2)"]
     if include_local_recon:
         keys += ["Recon local (Real)", "Recon local (TEST1)", "Recon local (TEST2)"]
+    if include_gpmm_recon:
+        keys += ["Recon GPMM (Real)", "Recon GPMM (TEST1)", "Recon GPMM (TEST2)"]
     return [
         Line2D([0], [0], marker=STYLE[k]["marker"], color="w",
                markerfacecolor=STYLE[k]["color"], markersize=10,
@@ -364,10 +402,11 @@ def _scatter_group(ax, pts_2d, labels, group_key, annotate=True,
 
 
 def _scatter_extra_recons_2d(ax, sc_extra, extra_labels, extra_groups,
-                             fontsize=5, text_offset=(6, -10)):
+                             fontsize=5, text_offset=(6, -10),
+                             style_map=WORN_TO_LOCAL_RECON_COLOR):
     for ei in range(len(sc_extra)):
         grp = extra_groups[ei][0]
-        rkey = WORN_TO_LOCAL_RECON_COLOR[grp]
+        rkey = style_map[grp]
         s = STYLE[rkey]
         ax.scatter(sc_extra[ei, 0], sc_extra[ei, 1],
                    c=s["color"], marker=s["marker"], s=s["size"],
@@ -377,10 +416,11 @@ def _scatter_extra_recons_2d(ax, sc_extra, extra_labels, extra_groups,
                     fontsize=fontsize, color=s["color"])
 
 
-def _scatter_extra_recons_3d(ax3, sc_extra, extra_groups):
+def _scatter_extra_recons_3d(ax3, sc_extra, extra_groups,
+                             style_map=WORN_TO_LOCAL_RECON_COLOR):
     for ei in range(len(sc_extra)):
         grp = extra_groups[ei][0]
-        rkey = WORN_TO_LOCAL_RECON_COLOR[grp]
+        rkey = style_map[grp]
         rs = STYLE[rkey]
         ax3.scatter(sc_extra[ei, 0], sc_extra[ei, 1], sc_extra[ei, 2],
                     c=rs["color"], marker=rs["marker"], s=rs["size"],
@@ -400,6 +440,10 @@ def main():
                         help="Optional second recon root (e.g. .../recon_local_t14/reconstructions). "
                              "Same folder names as primary recon; plotted as orange X markers "
                              "(labels end with L, e.g. T03_rL).")
+    parser.add_argument("--gpmm-recon-dir", type=str, default=None,
+                        help="Optional GPMM posterior recon root (e.g. .../recon_gpmm/reconstructions). "
+                             "Same folder names as primary recon; plotted as teal plus markers "
+                             "(labels end with G, e.g. T03_rG).")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--no-tsne", action="store_true",
                         help="Skip t-SNE plots")
@@ -415,6 +459,12 @@ def main():
                         help="UMAP min_dist (default 0.1)")
     parser.add_argument("--no-arrows", action="store_true",
                         help="Skip worn->recon arrows on PCA 2-D plot")
+    parser.add_argument("--n-clusters", type=int, default=2,
+                        help="K-Means clusters to split the PCA 2-D plot into (default 2)")
+    parser.add_argument("--no-cluster-split", action="store_true",
+                        help="Skip the cluster-split PCA 2-D plot")
+    parser.add_argument("--no-test-only", action="store_true",
+                        help="Skip the TEST1/TEST2-only PCA 2-D plot")
     args = parser.parse_args()
 
     os.makedirs(PLOT_DIR, exist_ok=True)
@@ -440,12 +490,22 @@ def main():
         extra_recon_dir = os.path.abspath(extra_recon_dir)
         print(f"Extra reconstruction dir : {extra_recon_dir}")
     extra_clouds, extra_labels, extra_groups, extra_wi = load_extra_reconstructions(
-        extra_recon_dir, worn_keys, worn_labels, worn_groups)
+        extra_recon_dir, worn_keys, worn_labels, worn_groups,
+        label_fn=local_recon_label_from_worn, tag="local")
+
+    gpmm_recon_dir = args.gpmm_recon_dir
+    if gpmm_recon_dir:
+        gpmm_recon_dir = os.path.abspath(gpmm_recon_dir)
+        print(f"GPMM reconstruction dir : {gpmm_recon_dir}")
+    gpmm_clouds, gpmm_labels, gpmm_groups, gpmm_wi = load_extra_reconstructions(
+        gpmm_recon_dir, worn_keys, worn_labels, worn_groups,
+        label_fn=gpmm_recon_label_from_worn, tag="gpmm")
 
     n_good = len(good_clouds)
     n_worn = len(worn_clouds)
     n_recon = len(recon_clouds)
     n_extra = len(extra_clouds)
+    n_gpmm = len(gpmm_clouds)
     n_pts = good_clouds[0].shape[0]
 
     print(f"\nGood teeth : {n_good}  ({n_pts} pts each)")
@@ -456,6 +516,8 @@ def main():
     print(f"Reconstructed : {n_recon}")
     if n_extra:
         print(f"Extra (local) reconstructions : {n_extra}")
+    if n_gpmm:
+        print(f"GPMM reconstructions : {n_gpmm}")
 
     # Load original (unworn) teeth for TEST1/TEST2
     # Prefer corresponded outputs; fall back to raw mesh + ICP
@@ -482,6 +544,7 @@ def main():
     X_worn = np.array([c.flatten() for c in worn_clouds])
     X_recon = np.array([c.flatten() for c in recon_clouds])
     X_extra = np.array([c.flatten() for c in extra_clouds]) if n_extra else np.empty((0, X_good.shape[1]))
+    X_gpmm = np.array([c.flatten() for c in gpmm_clouds]) if n_gpmm else np.empty((0, X_good.shape[1]))
     X_orig = np.array([c.flatten() for c in orig_clouds]) if n_orig > 0 else np.empty((0, X_good.shape[1]))
 
     # ── PCA (fit on good, project worn + recon + originals) ───────
@@ -491,6 +554,7 @@ def main():
     sc_worn = pca.transform(X_worn)
     sc_recon = pca.transform(X_recon)
     sc_extra = pca.transform(X_extra) if n_extra else np.empty((0, n_comp))
+    sc_gpmm = pca.transform(X_gpmm) if n_gpmm else np.empty((0, n_comp))
     sc_orig = pca.transform(X_orig) if n_orig > 0 else np.empty((0, n_comp))
     var_ratio = pca.explained_variance_ratio_
     cum_var = np.cumsum(var_ratio)
@@ -553,6 +617,10 @@ def main():
     if n_extra:
         _scatter_extra_recons_2d(ax, sc_extra[:, :2], extra_labels, extra_groups)
 
+    if n_gpmm:
+        _scatter_extra_recons_2d(ax, sc_gpmm[:, :2], gpmm_labels, gpmm_groups,
+                                 style_map=WORN_TO_GPMM_RECON_COLOR)
+
     # Originals
     if n_orig > 0:
         _scatter_group(ax, sc_orig[:, :2], orig_labels, "Original",
@@ -574,8 +642,16 @@ def main():
                         xytext=(sc_worn[wi, 0], sc_worn[wi, 1]),
                         arrowprops=dict(arrowstyle="->", color=STYLE[grp]["color"],
                                         lw=1.2, linestyle=":", alpha=0.75))
+        for gi, wi in enumerate(gpmm_wi):
+            grp = worn_groups[wi][0]
+            ax.annotate("",
+                        xy=(sc_gpmm[gi, 0], sc_gpmm[gi, 1]),
+                        xytext=(sc_worn[wi, 0], sc_worn[wi, 1]),
+                        arrowprops=dict(arrowstyle="->", color=STYLE[grp]["color"],
+                                        lw=1.2, linestyle="-.", alpha=0.75))
 
-    ax.legend(handles=_legend_handles(include_local_recon=n_extra > 0), fontsize=9, loc="best")
+    ax.legend(handles=_legend_handles(include_local_recon=n_extra > 0,
+                                      include_gpmm_recon=n_gpmm > 0), fontsize=9, loc="best")
     ax.set_xlabel(f"PC1 ({var_ratio[0]*100:.1f}%)", fontsize=12)
     ax.set_ylabel(f"PC2 ({var_ratio[1]*100:.1f}%)", fontsize=12)
     ax.set_title("Good + Worn + Reconstructed + Originals  (PC1 vs PC2)", fontsize=14)
@@ -584,6 +660,218 @@ def main():
     fig.savefig(os.path.join(PLOT_DIR, "all_teeth_pca_2d.png"), dpi=200)
     plt.close(fig)
     print("Saved all_teeth_pca_2d.png")
+
+    # ── Plot 2b: Cluster-split PCA 2-D (K-Means on Good teeth) ───
+    if not args.no_cluster_split and n_good >= args.n_clusters:
+        km = KMeans(n_clusters=args.n_clusters, random_state=args.seed, n_init=10)
+        good_cluster = km.fit_predict(sc_good[:, :2])
+        centroids = km.cluster_centers_
+
+        def _assign_cluster(pts_2d):
+            if len(pts_2d) == 0:
+                return np.empty(0, dtype=int)
+            dists = np.linalg.norm(pts_2d[:, None, :] - centroids[None, :, :], axis=2)
+            return dists.argmin(axis=1)
+
+        worn_cluster = _assign_cluster(sc_worn[:, :2])
+        recon_cluster = _assign_cluster(sc_recon[:, :2])
+        extra_cluster = _assign_cluster(sc_extra[:, :2]) if n_extra else np.empty(0, dtype=int)
+        gpmm_cluster = _assign_cluster(sc_gpmm[:, :2]) if n_gpmm else np.empty(0, dtype=int)
+        orig_cluster = _assign_cluster(sc_orig[:, :2]) if n_orig else np.empty(0, dtype=int)
+
+        n_c = args.n_clusters
+        fig, axes = plt.subplots(1, n_c, figsize=(10 * n_c, 9))
+        if n_c == 1:
+            axes = [axes]
+        for c in range(n_c):
+            ax = axes[c]
+            gmask = good_cluster == c
+            g_idx = np.where(gmask)[0]
+            _scatter_group(ax, sc_good[g_idx][:, :2], [good_labels[i] for i in g_idx], "Good")
+
+            for wi in np.where(worn_cluster == c)[0]:
+                grp = worn_groups[wi][0]
+                s = STYLE[grp]
+                ax.scatter(sc_worn[wi, 0], sc_worn[wi, 1], c=s["color"], marker=s["marker"],
+                           s=s["size"], edgecolors="k", linewidths=0.5, zorder=3)
+                ax.annotate(worn_labels[wi], (sc_worn[wi, 0], sc_worn[wi, 1]),
+                            textcoords="offset points", xytext=(6, -8),
+                            fontsize=6, color=s["color"])
+
+            for ri in np.where(recon_cluster == c)[0]:
+                grp = recon_groups[ri][0]
+                rkey = WORN_TO_RECON_COLOR[grp]
+                s = STYLE[rkey]
+                ax.scatter(sc_recon[ri, 0], sc_recon[ri, 1], c=s["color"], marker=s["marker"],
+                           s=s["size"], edgecolors="k", linewidths=0.5, zorder=3)
+                ax.annotate(recon_labels[ri], (sc_recon[ri, 0], sc_recon[ri, 1]),
+                            textcoords="offset points", xytext=(6, 6),
+                            fontsize=5, color=s["color"])
+
+            if n_extra:
+                ei_idx = np.where(extra_cluster == c)[0]
+                if len(ei_idx):
+                    _scatter_extra_recons_2d(
+                        ax, sc_extra[ei_idx][:, :2],
+                        [extra_labels[i] for i in ei_idx],
+                        [extra_groups[i] for i in ei_idx])
+
+            if n_gpmm:
+                gi_idx = np.where(gpmm_cluster == c)[0]
+                if len(gi_idx):
+                    _scatter_extra_recons_2d(
+                        ax, sc_gpmm[gi_idx][:, :2],
+                        [gpmm_labels[i] for i in gi_idx],
+                        [gpmm_groups[i] for i in gi_idx],
+                        style_map=WORN_TO_GPMM_RECON_COLOR)
+
+            if n_orig:
+                oi_idx = np.where(orig_cluster == c)[0]
+                if len(oi_idx):
+                    _scatter_group(ax, sc_orig[oi_idx][:, :2],
+                                   [orig_labels[i] for i in oi_idx], "Original",
+                                   fontsize=8, text_offset=(6, 8))
+
+            ax.set_xlabel(f"PC1 ({var_ratio[0]*100:.1f}%)", fontsize=11)
+            ax.set_ylabel(f"PC2 ({var_ratio[1]*100:.1f}%)", fontsize=11)
+            ax.set_title(f"Cluster {c+1}  ({gmask.sum()} good teeth)", fontsize=13)
+            ax.grid(True, alpha=0.3)
+
+        axes[0].legend(handles=_legend_handles(include_local_recon=n_extra > 0,
+                                                include_gpmm_recon=n_gpmm > 0),
+                       fontsize=8, loc="best")
+        fig.suptitle(f"PCA 2-D split by K-Means cluster (k={n_c}, fit on Good teeth)",
+                    fontsize=15)
+        fig.tight_layout(rect=[0, 0, 1, 0.96])
+        fig.savefig(os.path.join(PLOT_DIR, "all_teeth_pca_2d_clusters.png"), dpi=200)
+        plt.close(fig)
+        print("Saved all_teeth_pca_2d_clusters.png")
+
+    # ── Plot 2c: Test-set-only PCA 2-D (no Good teeth) ──────────────
+    # "Test set" = TEST1/TEST2 if this dataset has them (old data: held-out
+    # synthetic-wear cases, distinct from the 9 real production-worn teeth);
+    # otherwise (v5 data) every worn/original entry already IS the held-out
+    # specimen set, so fall back to "Real worn" + "Original".
+    if not args.no_test_only:
+        groups_present = {g[0] for g in worn_groups}
+        if "TEST1" in groups_present or "TEST2" in groups_present:
+            test_groups = {"TEST1", "TEST2", "Original"}
+        else:
+            test_groups = {"Real worn", "Original"}
+        print(f"\nTest-only plot: groups = {sorted(test_groups)}")
+
+        worn_mask = np.array([g[0] in test_groups for g in worn_groups])
+        recon_mask = np.array([g[0] in test_groups for g in recon_groups]) \
+            if n_recon else np.empty(0, dtype=bool)
+        extra_mask = np.array([g[0] in test_groups for g in extra_groups]) \
+            if n_extra else np.empty(0, dtype=bool)
+        gpmm_mask = np.array([g[0] in test_groups for g in gpmm_groups]) \
+            if n_gpmm else np.empty(0, dtype=bool)
+
+        fig, ax = plt.subplots(figsize=(11, 8))
+
+        for wi in np.where(worn_mask)[0]:
+            grp = worn_groups[wi][0]
+            s = STYLE[grp]
+            ax.scatter(sc_worn[wi, 0], sc_worn[wi, 1], c=s["color"], marker=s["marker"],
+                       s=s["size"], edgecolors="k", linewidths=0.5, zorder=3)
+            ax.annotate(worn_labels[wi], (sc_worn[wi, 0], sc_worn[wi, 1]),
+                        textcoords="offset points", xytext=(6, -8),
+                        fontsize=7, color=s["color"])
+
+        for ri in np.where(recon_mask)[0]:
+            grp = recon_groups[ri][0]
+            rkey = WORN_TO_RECON_COLOR[grp]
+            s = STYLE[rkey]
+            ax.scatter(sc_recon[ri, 0], sc_recon[ri, 1], c=s["color"], marker=s["marker"],
+                       s=s["size"], edgecolors="k", linewidths=0.5, zorder=3)
+            ax.annotate(recon_labels[ri], (sc_recon[ri, 0], sc_recon[ri, 1]),
+                        textcoords="offset points", xytext=(6, 6),
+                        fontsize=6, color=s["color"])
+
+        if n_extra:
+            ei_idx = np.where(extra_mask)[0]
+            if len(ei_idx):
+                _scatter_extra_recons_2d(
+                    ax, sc_extra[ei_idx][:, :2],
+                    [extra_labels[i] for i in ei_idx],
+                    [extra_groups[i] for i in ei_idx],
+                    fontsize=6, text_offset=(6, -10))
+
+        if n_gpmm:
+            gi_idx = np.where(gpmm_mask)[0]
+            if len(gi_idx):
+                _scatter_extra_recons_2d(
+                    ax, sc_gpmm[gi_idx][:, :2],
+                    [gpmm_labels[i] for i in gi_idx],
+                    [gpmm_groups[i] for i in gi_idx],
+                    fontsize=6, text_offset=(6, -10),
+                    style_map=WORN_TO_GPMM_RECON_COLOR)
+
+        if n_orig:
+            _scatter_group(ax, sc_orig[:, :2], orig_labels, "Original",
+                           fontsize=10, text_offset=(8, 10))
+
+        if not args.no_arrows:
+            for ri, wi in enumerate(matched_worn_idx):
+                if ri < len(recon_mask) and not recon_mask[ri]:
+                    continue
+                grp = worn_groups[wi][0]
+                if grp not in test_groups:
+                    continue
+                ax.annotate("", xy=(sc_recon[ri, 0], sc_recon[ri, 1]),
+                            xytext=(sc_worn[wi, 0], sc_worn[wi, 1]),
+                            arrowprops=dict(arrowstyle="->", color=STYLE[grp]["color"],
+                                            lw=1.0, linestyle="--", alpha=0.6))
+            for ei, wi in enumerate(extra_wi):
+                if ei < len(extra_mask) and not extra_mask[ei]:
+                    continue
+                grp = worn_groups[wi][0]
+                if grp not in test_groups:
+                    continue
+                ax.annotate("", xy=(sc_extra[ei, 0], sc_extra[ei, 1]),
+                            xytext=(sc_worn[wi, 0], sc_worn[wi, 1]),
+                            arrowprops=dict(arrowstyle="->", color=STYLE[grp]["color"],
+                                            lw=1.2, linestyle=":", alpha=0.75))
+            for gi, wi in enumerate(gpmm_wi):
+                if gi < len(gpmm_mask) and not gpmm_mask[gi]:
+                    continue
+                grp = worn_groups[wi][0]
+                if grp not in test_groups:
+                    continue
+                ax.annotate("", xy=(sc_gpmm[gi, 0], sc_gpmm[gi, 1]),
+                            xytext=(sc_worn[wi, 0], sc_worn[wi, 1]),
+                            arrowprops=dict(arrowstyle="->", color=STYLE[grp]["color"],
+                                            lw=1.2, linestyle="-.", alpha=0.75))
+
+        legend_keys = ["Original"] if "Original" in test_groups else []
+        for g in ("Real worn", "TEST1", "TEST2"):
+            if g in test_groups:
+                legend_keys.append(g)
+        for g in ("Real worn", "TEST1", "TEST2"):
+            if g in test_groups:
+                legend_keys.append(WORN_TO_RECON_COLOR[g])
+        if n_extra:
+            for g in ("Real worn", "TEST1", "TEST2"):
+                if g in test_groups:
+                    legend_keys.append(WORN_TO_LOCAL_RECON_COLOR[g])
+        if n_gpmm:
+            for g in ("Real worn", "TEST1", "TEST2"):
+                if g in test_groups:
+                    legend_keys.append(WORN_TO_GPMM_RECON_COLOR[g])
+        ax.legend(handles=[Line2D([0], [0], marker=STYLE[k]["marker"], color="w",
+                                   markerfacecolor=STYLE[k]["color"], markersize=10,
+                                   markeredgecolor="k", label=k) for k in legend_keys],
+                  fontsize=9, loc="best")
+        ax.set_xlabel(f"PC1 ({var_ratio[0]*100:.1f}%)", fontsize=12)
+        ax.set_ylabel(f"PC2 ({var_ratio[1]*100:.1f}%)", fontsize=12)
+        ax.set_title("Test set only: Originals + Worn levels + Reconstructions  (PC1 vs PC2)",
+                    fontsize=13)
+        ax.grid(True, alpha=0.3)
+        fig.tight_layout()
+        fig.savefig(os.path.join(PLOT_DIR, "all_teeth_pca_2d_test_only.png"), dpi=200)
+        plt.close(fig)
+        print("Saved all_teeth_pca_2d_test_only.png")
 
     # Paired worn<->recon distance in PC1-PC2
     _plot_paired_distance(
@@ -598,6 +886,13 @@ def main():
             worn_labels, worn_groups, extra_wi,
             "paired_dist_pca_2d_local.png",
             "Worn-to-Local-Recon Distance  (PC1-PC2)", "PC1-PC2 space")
+
+    if n_gpmm:
+        _plot_paired_distance(
+            sc_worn[:, :2], sc_gpmm[:, :2],
+            worn_labels, worn_groups, gpmm_wi,
+            "paired_dist_pca_2d_gpmm.png",
+            "Worn-to-GPMM-Recon Distance  (PC1-PC2)", "PC1-PC2 space")
 
     # ── Plot 3: PCA 3-D ──────────────────────────────────────────
     if n_comp >= 3:
@@ -630,6 +925,10 @@ def main():
         if n_extra:
             _scatter_extra_recons_3d(ax3, sc_extra[:, :3], extra_groups)
 
+        if n_gpmm:
+            _scatter_extra_recons_3d(ax3, sc_gpmm[:, :3], gpmm_groups,
+                                     style_map=WORN_TO_GPMM_RECON_COLOR)
+
         if n_orig > 0:
             os_ = STYLE["Original"]
             ax3.scatter(sc_orig[:, 0], sc_orig[:, 1], sc_orig[:, 2],
@@ -639,7 +938,8 @@ def main():
                 ax3.text(sc_orig[i, 0], sc_orig[i, 1], sc_orig[i, 2],
                          f"  {lbl}", fontsize=7, color=os_["color"])
 
-        ax3.legend(handles=_legend_handles(include_local_recon=n_extra > 0),
+        ax3.legend(handles=_legend_handles(include_local_recon=n_extra > 0,
+                                           include_gpmm_recon=n_gpmm > 0),
                    fontsize=8, loc="upper left")
         ax3.set_xlabel(f"PC1 ({var_ratio[0]*100:.1f}%)")
         ax3.set_ylabel(f"PC2 ({var_ratio[1]*100:.1f}%)")
@@ -651,13 +951,15 @@ def main():
         print("Saved all_teeth_pca_3d.png")
 
     # ── t-SNE from PCs ────────────────────────────────────────────
-    n_all = n_good + n_worn + n_recon + n_extra + n_orig
+    n_all = n_good + n_worn + n_recon + n_extra + n_gpmm + n_orig
     if not args.no_tsne and n_all >= 3:
         d_tsne = min(max(2, args.tsne_pc_dims), n_comp)
         stack_parts = [sc_good[:, :d_tsne], sc_worn[:, :d_tsne],
                        sc_recon[:, :d_tsne]]
         if n_extra:
             stack_parts.append(sc_extra[:, :d_tsne])
+        if n_gpmm:
+            stack_parts.append(sc_gpmm[:, :d_tsne])
         if n_orig > 0:
             stack_parts.append(sc_orig[:, :d_tsne])
         X_stack = np.vstack(stack_parts)
@@ -681,6 +983,8 @@ def main():
         off += n_recon
         Zrl = Z[off:off + n_extra] if n_extra else np.empty((0, 2))
         off += n_extra
+        Zgp = Z[off:off + n_gpmm] if n_gpmm else np.empty((0, 2))
+        off += n_gpmm
         Zo = Z[off:] if n_orig > 0 else np.empty((0, 2))
 
         fig, ax = plt.subplots(figsize=(13, 9))
@@ -704,11 +1008,15 @@ def main():
                         fontsize=5, color=s["color"])
         if n_extra:
             _scatter_extra_recons_2d(ax, Zrl, extra_labels, extra_groups)
+        if n_gpmm:
+            _scatter_extra_recons_2d(ax, Zgp, gpmm_labels, gpmm_groups,
+                                     style_map=WORN_TO_GPMM_RECON_COLOR)
         if n_orig > 0:
             _scatter_group(ax, Zo, orig_labels, "Original",
                            fontsize=8, text_offset=(6, 8))
 
-        ax.legend(handles=_legend_handles(include_local_recon=n_extra > 0),
+        ax.legend(handles=_legend_handles(include_local_recon=n_extra > 0,
+                                          include_gpmm_recon=n_gpmm > 0),
                   fontsize=9, loc="best")
         ax.set_xlabel("t-SNE 1", fontsize=12)
         ax.set_ylabel("t-SNE 2", fontsize=12)
@@ -732,11 +1040,20 @@ def main():
                 f"Worn-to-Local-Recon Distance  (t-SNE, {d_tsne} PCs)",
                 "t-SNE space")
 
+        if n_gpmm:
+            _plot_paired_distance(
+                Zw, Zgp, worn_labels, worn_groups, gpmm_wi,
+                "paired_dist_tsne_gpmm.png",
+                f"Worn-to-GPMM-Recon Distance  (t-SNE, {d_tsne} PCs)",
+                "t-SNE space")
+
     # ── t-SNE from raw 300 k-D features ──────────────────────────
     if not args.no_tsne and n_all >= 3:
         raw_parts = [X_good, X_worn, X_recon]
         if n_extra:
             raw_parts.append(X_extra)
+        if n_gpmm:
+            raw_parts.append(X_gpmm)
         if n_orig > 0:
             raw_parts.append(X_orig)
         X_all_raw = np.vstack(raw_parts)
@@ -761,6 +1078,8 @@ def main():
         off2 += n_recon
         Z2rl = Z2[off2:off2 + n_extra] if n_extra else np.empty((0, 2))
         off2 += n_extra
+        Z2gp = Z2[off2:off2 + n_gpmm] if n_gpmm else np.empty((0, 2))
+        off2 += n_gpmm
         Z2o = Z2[off2:] if n_orig > 0 else np.empty((0, 2))
 
         fig, ax = plt.subplots(figsize=(13, 9))
@@ -784,11 +1103,15 @@ def main():
                         fontsize=5, color=s["color"])
         if n_extra:
             _scatter_extra_recons_2d(ax, Z2rl, extra_labels, extra_groups)
+        if n_gpmm:
+            _scatter_extra_recons_2d(ax, Z2gp, gpmm_labels, gpmm_groups,
+                                     style_map=WORN_TO_GPMM_RECON_COLOR)
         if n_orig > 0:
             _scatter_group(ax, Z2o, orig_labels, "Original",
                            fontsize=8, text_offset=(6, 8))
 
-        ax.legend(handles=_legend_handles(include_local_recon=n_extra > 0),
+        ax.legend(handles=_legend_handles(include_local_recon=n_extra > 0,
+                                          include_gpmm_recon=n_gpmm > 0),
                   fontsize=9, loc="best")
         ax.set_xlabel("t-SNE 1", fontsize=12)
         ax.set_ylabel("t-SNE 2", fontsize=12)
@@ -812,6 +1135,13 @@ def main():
                 f"Worn-to-Local-Recon Distance  (t-SNE, raw {n_feat}D)",
                 "t-SNE space")
 
+        if n_gpmm:
+            _plot_paired_distance(
+                Z2w, Z2gp, worn_labels, worn_groups, gpmm_wi,
+                "paired_dist_tsne_raw_gpmm.png",
+                f"Worn-to-GPMM-Recon Distance  (t-SNE, raw {n_feat}D)",
+                "t-SNE space")
+
     # ── UMAP from PCs ─────────────────────────────────────────────
     run_umap = (not args.no_umap) and HAS_UMAP and n_all >= 3
     if not args.no_umap and not HAS_UMAP:
@@ -823,6 +1153,8 @@ def main():
                          sc_recon[:, :d_umap]]
         if n_extra:
             umap_pc_parts.append(sc_extra[:, :d_umap])
+        if n_gpmm:
+            umap_pc_parts.append(sc_gpmm[:, :d_umap])
         if n_orig > 0:
             umap_pc_parts.append(sc_orig[:, :d_umap])
         X_stack_u = np.vstack(umap_pc_parts)
@@ -841,6 +1173,8 @@ def main():
         uo += n_recon
         Url = U[uo:uo + n_extra] if n_extra else np.empty((0, 2))
         uo += n_extra
+        Ugp = U[uo:uo + n_gpmm] if n_gpmm else np.empty((0, 2))
+        uo += n_gpmm
         Uo = U[uo:] if n_orig > 0 else np.empty((0, 2))
 
         fig, ax = plt.subplots(figsize=(13, 9))
@@ -864,11 +1198,15 @@ def main():
                         fontsize=5, color=s["color"])
         if n_extra:
             _scatter_extra_recons_2d(ax, Url, extra_labels, extra_groups)
+        if n_gpmm:
+            _scatter_extra_recons_2d(ax, Ugp, gpmm_labels, gpmm_groups,
+                                     style_map=WORN_TO_GPMM_RECON_COLOR)
         if n_orig > 0:
             _scatter_group(ax, Uo, orig_labels, "Original",
                            fontsize=8, text_offset=(6, 8))
 
-        ax.legend(handles=_legend_handles(include_local_recon=n_extra > 0),
+        ax.legend(handles=_legend_handles(include_local_recon=n_extra > 0,
+                                          include_gpmm_recon=n_gpmm > 0),
                   fontsize=9, loc="best")
         ax.set_xlabel("UMAP 1", fontsize=12)
         ax.set_ylabel("UMAP 2", fontsize=12)
@@ -892,11 +1230,20 @@ def main():
                 f"Worn-to-Local-Recon Distance  (UMAP, {d_umap} PCs)",
                 "UMAP space")
 
+        if n_gpmm:
+            _plot_paired_distance(
+                Uw, Ugp, worn_labels, worn_groups, gpmm_wi,
+                "paired_dist_umap_gpmm.png",
+                f"Worn-to-GPMM-Recon Distance  (UMAP, {d_umap} PCs)",
+                "UMAP space")
+
     # ── UMAP from raw 300 k-D features ───────────────────────────
     if run_umap:
         umap_raw_parts = [X_good, X_worn, X_recon]
         if n_extra:
             umap_raw_parts.append(X_extra)
+        if n_gpmm:
+            umap_raw_parts.append(X_gpmm)
         if n_orig > 0:
             umap_raw_parts.append(X_orig)
         X_all_raw_u = np.vstack(umap_raw_parts)
@@ -917,6 +1264,8 @@ def main():
         u2o += n_recon
         U2rl = U2[u2o:u2o + n_extra] if n_extra else np.empty((0, 2))
         u2o += n_extra
+        U2gp = U2[u2o:u2o + n_gpmm] if n_gpmm else np.empty((0, 2))
+        u2o += n_gpmm
         U2o = U2[u2o:] if n_orig > 0 else np.empty((0, 2))
 
         fig, ax = plt.subplots(figsize=(13, 9))
@@ -940,11 +1289,15 @@ def main():
                         fontsize=5, color=s["color"])
         if n_extra:
             _scatter_extra_recons_2d(ax, U2rl, extra_labels, extra_groups)
+        if n_gpmm:
+            _scatter_extra_recons_2d(ax, U2gp, gpmm_labels, gpmm_groups,
+                                     style_map=WORN_TO_GPMM_RECON_COLOR)
         if n_orig > 0:
             _scatter_group(ax, U2o, orig_labels, "Original",
                            fontsize=8, text_offset=(6, 8))
 
-        ax.legend(handles=_legend_handles(include_local_recon=n_extra > 0),
+        ax.legend(handles=_legend_handles(include_local_recon=n_extra > 0,
+                                          include_gpmm_recon=n_gpmm > 0),
                   fontsize=9, loc="best")
         ax.set_xlabel("UMAP 1", fontsize=12)
         ax.set_ylabel("UMAP 2", fontsize=12)
@@ -968,12 +1321,21 @@ def main():
                 f"Worn-to-Local-Recon Distance  (UMAP, raw {n_feat}D)",
                 "UMAP space")
 
+        if n_gpmm:
+            _plot_paired_distance(
+                U2w, U2gp, worn_labels, worn_groups, gpmm_wi,
+                "paired_dist_umap_raw_gpmm.png",
+                f"Worn-to-GPMM-Recon Distance  (UMAP, raw {n_feat}D)",
+                "UMAP space")
+
     # ── Distance bar chart ────────────────────────────────────────
     good_centroid = sc_good.mean(axis=0)
     dist_worn = np.linalg.norm(sc_worn - good_centroid, axis=1)
     dist_recon = np.linalg.norm(sc_recon - good_centroid, axis=1)
     dist_extra = (np.linalg.norm(sc_extra - good_centroid, axis=1)
                   if n_extra else np.array([]))
+    dist_gpmm = (np.linalg.norm(sc_gpmm - good_centroid, axis=1)
+                 if n_gpmm else np.array([]))
     dist_orig = np.linalg.norm(sc_orig - good_centroid, axis=1) if n_orig > 0 else np.array([])
 
     bar_labels, bar_dists, bar_colors, bar_types = [], [], [], []
@@ -1002,6 +1364,13 @@ def main():
         bar_dists.append(dist_extra[ei])
         bar_colors.append(STYLE[rkey]["color"])
         bar_types.append("recon_local")
+    for gi in range(n_gpmm):
+        grp = gpmm_groups[gi][0]
+        rkey = WORN_TO_GPMM_RECON_COLOR[grp]
+        bar_labels.append(gpmm_labels[gi])
+        bar_dists.append(dist_gpmm[gi])
+        bar_colors.append(STYLE[rkey]["color"])
+        bar_types.append("recon_gpmm")
 
     sort_idx = np.argsort(bar_dists)[::-1]
     fig, ax = plt.subplots(figsize=(13, max(8, len(bar_labels) * 0.28)))
@@ -1021,6 +1390,9 @@ def main():
     if n_extra:
         legend_keys += ["Recon local (Real)", "Recon local (TEST1)",
                         "Recon local (TEST2)"]
+    if n_gpmm:
+        legend_keys += ["Recon GPMM (Real)", "Recon GPMM (TEST1)",
+                        "Recon GPMM (TEST2)"]
     legend_bar = [
         Line2D([0], [0], color=STYLE[k]["color"], linewidth=8, label=k)
         for k in legend_keys
@@ -1127,6 +1499,51 @@ def main():
         n_comparable = sum(1 for wi in [w for _, w in enumerate(extra_wi)]
                            if wi in global_ri_by_wi)
         print(f"\n{n_local_closer}/{n_comparable} local reconstructions are "
+              f"closer to their worn input than the global recon.")
+
+    if n_gpmm:
+        print(f"\n{'='*60}")
+        print("GPMM recon: distance to good-teeth centroid")
+        print(f"{'='*60}")
+        print(f"{'Worn':>18s}  {'d_worn':>8s}  {'d_gpmm':>8s}  {'delta':>8s}  {'Closer?':>8s}")
+        print(f"{'-'*60}")
+        for gi, wi in enumerate(gpmm_wi):
+            dw = dist_worn[wi]
+            dg = dist_gpmm[gi]
+            delta = dg - dw
+            closer = "Yes" if delta < 0 else "No"
+            print(f"{worn_labels[wi]:>18s}  {dw:8.4f}  {dg:8.4f}  "
+                  f"{delta:+8.4f}  {closer:>8s}")
+
+        global_ri_by_wi_g = {wi: ri for ri, wi in enumerate(matched_worn_idx)}
+
+        print(f"\n{'='*80}")
+        print("Worn-to-Recon Distance  (direct, in full PC space)")
+        print("  Lower = reconstruction stays closer to the worn tooth")
+        print(f"{'='*80}")
+        print(f"{'Worn':>18s}  {'d(w,global)':>12s}  {'d(w,gpmm)':>12s}  "
+              f"{'delta':>10s}  {'GPMM closer?':>14s}")
+        print(f"{'-'*80}")
+        for gi, wi in enumerate(gpmm_wi):
+            d_gpmm = float(np.linalg.norm(sc_gpmm[gi] - sc_worn[wi]))
+            gri = global_ri_by_wi_g.get(wi)
+            if gri is not None:
+                d_global = float(np.linalg.norm(sc_recon[gri] - sc_worn[wi]))
+                delta = d_gpmm - d_global
+                closer = "YES" if delta < 0 else "no"
+                print(f"{worn_labels[wi]:>18s}  {d_global:12.4f}  {d_gpmm:12.4f}  "
+                      f"{delta:+10.4f}  {closer:>14s}")
+            else:
+                print(f"{worn_labels[wi]:>18s}  {'N/A':>12s}  {d_gpmm:12.4f}  "
+                      f"{'':>10s}  {'':>14s}")
+
+        n_gpmm_closer = sum(
+            1 for gi, wi in enumerate(gpmm_wi)
+            if wi in global_ri_by_wi_g
+            and np.linalg.norm(sc_gpmm[gi] - sc_worn[wi])
+                < np.linalg.norm(sc_recon[global_ri_by_wi_g[wi]] - sc_worn[wi]))
+        n_comparable_g = sum(1 for wi in gpmm_wi if wi in global_ri_by_wi_g)
+        print(f"\n{n_gpmm_closer}/{n_comparable_g} GPMM reconstructions are "
               f"closer to their worn input than the global recon.")
 
     print(f"\nAll plots saved to {PLOT_DIR}/")

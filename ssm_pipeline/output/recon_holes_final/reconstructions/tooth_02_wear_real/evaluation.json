@@ -1,0 +1,88 @@
+{
+  "source_worn": "tooth_02_wear_real",
+  "detect_mode": "holes",
+  "worn_source": "icp_aligned",
+  "n_points": 100000,
+  "n_interior_holes": 1,
+  "extras": {
+    "status": "skipped"
+  },
+  "holes": {
+    "status": "ok",
+    "median_spacing": 0.0012947580025529804,
+    "cell_size": 0.003236895006382451,
+    "grid_shape": [
+      217,
+      203
+    ],
+    "projection_axes": [
+      [
+        0.9936136630818657,
+        0.10820713003515488,
+        -0.03198602111222449
+      ],
+      [
+        0.10866470726055863,
+        -0.9939944149777147,
+        0.012926112682800145
+      ]
+    ],
+    "projection_centroid": [
+      -0.002901177657987376,
+      -0.008030902772409776,
+      0.005656144704393466
+    ],
+    "grid_origin": [
+      -0.3626469969655131,
+      -0.2908105589832797
+    ],
+    "n_rim_points": 658,
+    "outer_rim_size": 465,
+    "n_interior_holes": 1,
+    "interior_holes": [
+      {
+        "n_rim_points": 193,
+        "n_cells": 73,
+        "area_normalized": 0.0007648567176110863,
+        "perimeter": 1.2131682446727217,
+        "centroid": [
+          0.1389835977569763,
+          -0.10322385671225237,
+          -0.15574771385890832
+        ]
+      }
+    ]
+  },
+  "patch": {
+    "status": "ok",
+    "n_worn_points": 100000,
+    "n_patch_points": 2353,
+    "n_total_points": 102353,
+    "fill_dilate": 2,
+    "align": true,
+    "collar_iter": 4,
+    "patch_cell_mult": 0.9,
+    "n_holes_patched": 1,
+    "per_hole": [
+      {
+        "hole_id": 0,
+        "n_fill": 2353,
+        "aligned": true,
+        "resampled": true,
+        "local_spacing": 0.0012766157729062193
+      }
+    ],
+    "mesh_patch": {
+      "status": "ok",
+      "method": "mesh_space_harmonic_blend",
+      "mesh_poisson_depth": 9,
+      "n_caps_triangulated": 0,
+      "n_holes_filled": 1,
+      "n_fill_vertices": 719,
+      "n_deep_vertices": 122,
+      "n_smoothed_vertices": 759,
+      "n_base_faces_trimmed": 51387,
+      "occl_cut": -0.06997854471065988
+    }
+  }
+}

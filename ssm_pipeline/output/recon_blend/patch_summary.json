@@ -1,0 +1,192 @@
+{
+  "recon_dir": "output/recon_neighborhood_v4",
+  "correspondence_dir": "output/correspondence_all_100k",
+  "mode": "swap",
+  "n_patched": 25,
+  "deviation_percentile": 75.0,
+  "deviation_threshold": null,
+  "min_component_size": 200,
+  "transition_band": 3.0,
+  "wear_fraction_mean": 0.10725199999999999,
+  "wear_fraction_min": 0.016,
+  "wear_fraction_max": 0.14529,
+  "chamfer_mm_mean": null,
+  "results": [
+    {
+      "name": "tooth_01_wear_real",
+      "mode": "blend",
+      "wear_fraction": 0.11696,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_02_wear_real",
+      "mode": "blend",
+      "wear_fraction": 0.07553,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_03_wear_real",
+      "mode": "blend",
+      "wear_fraction": 0.10685,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_04_wear_real",
+      "mode": "blend",
+      "wear_fraction": 0.09958,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_05_wear_real",
+      "mode": "blend",
+      "wear_fraction": 0.016,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_06_wear_real",
+      "mode": "blend",
+      "wear_fraction": 0.14529,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_07_wear_real",
+      "mode": "blend",
+      "wear_fraction": 0.14436,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_08_wear_real",
+      "mode": "blend",
+      "wear_fraction": 0.10785,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_09_wear_real",
+      "mode": "blend",
+      "wear_fraction": 0.03002,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level0",
+      "mode": "blend",
+      "wear_fraction": 0.1057,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level1",
+      "mode": "blend",
+      "wear_fraction": 0.10169,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level2",
+      "mode": "blend",
+      "wear_fraction": 0.12155,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level3",
+      "mode": "blend",
+      "wear_fraction": 0.11698,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level4",
+      "mode": "blend",
+      "wear_fraction": 0.12457,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level5",
+      "mode": "blend",
+      "wear_fraction": 0.1316,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level6",
+      "mode": "blend",
+      "wear_fraction": 0.11949,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level7",
+      "mode": "blend",
+      "wear_fraction": 0.11933,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level0",
+      "mode": "blend",
+      "wear_fraction": 0.09969,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level1",
+      "mode": "blend",
+      "wear_fraction": 0.09982,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level2",
+      "mode": "blend",
+      "wear_fraction": 0.10393,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level3",
+      "mode": "blend",
+      "wear_fraction": 0.10939,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level4",
+      "mode": "blend",
+      "wear_fraction": 0.11398,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level5",
+      "mode": "blend",
+      "wear_fraction": 0.11059,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level6",
+      "mode": "blend",
+      "wear_fraction": 0.13211,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level7",
+      "mode": "blend",
+      "wear_fraction": 0.12844,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    }
+  ],
+  "timestamp": "2026-06-10T20:13:54.590204"
+}

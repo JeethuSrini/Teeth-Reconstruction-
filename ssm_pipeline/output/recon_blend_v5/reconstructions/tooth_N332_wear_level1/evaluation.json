@@ -1,0 +1,13 @@
+{
+  "source_worn": "tooth_N332_wear_level1",
+  "detect_mode": "blend",
+  "n_points": 10000,
+  "blend": {
+    "lo_deviation": 0.0,
+    "hi_deviation": 0.0,
+    "frac_blended": 0.0628,
+    "frac_full_recon": 0.0264,
+    "mean_weight": 0.04413298611111111
+  },
+  "mesh_poisson_depth": 0
+}

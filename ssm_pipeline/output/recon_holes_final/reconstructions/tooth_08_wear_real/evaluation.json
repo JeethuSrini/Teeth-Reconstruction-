@@ -1,0 +1,88 @@
+{
+  "source_worn": "tooth_08_wear_real",
+  "detect_mode": "holes",
+  "worn_source": "icp_aligned",
+  "n_points": 100000,
+  "n_interior_holes": 1,
+  "extras": {
+    "status": "skipped"
+  },
+  "holes": {
+    "status": "ok",
+    "median_spacing": 0.0012026504900418218,
+    "cell_size": 0.0030066262251045544,
+    "grid_shape": [
+      217,
+      213
+    ],
+    "projection_axes": [
+      [
+        -0.985631287921554,
+        -0.16403098289457135,
+        -0.04030881939154
+      ],
+      [
+        -0.1645185964787448,
+        0.9863322748045994,
+        0.009070561804434807
+      ]
+    ],
+    "projection_centroid": [
+      -0.002114759506524597,
+      0.0022485486264647806,
+      -0.008097255242573256
+    ],
+    "grid_origin": [
+      -0.3224717164091154,
+      -0.34604989664420005
+    ],
+    "n_rim_points": 639,
+    "outer_rim_size": 488,
+    "n_interior_holes": 1,
+    "interior_holes": [
+      {
+        "n_rim_points": 151,
+        "n_cells": 210,
+        "area_normalized": 0.0018983582640721573,
+        "perimeter": 0.5461975577731693,
+        "centroid": [
+          0.13491452894858177,
+          -0.10287857573750793,
+          -0.14873706356973837
+        ]
+      }
+    ]
+  },
+  "patch": {
+    "status": "ok",
+    "n_worn_points": 100000,
+    "n_patch_points": 2931,
+    "n_total_points": 102931,
+    "fill_dilate": 2,
+    "align": true,
+    "collar_iter": 4,
+    "patch_cell_mult": 0.9,
+    "n_holes_patched": 1,
+    "per_hole": [
+      {
+        "hole_id": 0,
+        "n_fill": 2931,
+        "aligned": true,
+        "resampled": true,
+        "local_spacing": 0.001163100717649793
+      }
+    ],
+    "mesh_patch": {
+      "status": "ok",
+      "method": "mesh_space_harmonic_blend",
+      "mesh_poisson_depth": 9,
+      "n_caps_triangulated": 0,
+      "n_holes_filled": 1,
+      "n_fill_vertices": 1027,
+      "n_deep_vertices": 237,
+      "n_smoothed_vertices": 1069,
+      "n_base_faces_trimmed": 53375,
+      "occl_cut": -0.0607225719913454
+    }
+  }
+}

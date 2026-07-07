@@ -1,0 +1,48 @@
+{
+  "source_worn": "tooth_01_wear_real",
+  "detect_mode": "holes",
+  "worn_source": "icp_aligned",
+  "n_points": 100000,
+  "n_interior_holes": 0,
+  "extras": {
+    "status": "skipped"
+  },
+  "holes": {
+    "status": "ok",
+    "median_spacing": 0.001188094152457105,
+    "cell_size": 0.0029702353811427626,
+    "grid_shape": [
+      216,
+      208
+    ],
+    "projection_axes": [
+      [
+        0.9977340535387317,
+        0.06657068566456877,
+        0.00975203667549743
+      ],
+      [
+        0.06615102227897489,
+        -0.9970702695537186,
+        0.03840468491632165
+      ]
+    ],
+    "projection_centroid": [
+      0.0015428256570902692,
+      0.005074954428846164,
+      -0.01821205928954327
+    ],
+    "grid_origin": [
+      -0.32999521539525895,
+      -0.2549303309449084
+    ],
+    "n_rim_points": 491,
+    "outer_rim_size": 491,
+    "n_interior_holes": 0,
+    "interior_holes": []
+  },
+  "patch": {
+    "status": "no_holes",
+    "n_patch_points": 0
+  }
+}

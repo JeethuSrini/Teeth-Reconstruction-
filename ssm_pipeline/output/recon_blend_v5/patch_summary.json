@@ -1,0 +1,465 @@
+{
+  "recon_dir": "output/recon_neighborhood_v5",
+  "correspondence_dir": "output/correspondence_v5_10k",
+  "mode": "swap",
+  "n_patched": 64,
+  "deviation_percentile": 75.0,
+  "deviation_threshold": null,
+  "min_component_size": 200,
+  "transition_band": 3.0,
+  "wear_fraction_mean": 0.08106875,
+  "wear_fraction_min": 0.0085,
+  "wear_fraction_max": 0.1477,
+  "chamfer_mm_mean": null,
+  "results": [
+    {
+      "name": "tooth_N1063_wear_level0",
+      "mode": "blend",
+      "wear_fraction": 0.0741,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N1063_wear_level1",
+      "mode": "blend",
+      "wear_fraction": 0.0472,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N1063_wear_level2",
+      "mode": "blend",
+      "wear_fraction": 0.112,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N1063_wear_level3",
+      "mode": "blend",
+      "wear_fraction": 0.1221,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N1063_wear_level4",
+      "mode": "blend",
+      "wear_fraction": 0.1154,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N1063_wear_level5",
+      "mode": "blend",
+      "wear_fraction": 0.0797,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N1063_wear_level6",
+      "mode": "blend",
+      "wear_fraction": 0.13,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N1063_wear_level7",
+      "mode": "blend",
+      "wear_fraction": 0.0678,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level0",
+      "mode": "blend",
+      "wear_fraction": 0.0206,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level1",
+      "mode": "blend",
+      "wear_fraction": 0.0628,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level2",
+      "mode": "blend",
+      "wear_fraction": 0.023,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level3",
+      "mode": "blend",
+      "wear_fraction": 0.0463,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level4",
+      "mode": "blend",
+      "wear_fraction": 0.0623,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level5",
+      "mode": "blend",
+      "wear_fraction": 0.0546,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level6",
+      "mode": "blend",
+      "wear_fraction": 0.1329,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N332_wear_level7",
+      "mode": "blend",
+      "wear_fraction": 0.1117,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level0",
+      "mode": "blend",
+      "wear_fraction": 0.0313,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level1",
+      "mode": "blend",
+      "wear_fraction": 0.1001,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level2",
+      "mode": "blend",
+      "wear_fraction": 0.0389,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level3",
+      "mode": "blend",
+      "wear_fraction": 0.0695,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level4",
+      "mode": "blend",
+      "wear_fraction": 0.0565,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level5",
+      "mode": "blend",
+      "wear_fraction": 0.085,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level6",
+      "mode": "blend",
+      "wear_fraction": 0.048,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N459_wear_level7",
+      "mode": "blend",
+      "wear_fraction": 0.0673,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level0",
+      "mode": "blend",
+      "wear_fraction": 0.1206,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level1",
+      "mode": "blend",
+      "wear_fraction": 0.1094,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level2",
+      "mode": "blend",
+      "wear_fraction": 0.1273,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level3",
+      "mode": "blend",
+      "wear_fraction": 0.144,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level4",
+      "mode": "blend",
+      "wear_fraction": 0.1477,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level5",
+      "mode": "blend",
+      "wear_fraction": 0.128,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level6",
+      "mode": "blend",
+      "wear_fraction": 0.0962,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N4_wear_level7",
+      "mode": "blend",
+      "wear_fraction": 0.1351,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level0",
+      "mode": "blend",
+      "wear_fraction": 0.0085,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level1",
+      "mode": "blend",
+      "wear_fraction": 0.0095,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level2",
+      "mode": "blend",
+      "wear_fraction": 0.0244,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level3",
+      "mode": "blend",
+      "wear_fraction": 0.0179,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level4",
+      "mode": "blend",
+      "wear_fraction": 0.0853,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level5",
+      "mode": "blend",
+      "wear_fraction": 0.0681,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level6",
+      "mode": "blend",
+      "wear_fraction": 0.0865,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N705_wear_level7",
+      "mode": "blend",
+      "wear_fraction": 0.0872,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level0",
+      "mode": "blend",
+      "wear_fraction": 0.0523,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level1",
+      "mode": "blend",
+      "wear_fraction": 0.0801,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level2",
+      "mode": "blend",
+      "wear_fraction": 0.0852,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level3",
+      "mode": "blend",
+      "wear_fraction": 0.0981,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level4",
+      "mode": "blend",
+      "wear_fraction": 0.1146,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level5",
+      "mode": "blend",
+      "wear_fraction": 0.1248,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level6",
+      "mode": "blend",
+      "wear_fraction": 0.1052,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N726_wear_level7",
+      "mode": "blend",
+      "wear_fraction": 0.1339,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level0",
+      "mode": "blend",
+      "wear_fraction": 0.1004,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level1",
+      "mode": "blend",
+      "wear_fraction": 0.0325,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level2",
+      "mode": "blend",
+      "wear_fraction": 0.0652,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level3",
+      "mode": "blend",
+      "wear_fraction": 0.06,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level4",
+      "mode": "blend",
+      "wear_fraction": 0.08,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level5",
+      "mode": "blend",
+      "wear_fraction": 0.0532,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level6",
+      "mode": "blend",
+      "wear_fraction": 0.0724,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N728_wear_level7",
+      "mode": "blend",
+      "wear_fraction": 0.0845,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level0",
+      "mode": "blend",
+      "wear_fraction": 0.1295,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level1",
+      "mode": "blend",
+      "wear_fraction": 0.1295,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level2",
+      "mode": "blend",
+      "wear_fraction": 0.0794,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level3",
+      "mode": "blend",
+      "wear_fraction": 0.0967,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level4",
+      "mode": "blend",
+      "wear_fraction": 0.0415,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level5",
+      "mode": "blend",
+      "wear_fraction": 0.0969,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level6",
+      "mode": "blend",
+      "wear_fraction": 0.0528,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_N891_wear_level7",
+      "mode": "blend",
+      "wear_fraction": 0.0649,
+      "n_ring_points": 0,
+      "geometric_comparison": null
+    }
+  ],
+  "timestamp": "2026-07-06T20:58:39.874938"
+}

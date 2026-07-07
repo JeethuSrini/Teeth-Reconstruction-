@@ -1,0 +1,131 @@
+{
+  "source_worn": "tooth_N891_wear_level3",
+  "detect_mode": "holes",
+  "worn_source": "icp_aligned",
+  "n_points": 10000,
+  "n_interior_holes": 4,
+  "extras": {
+    "status": "skipped"
+  },
+  "holes": {
+    "status": "ok",
+    "median_spacing": 0.004023341111359623,
+    "cell_size": 0.010058352778399057,
+    "grid_shape": [
+      63,
+      60
+    ],
+    "projection_axes": [
+      [
+        -0.9814552741348497,
+        -0.16148754860737802,
+        0.10328270192857503
+      ],
+      [
+        0.1599590679241243,
+        -0.9868563732761789,
+        -0.022969438674753075
+      ]
+    ],
+    "projection_centroid": [
+      0.015105320282076718,
+      0.019759954684749392,
+      -0.018864665163327937
+    ],
+    "grid_origin": [
+      -0.2903781283514057,
+      -0.3123195782085287
+    ],
+    "n_rim_points": 387,
+    "outer_rim_size": 98,
+    "n_interior_holes": 4,
+    "interior_holes": [
+      {
+        "n_rim_points": 77,
+        "n_cells": 119,
+        "area_normalized": 0.012039284813152635,
+        "perimeter": 3.504272628297148,
+        "centroid": [
+          0.20748937962117134,
+          -0.1230347551066767,
+          0.04176987700055462
+        ]
+      },
+      {
+        "n_rim_points": 60,
+        "n_cells": 128,
+        "area_normalized": 0.012949818958685187,
+        "perimeter": 0.6527462475051724,
+        "centroid": [
+          0.15001257819434008,
+          0.08379690162837505,
+          0.10870480705052614
+        ]
+      },
+      {
+        "n_rim_points": 58,
+        "n_cells": 97,
+        "area_normalized": 0.009813534679628618,
+        "perimeter": 0.6172343894089547,
+        "centroid": [
+          -0.06619672362034305,
+          -0.18118797717937107,
+          0.08700750350695231
+        ]
+      },
+      {
+        "n_rim_points": 94,
+        "n_cells": 161,
+        "area_normalized": 0.01628844415897121,
+        "perimeter": 0.9503306173756693,
+        "centroid": [
+          -0.11893373194764903,
+          0.019080056912919627,
+          0.11920789161578138
+        ]
+      }
+    ]
+  },
+  "patch": {
+    "status": "ok",
+    "n_worn_points": 10000,
+    "n_patch_points": 5911,
+    "n_total_points": 15911,
+    "fill_dilate": 2,
+    "align": true,
+    "collar_iter": 4,
+    "patch_cell_mult": 0.9,
+    "n_holes_patched": 4,
+    "per_hole": [
+      {
+        "hole_id": 0,
+        "n_fill": 1499,
+        "aligned": true,
+        "resampled": true,
+        "local_spacing": 0.004231226704957287
+      },
+      {
+        "hole_id": 1,
+        "n_fill": 1921,
+        "aligned": true,
+        "resampled": true,
+        "local_spacing": 0.0035895117958179797
+      },
+      {
+        "hole_id": 2,
+        "n_fill": 834,
+        "aligned": true,
+        "resampled": true,
+        "local_spacing": 0.004166558288636486
+      },
+      {
+        "hole_id": 3,
+        "n_fill": 1657,
+        "aligned": true,
+        "resampled": true,
+        "local_spacing": 0.003982222441890073
+      }
+    ],
+    "mesh_poisson_depth": 0
+  }
+}

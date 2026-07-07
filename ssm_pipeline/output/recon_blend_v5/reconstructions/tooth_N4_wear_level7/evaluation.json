@@ -1,0 +1,13 @@
+{
+  "source_worn": "tooth_N4_wear_level7",
+  "detect_mode": "blend",
+  "n_points": 10000,
+  "blend": {
+    "lo_deviation": 0.0,
+    "hi_deviation": 0.000426254330395583,
+    "frac_blended": 0.1351,
+    "frac_full_recon": 0.044,
+    "mean_weight": 0.08549406901102337
+  },
+  "mesh_poisson_depth": 0
+}

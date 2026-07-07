@@ -43,6 +43,7 @@ from reconstruction_pipeline import (
     load_point_cloud,
     point_cloud_to_mesh,
     refine_reconstruction_nonrigid,
+    safe_mesh,
     save_mesh,
     save_point_cloud,
     _refine_icp_to_worn,
@@ -202,6 +203,7 @@ def run_neighborhood_reconstruction(
     proxy_missing_fraction: float,
     regularization: float,
     use_gpu: bool,
+    skip_mesh: bool = False,
 ) -> None:
     print("=" * 60)
     print("Neighborhood SSM Reconstruction")
@@ -459,16 +461,16 @@ def run_neighborhood_reconstruction(
                 print(f"    [WARN] Inverse transform / geo comparison failed: {e}")
                 reconstructed_raw = None
 
-        # Smooth mesh
-        if reconstructed_raw is not None:
-            try:
-                mesh_obj = point_cloud_to_mesh(reconstructed_raw)
-                mesh_path = os.path.join(result_dir, "reconstructed_smooth.ply")
-                save_mesh(mesh_obj, mesh_path)
-                print(f"    Smooth mesh: {len(mesh_obj.vertices)} verts, "
-                      f"{len(mesh_obj.faces)} tris")
-            except Exception as me:
-                print(f"    [WARN] Smooth mesh failed: {me}")
+        # Smooth mesh (crash-safe: isolated subprocess + adaptive Poisson depth)
+        if skip_mesh:
+            print(f"    Smooth mesh: skipped (--skip-mesh)")
+        elif reconstructed_raw is not None:
+            mesh_path = os.path.join(result_dir, "reconstructed_smooth.ply")
+            depth = safe_mesh(reconstructed_raw, mesh_path)
+            if depth:
+                print(f"    Smooth mesh: reconstructed_smooth.ply (Poisson depth {depth})")
+            else:
+                print(f"    [WARN] Smooth mesh failed after retries")
 
         # Save evaluation
         eval_data = {
@@ -655,6 +657,8 @@ def main():
                         help="Directory with raw worn tooth meshes for geometric comparison")
     parser.add_argument("--no-gpu", action="store_true",
                         help="Force CPU-only computation")
+    parser.add_argument("--skip-mesh", action="store_true",
+                        help="Skip Poisson surface meshing (point clouds only; mesh later)")
     args = parser.parse_args()
 
     run_neighborhood_reconstruction(
@@ -670,6 +674,7 @@ def main():
         proxy_missing_fraction=args.proxy_missing_fraction,
         regularization=args.regularization,
         use_gpu=not args.no_gpu,
+        skip_mesh=args.skip_mesh,
     )
 
 

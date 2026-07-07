@@ -1,0 +1,242 @@
+{
+  "recon_dir": "output/recon_neighborhood_v4",
+  "correspondence_dir": "output/correspondence_all_100k",
+  "mode": "swap",
+  "n_patched": 25,
+  "deviation_percentile": 75.0,
+  "deviation_threshold": null,
+  "min_component_size": 200,
+  "transition_band": 3.0,
+  "wear_fraction_mean": 0.006477600000000001,
+  "wear_fraction_min": 0.0,
+  "wear_fraction_max": 0.02194,
+  "chamfer_mm_mean": null,
+  "results": [
+    {
+      "name": "tooth_01_wear_real",
+      "mode": "holes",
+      "n_interior_holes": 0,
+      "n_patch_points": 0,
+      "wear_fraction": 0.0,
+      "n_ring_points": 491,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_02_wear_real",
+      "mode": "holes",
+      "n_interior_holes": 1,
+      "n_patch_points": 2353,
+      "wear_fraction": 0.00193,
+      "n_ring_points": 658,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_03_wear_real",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 7632,
+      "wear_fraction": 0.00441,
+      "n_ring_points": 929,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_04_wear_real",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 1400,
+      "wear_fraction": 0.00106,
+      "n_ring_points": 517,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_05_wear_real",
+      "mode": "holes",
+      "n_interior_holes": 0,
+      "n_patch_points": 0,
+      "wear_fraction": 0.0,
+      "n_ring_points": 483,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_06_wear_real",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 11057,
+      "wear_fraction": 0.00588,
+      "n_ring_points": 1132,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_07_wear_real",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 5202,
+      "wear_fraction": 0.00336,
+      "n_ring_points": 875,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_08_wear_real",
+      "mode": "holes",
+      "n_interior_holes": 1,
+      "n_patch_points": 2931,
+      "wear_fraction": 0.00151,
+      "n_ring_points": 639,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_09_wear_real",
+      "mode": "holes",
+      "n_interior_holes": 1,
+      "n_patch_points": 2193,
+      "wear_fraction": 0.00177,
+      "n_ring_points": 563,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level0",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 5940,
+      "wear_fraction": 0.00396,
+      "n_ring_points": 805,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level1",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 5752,
+      "wear_fraction": 0.0038,
+      "n_ring_points": 801,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level2",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 12366,
+      "wear_fraction": 0.00748,
+      "n_ring_points": 1179,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level3",
+      "mode": "holes",
+      "n_interior_holes": 5,
+      "n_patch_points": 14103,
+      "wear_fraction": 0.00842,
+      "n_ring_points": 1264,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level4",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 17949,
+      "wear_fraction": 0.00875,
+      "n_ring_points": 1284,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level5",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 20423,
+      "wear_fraction": 0.00905,
+      "n_ring_points": 1315,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level6",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 34949,
+      "wear_fraction": 0.01482,
+      "n_ring_points": 1900,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST1_wear_level7",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 41792,
+      "wear_fraction": 0.01977,
+      "n_ring_points": 2430,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level0",
+      "mode": "holes",
+      "n_interior_holes": 2,
+      "n_patch_points": 2774,
+      "wear_fraction": 0.00224,
+      "n_ring_points": 642,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level1",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 4593,
+      "wear_fraction": 0.00354,
+      "n_ring_points": 767,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level2",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 7922,
+      "wear_fraction": 0.00588,
+      "n_ring_points": 1024,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level3",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 10070,
+      "wear_fraction": 0.00558,
+      "n_ring_points": 995,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level4",
+      "mode": "holes",
+      "n_interior_holes": 3,
+      "n_patch_points": 12998,
+      "wear_fraction": 0.00622,
+      "n_ring_points": 1054,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level5",
+      "mode": "holes",
+      "n_interior_holes": 4,
+      "n_patch_points": 20097,
+      "wear_fraction": 0.00804,
+      "n_ring_points": 1247,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level6",
+      "mode": "holes",
+      "n_interior_holes": 5,
+      "n_patch_points": 34265,
+      "wear_fraction": 0.01253,
+      "n_ring_points": 1709,
+      "geometric_comparison": null
+    },
+    {
+      "name": "tooth_TEST2_wear_level7",
+      "mode": "holes",
+      "n_interior_holes": 5,
+      "n_patch_points": 44277,
+      "wear_fraction": 0.02194,
+      "n_ring_points": 2682,
+      "geometric_comparison": null
+    }
+  ],
+  "timestamp": "2026-06-10T19:51:01.298175"
+}
